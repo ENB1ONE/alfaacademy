@@ -266,6 +266,122 @@
       appearance: none;
     }
   }
+  /* CHAMADA DIÁRIA LIST */
+  .chamada-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .chamada-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--preto-3);
+    border: 1px solid var(--linha);
+    border-radius: 12px;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .chamada-item:hover {
+    border-color: var(--linha-2);
+    transform: translateY(-1px);
+  }
+  .chamada-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+    margin-right: 8px;
+  }
+  .chamada-nome {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--texto);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .chamada-pos {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--cinza);
+    margin-top: 2px;
+  }
+  .chamada-btns {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .btn-c {
+    width: 38px;
+    height: 34px;
+    border-radius: 6px;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    background: transparent;
+    border: 2px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-c.btn-p { border-color: rgba(37, 211, 102, 0.4); color: #25D366; }
+  .btn-c.btn-p.active { background: #25D366; color: #111; border-color: #25D366; box-shadow: 0 0 10px rgba(37, 211, 102, 0.2); }
+  
+  .btn-c.btn-f { border-color: rgba(255, 75, 75, 0.4); color: #FF4B4B; }
+  .btn-c.btn-f.active { background: #FF4B4B; color: #fff; border-color: #FF4B4B; box-shadow: 0 0 10px rgba(255, 75, 75, 0.2); }
+  
+  .btn-c.btn-j { border-color: rgba(255, 209, 102, 0.4); color: #FFD166; }
+  .btn-c.btn-j.active { background: #FFD166; color: #111; border-color: #FFD166; box-shadow: 0 0 10px rgba(255, 209, 102, 0.2); }
+  
+  .btn-c:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* CÍRCULOS COLORIDOS PARA A TABELA (QUADRO GERAL) */
+  .marca-p {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--linha-2);
+    transition: all 0.12s;
+    background: var(--preto-3);
+  }
+  .marca-p.p { background: #25D366; border-color: #25D366; }
+  .marca-p.f { background: #FF4B4B; border-color: #FF4B4B; }
+  .marca-p.j { background: #FFD166; border-color: #FFD166; }
+  
+  /* Legenda de cores do quadro */
+  .legenda-quadro {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    color: var(--cinza);
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .legenda-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legenda-cor {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .legenda-cor.p { background: #25D366; }
+  .legenda-cor.f { background: #FF4B4B; }
+  .legenda-cor.j { background: #FFD166; }
+
   /* WHATSAPP FLOAT BUTTON */
   .whatsapp-float {
     position: fixed;
@@ -592,6 +708,26 @@
       <!-- Barra de Categorias -->
       <div class="cat-bar"><div class="cat-inner" id="catBar"></div></div>
       
+      <!-- Chamada Diária (Lista de Atletas com 3 Estados) -->
+      <div class="panel" style="margin-bottom:24px;">
+        <div class="panel-head" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <span class="eyebrow">Chamada Diária · Categoria <span id="chamadaCatLabel"></span></span>
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <label class="f" for="chamadaTreinoSelect" style="margin:0; white-space:nowrap;">Treino:</label>
+              <select id="chamadaTreinoSelect" onchange="renderChamada()" style="padding:6px 12px; font-size:12px; width:auto; border-radius:6px; background:var(--preto-3); border-color:var(--linha-2);"></select>
+            </div>
+            <button class="btn" id="btnMarcarTodos" style="background:#25D366; color:#111; padding:6px 12px; font-size:12px; border-radius:6px; width:auto;" onclick="marcarTodosPresentes()">Marcar Todos Presentes</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div id="chamadaHintNote" class="lock-note" style="display:none; margin-bottom:12px;">
+            🔒 <span>Você está visualizando no <b>Modo Atleta</b>. Os controles de presença abaixo estão desabilitados (somente leitura).</span>
+          </div>
+          <div class="chamada-lista" id="chamadaLista"></div>
+        </div>
+      </div>
+      
       <!-- Grid de Resumo e Eventos da Semana -->
       <div class="hero-grid">
         <div class="panel">
@@ -622,7 +758,14 @@
           <span class="eyebrow">Quadro de presença · atletas × treinos</span>
           <span class="eyebrow" id="quadroHint" style="color:var(--cinza)"></span>
         </div>
-        <div class="quadro-wrap" id="quadroWrap"></div>
+        <div class="panel-body" style="padding:0;">
+          <div class="quadro-wrap" id="quadroWrap" style="border:none; box-shadow:none; border-radius:0;"></div>
+          <div class="legenda-quadro" style="padding:12px 18px; border-top:1px solid var(--linha);">
+            <div class="legenda-item"><span class="legenda-cor p"></span> Presente (P)</div>
+            <div class="legenda-item"><span class="legenda-cor f"></span> Falta (F)</div>
+            <div class="legenda-item"><span class="legenda-cor j"></span> Justificado/DM (J)</div>
+          </div>
+        </div>
       </div>
       
       <!-- Formulários de Ação (Duas Colunas) -->
@@ -726,8 +869,8 @@ const MemoryStore = (() => {
     async listTreinos(cat,ini,fim){ return treinos.filter(t=>t.categoria===cat&&t.data>=ini&&t.data<=fim).sort((x,y)=>x.data.localeCompare(y.data)); },
     async addTreino(t){ if(treinos.some(x=>x.categoria===t.categoria&&x.data===t.data)) return null; const n={id:seqT++,...t}; treinos.push(n); return n; },
     async addTreinoRecorrente({categoria,titulo,weekday,ini,fim}){ let c=0; let cur=new Date(ini+'T12:00'); const df=new Date(fim+'T12:00'); while(cur.getDay()!==weekday) cur.setDate(cur.getDate()+1); while(cur<=df){ const ds=fmtISO(cur); if(!treinos.some(x=>x.categoria===categoria&&x.data===ds)){ treinos.push({id:seqT++,titulo:titulo||'Treino',data:ds,categoria}); c++; } cur.setDate(cur.getDate()+7);} return {criados:c}; },
-    async listPresencas(tid){ return presencas.filter(p=>p.treino_id===tid).map(p=>p.atleta_id); },
-    async setPresenca(tid,aid,pres){ const i=presencas.findIndex(p=>p.treino_id===tid&&p.atleta_id===aid); if(pres&&i<0)presencas.push({treino_id:tid,atleta_id:aid}); if(!pres&&i>=0)presencas.splice(i,1); },
+    async listPresencas(tid){ return presencas.filter(p=>p.treino_id===tid).map(p=>({atleta_id: p.atleta_id, status: p.status || 'P'})); },
+    async setPresenca(tid,aid,status){ const i=presencas.findIndex(p=>p.treino_id===tid&&p.atleta_id===aid); if(status){ if(i>=0) presencas[i].status=status; else presencas.push({treino_id:tid,atleta_id:aid,status}); } else { if(i>=0) presencas.splice(i,1); } },
     _seed(){ atletas=[]; treinos=[]; presencas=[]; seqA=1; seqT=1; }
   };
 })();
@@ -762,7 +905,7 @@ const ApiStore = {
   async addTreino(t){ return jsonOrThrow(await fetch(`${API_BASE_URL}/api/treinos`,{method:'POST',headers:{'Content-Type':'application/json',...authHeaders()},body:JSON.stringify(t)})); },
   async addTreinoRecorrente(p){ return jsonOrThrow(await fetch(`${API_BASE_URL}/api/treinos/recorrente`,{method:'POST',headers:{'Content-Type':'application/json',...authHeaders()},body:JSON.stringify(p)})); },
   async listPresencas(tid){ return jsonOrThrow(await fetch(`${API_BASE_URL}/api/presencas?treino_id=`+tid)); },
-  async setPresenca(tid,aid,pres){ const r=await fetch(`${API_BASE_URL}/api/presencas`,{method:'PUT',headers:{'Content-Type':'application/json',...authHeaders()},body:JSON.stringify({treino_id:tid,atleta_id:aid,presente:pres})}); if(!r.ok) throw new Error('Falha ao marcar presença'); return r; }
+  async setPresenca(tid,aid,status){ const r=await fetch(`${API_BASE_URL}/api/presencas`,{method:'PUT',headers:{'Content-Type':'application/json',...authHeaders()},body:JSON.stringify({treino_id:tid,atleta_id:aid,status})}); if(!r.ok) throw new Error('Falha ao marcar presença'); return r; }
 };
 const db = USE_API ? ApiStore : MemoryStore;
 
@@ -775,6 +918,8 @@ function diaSemana(iso){ return ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'][new
 let semanaAtual = inicioSemana(new Date());
 let categoriaAtual = CATEGORIAS[0];
 let activeTab = 'atleta';
+let currentAtletas = [];
+let currentPp = {};
 
 // GERENCIAMENTO DE MENU MOBILE
 function toggleMenu() {
@@ -819,21 +964,61 @@ async function render(){
     const pp={}; 
     for(const t of treinos){ 
       try {
-        pp[t.id]=await db.listPresencas(t.id); 
+        const list = await db.listPresencas(t.id);
+        const map = new Map();
+        list.forEach(item => {
+          if (typeof item === 'number') {
+            map.set(item, 'P');
+          } else if (item && typeof item === 'object') {
+            map.set(item.atleta_id, item.status || 'P');
+          }
+        });
+        pp[t.id] = map;
       } catch(e) {
-        pp[t.id]=[];
+        pp[t.id] = new Map();
       }
     }
+    currentAtletas = atletas;
+    currentPp = pp;
+    
+    // Popula seletor de treinos para a chamada
+    const select = document.getElementById('chamadaTreinoSelect');
+    const prevVal = select.value;
+    select.innerHTML = treinos.map(t => `<option value="${t.id}">${diaSemana(t.data)} ${t.data.slice(8)} - ${esc(t.titulo)}</option>`).join('');
+    if (treinos.length) {
+      if (Array.from(select.options).some(o => o.value === prevVal)) {
+        select.value = prevVal;
+      } else {
+        select.value = treinos[0].id;
+      }
+      document.getElementById('btnMarcarTodos').disabled = !coach;
+      document.getElementById('chamadaHintNote').style.display = coach ? 'none' : 'flex';
+    } else {
+      select.innerHTML = '<option value="">Sem treinos</option>';
+      document.getElementById('btnMarcarTodos').disabled = true;
+      document.getElementById('chamadaHintNote').style.display = 'none';
+    }
+    
     renderHero(atletas,treinos,pp);
     renderQuadro(atletas,treinos,pp);
     renderListaAtletas(atletas);
+    renderChamada();
   } catch(e) {
     console.error(e);
   }
 }
 
 function renderHero(atletas,treinos,pp){
-  const total=treinos.reduce((s,t)=>s+(pp[t.id]?.length||0),0);
+  const total = treinos.reduce((s,t) => {
+    let count = 0;
+    const map = pp[t.id];
+    if (map) {
+      for (const status of map.values()) {
+        if (status === 'P') count++;
+      }
+    }
+    return s + count;
+  }, 0);
   document.getElementById('stConf').textContent=total;
   document.getElementById('stJog').textContent=atletas.length;
   document.getElementById('stEv').textContent=treinos.length;
@@ -842,7 +1027,12 @@ function renderHero(atletas,treinos,pp){
   const lista=document.getElementById('evList');
   if(!treinos.length){ lista.innerHTML=`<div class="vazio"><b>Nenhum treino nesta semana</b>O treinador pode criar um treino para ${categoriaAtual}.</div>`; return; }
   lista.innerHTML=treinos.map(t=>{
-    const n=pp[t.id]?.length||0;
+    let n = 0;
+    if (pp[t.id]) {
+      for (const status of pp[t.id].values()) {
+        if (status === 'P') n++;
+      }
+    }
     return `<div class="ev-item">
       <div class="ev-cal"><div class="d">${t.data.slice(8)}</div><div class="m">${diaSemana(t.data)}</div></div>
       <div class="ev-meta"><div class="t">${esc(t.titulo||'Treino')}</div><div class="s">Treino</div></div>
@@ -851,13 +1041,19 @@ function renderHero(atletas,treinos,pp){
   }).join('');
 }
 
+function cycleStatus(current) {
+  if (!current) return 'P';
+  if (current === 'P') return 'F';
+  if (current === 'F') return 'J';
+  return '';
+}
+
 function renderQuadro(atletas,treinos,pp){
   const wrap=document.getElementById('quadroWrap');
   const hint=document.getElementById('quadroHint');
   if(!atletas.length){ wrap.innerHTML=`<div class="vazio"><b>Sem atletas em ${categoriaAtual}</b>Cadastre atletas no formulário abaixo.</div>`; hint.textContent=''; return; }
   if(!treinos.length){ wrap.innerHTML=`<div class="vazio"><b>Sem treinos nesta semana</b>O quadro aparece quando houver pelo menos um treino.</div>`; hint.textContent=''; return; }
-  hint.textContent=coach?'clique para marcar':'somente leitura';
-  const presSet={}; for(const t of treinos){ presSet[t.id]=new Set(pp[t.id]||[]); }
+  hint.textContent=coach?'clique para alternar':'somente leitura';
   let html='<table class="quadro"><thead><tr><th class="jname">Atleta</th>';
   for(const t of treinos){ html+=`<th><span class="dd">${diaSemana(t.data)} ${t.data.slice(8)}</span>Treino</th>`; }
   html+='</tr></thead><tbody>';
@@ -865,13 +1061,22 @@ function renderQuadro(atletas,treinos,pp){
     html+='<tr>';
     html+=`<td class="jname">${esc(a.nome)}<span class="pos">${esc(a.posicao||'—')}</span></td>`;
     for(const t of treinos){
-      const p=presSet[t.id].has(a.id);
-      html+=`<td class="cel ${coach?'clic':''}" ${coach?`onclick="toggle(${t.id},${a.id},${!p})"`:''}><span class="marca-p ${p?'p':''}"></span></td>`;
+      const status = pp[t.id]?.get(a.id) || '';
+      const next = cycleStatus(status);
+      html+=`<td class="cel ${coach?'clic':''}" ${coach?`onclick="toggle(${t.id},${a.id},'${next}')"`:''}><span class="marca-p ${status.toLowerCase()}"></span></td>`;
     }
     html+='</tr>';
   }
-  html+='</tbody><tfoot><tr><td class="jname">Total</td>';
-  for(const t of treinos){ html+=`<td>${presSet[t.id].size}</td>`; }
+  html+='</tbody><tfoot><tr><td class="jname">Total P</td>';
+  for(const t of treinos){ 
+    let pCount = 0;
+    if (pp[t.id]) {
+      for (const st of pp[t.id].values()) {
+        if (st === 'P') pCount++;
+      }
+    }
+    html+=`<td>${pCount}</td>`; 
+  }
   html+='</tr></tfoot></table>';
   wrap.innerHTML=html;
 }
@@ -885,7 +1090,77 @@ function renderListaAtletas(atletas){
   }).join('');
 }
 
-async function toggle(tid,aid,pres){ if(!coach)return; try{ await db.setPresenca(tid,aid,pres); }catch(e){ toast('Falha ao salvar presença.'); } render(); }
+async function toggle(tid,aid,status){ if(!coach)return; try{ await db.setPresenca(tid,aid,status); }catch(e){ toast('Falha ao salvar presença.'); } render(); }
+
+function renderChamada() {
+  const select = document.getElementById('chamadaTreinoSelect');
+  const tid = parseInt(select.value, 10);
+  const container = document.getElementById('chamadaLista');
+  document.getElementById('chamadaCatLabel').textContent = categoriaAtual;
+  
+  if (!currentAtletas.length) {
+    container.innerHTML = '<div class="vazio"><b>Sem atletas em ' + categoriaAtual + '</b>Cadastre atletas no formulário abaixo.</div>';
+    return;
+  }
+  if (isNaN(tid)) {
+    container.innerHTML = '<div class="vazio"><b>Nenhum treino disponível nesta semana</b>O treinador deve criar treinos para poder fazer a chamada.</div>';
+    return;
+  }
+  
+  const map = currentPp[tid] || new Map();
+  
+  container.innerHTML = currentAtletas.map(a => {
+    const status = map.get(a.id) || '';
+    return `<div class="chamada-item">
+      <div class="chamada-info">
+        <span class="chamada-nome">${esc(a.nome)}</span>
+        <span class="chamada-pos">${esc(a.posicao || 'Sem posição')}</span>
+      </div>
+      <div class="chamada-btns">
+        <button class="btn-c btn-p ${status === 'P' ? 'active' : ''}" ${!coach ? 'disabled' : ''} onclick="updateChamadaStatus(${tid}, ${a.id}, 'P')">P</button>
+        <button class="btn-c btn-f ${status === 'F' ? 'active' : ''}" ${!coach ? 'disabled' : ''} onclick="updateChamadaStatus(${tid}, ${a.id}, 'F')">F</button>
+        <button class="btn-c btn-j ${status === 'J' ? 'active' : ''}" ${!coach ? 'disabled' : ''} onclick="updateChamadaStatus(${tid}, ${a.id}, 'J')">J</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function updateChamadaStatus(tid, aid, clickedStatus) {
+  if (!coach) return;
+  const current = currentPp[tid]?.get(aid) || '';
+  const next = current === clickedStatus ? '' : clickedStatus;
+  try {
+    await db.setPresenca(tid, aid, next);
+    if (next) {
+      currentPp[tid].set(aid, next);
+    } else {
+      currentPp[tid].delete(aid);
+    }
+    render();
+    toast('Presença salva.');
+  } catch(e) {
+    toast('Erro ao salvar presença.');
+  }
+}
+
+async function marcarTodosPresentes() {
+  if (!coach) return;
+  const select = document.getElementById('chamadaTreinoSelect');
+  const tid = parseInt(select.value, 10);
+  if (isNaN(tid)) { toast('Nenhum treino selecionado.'); return; }
+  if (!currentAtletas.length) { toast('Nenhum atleta na categoria.'); return; }
+  
+  try {
+    toast('Salvando chamada...');
+    await Promise.all(currentAtletas.map(a => db.setPresenca(tid, a.id, 'P')));
+    currentAtletas.forEach(a => currentPp[tid].set(a.id, 'P'));
+    render();
+    toast('Todos os atletas marcados como PRESENTES!');
+  } catch(e) {
+    toast('Erro ao marcar todos.');
+    render();
+  }
+}
 
 async function cadastrarAtleta(){
   const nome=document.getElementById('jNome').value.trim();
