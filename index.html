@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alfa Academy — Centro de Formação de Futebol</title>
+<meta name="description" content="Alfa Academy - Centro de Formação e Escola de Futebol de Campo em Guarulhos, São Paulo. Treinamento de alto rendimento e desenvolvimento humano do Sub-11 ao Sub-20.">
+<link rel="canonical" href="https://enb1one.github.io/alfaacademy/" />
+<meta property="og:title" content="Alfa Academy — Centro de Formação de Futebol" />
+<meta property="og:description" content="Escola de futebol de base em Guarulhos/SP. Treinamento de alto rendimento do Sub-11 ao Sub-20." />
+<meta property="og:image" content="https://enb1one.github.io/alfaacademy/logo.png" />
+<meta property="og:url" content="https://enb1one.github.io/alfaacademy/" />
+<meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -230,7 +237,7 @@
     .contato-grid{grid-template-columns:1fr;gap:36px}
   }
   @media (max-width:820px){
-    .nav-desktop{display:none}
+    nav.nav-desktop{display:none}
     .menu-toggle{display:flex}
     nav.nav-mobile.open{display:flex}
     .hero-grid{grid-template-columns:1fr}
@@ -257,6 +264,47 @@
     input[type="text"], input[type="password"], input[type="email"], input[type="date"], textarea {
       -webkit-appearance: none;
       appearance: none;
+    }
+  }
+  /* WHATSAPP FLOAT BUTTON */
+  .whatsapp-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 24px;
+    right: 24px;
+    background-color: #25D366;
+    color: #FFF;
+    border-radius: 50%;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .whatsapp-float:hover {
+    transform: scale(1.1);
+    background-color: #20ba5a;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+  }
+  .whatsapp-icon {
+    width: 34px;
+    height: 34px;
+  }
+  @media (max-width: 480px) {
+    .whatsapp-float {
+      width: 52px;
+      height: 52px;
+      bottom: 20px;
+      right: 20px;
+    }
+    .whatsapp-icon {
+      width: 28px;
+      height: 28px;
     }
   }
 </style>
@@ -1024,5 +1072,12 @@ if (authToken && treinadorNome) {
 }
 
 </script>
+<!-- Botão Flutuante do WhatsApp -->
+<a href="https://wa.me/5511971003787" class="whatsapp-float" target="_blank" aria-label="Fale conosco no WhatsApp">
+  <svg class="whatsapp-icon" viewBox="0 0 24 24">
+    <path fill="#fff" d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.424 2.5 1.145 3.473l-.752 2.748 2.812-.738c.951.608 2.087.966 3.307.966 3.181 0 5.767-2.586 5.768-5.766.001-3.18-2.581-5.766-5.762-5.766zm3.965 8.21c-.163.455-.951.879-1.301.919-.35.04-1.201.206-2.65-.391-1.855-.762-3.038-2.661-3.131-2.785-.093-.124-.75-.998-.75-1.996s.515-1.488.699-1.688c.184-.2.404-.25.539-.25s.269.012.385.018c.121.006.283-.046.444.344.163.394.557 1.356.606 1.455.05.099.083.214.017.347-.067.132-.1.214-.2.33-.1.116-.21.26-.3.37-.1.121-.204.25-.088.45.116.2.514.848.966 1.25.584.52 1.077.68 1.23.75.153.07.244.05.335-.05.091-.1.396-.462.502-.62.106-.159.212-.132.356-.08.145.052.923.436 1.08.514.158.08.263.12.301.186.038.066.038.384-.125.839z"/>
+    <path fill="#fff" d="M12.004 2c-5.517 0-9.996 4.479-9.996 9.995 0 1.763.461 3.484 1.337 5.003L2 22l5.138-1.349c1.5.819 3.19 1.252 4.866 1.252 5.517 0 9.996-4.479 9.996-9.995C22 6.479 17.521 2 12.004 2zm0 18.005c-1.507 0-2.985-.407-4.281-1.176l-.307-.183-3.185.835.85-3.102-.2-.319c-.843-1.343-1.287-2.888-1.287-4.48 0-4.664 3.793-8.458 8.46-8.458 4.668 0 8.46 3.794 8.46 8.458 0 4.664-3.792 8.458-8.46 8.458z"/>
+  </svg>
+</a>
 </body>
 </html>
