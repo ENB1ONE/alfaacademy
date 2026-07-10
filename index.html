@@ -382,6 +382,217 @@
   .legenda-cor.f { background: #FF4B4B; }
   .legenda-cor.j { background: #FFD166; }
 
+  /* MODAL DE TROCA DE SENHA */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  .modal-card {
+    background: var(--painel);
+    border: 2px solid var(--ouro);
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8), var(--gold-glow);
+    overflow: hidden;
+    animation: modalShow 0.3s ease-out;
+  }
+  @keyframes modalShow {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .modal-header {
+    background: rgba(248, 193, 70, 0.05);
+    padding: 20px;
+    border-bottom: 1px solid var(--linha);
+    text-align: center;
+  }
+  .modal-header h3 {
+    font-family: 'Anton', sans-serif;
+    font-size: 22px;
+    color: var(--ouro);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .modal-header p {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--cinza);
+    margin-top: 4px;
+  }
+  .modal-body {
+    padding: 24px;
+  }
+  
+  /* PAINEL DO ADMINISTRADOR (sidebar + content) */
+  .admin-layout {
+    display: flex;
+    min-height: 70vh;
+    background: var(--preto);
+    border: 1px solid var(--linha);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--sombra);
+  }
+  .admin-sidebar {
+    width: 250px;
+    background: var(--painel);
+    border-right: 1px solid var(--linha);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .admin-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .admin-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .admin-brand img {
+    height: 38px;
+    width: auto;
+  }
+  .admin-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .admin-brand-text .n {
+    font-family: 'Anton', sans-serif;
+    font-size: 16px;
+    color: var(--ouro);
+    text-transform: uppercase;
+  }
+  .admin-brand-text .p {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--cinza);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 3px;
+  }
+  .admin-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--cinza);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+  }
+  .admin-menu-item:hover {
+    color: var(--texto);
+    background: rgba(255,255,255,0.02);
+  }
+  .admin-menu-item.active {
+    color: var(--ouro);
+    background: rgba(248,193,70,0.06);
+    border-color: rgba(248,193,70,0.15);
+  }
+  .admin-content {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    background: var(--preto-2);
+  }
+  .admin-content-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--linha);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  .admin-welcome-card {
+    background: var(--painel);
+    border: 1px solid var(--linha);
+    border-radius: var(--radius);
+    padding: 40px;
+    text-align: center;
+    box-shadow: var(--sombra-card);
+    max-width: 500px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .admin-welcome-icon {
+    font-size: 44px;
+    animation: bounceAdmin 2s infinite;
+  }
+  @keyframes bounceAdmin {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  
+  /* RESPONSIVIDADE DO ADMIN PANEL */
+  @media (max-width: 820px) {
+    .admin-layout {
+      flex-direction: column;
+    }
+    .admin-sidebar {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid var(--linha);
+      padding: 16px;
+      flex-direction: row;
+      align-items: center;
+    }
+    .admin-brand {
+      margin-bottom: 0;
+    }
+    .admin-sidebar-nav {
+      flex-direction: row;
+      gap: 6px;
+      flex: 1;
+      justify-content: flex-end;
+    }
+    .admin-menu-item {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+    .admin-sidebar .btn.sec {
+      width: auto;
+      margin-top: 0 !important;
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+    .admin-content {
+      padding: 20px;
+    }
+  }
+  @media (max-width: 520px) {
+    .admin-sidebar {
+      flex-direction: column;
+      gap: 14px;
+    }
+    .admin-sidebar-nav {
+      width: 100%;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  }
+
   /* WHATSAPP FLOAT BUTTON */
   .whatsapp-float {
     position: fixed;
@@ -840,6 +1051,48 @@
       </div>
       
     </div>
+
+    <!-- PAINEL DO ADMINISTRADOR (NOVO) -->
+    <div class="admin-layout" id="adminPanel" style="display:none;">
+      <aside class="admin-sidebar">
+        <div class="admin-sidebar-nav">
+          <div class="admin-brand">
+            <img src="./logo.png" alt="Alfa Academy Logo">
+            <div class="admin-brand-text">
+              <span class="n">Alfa Academy</span>
+              <span class="p">Painel Admin</span>
+            </div>
+          </div>
+          <a href="#admin-visao" class="admin-menu-item active" onclick="setAdminTab('visao', event)">Visão Geral</a>
+          <a href="#admin-usuarios" class="admin-menu-item" onclick="setAdminTab('usuarios', event)">Gestão de Usuários</a>
+          <a href="#admin-relatorios" class="admin-menu-item" onclick="setAdminTab('relatorios', event)">Relatórios</a>
+        </div>
+        <button class="btn sec" style="padding:10px; margin-top:20px; font-size:12px;" onclick="logout()">Sair do Painel</button>
+      </aside>
+      
+      <main class="admin-content">
+        <header class="admin-content-header">
+          <div class="dash-user-info">
+            <div class="dash-user-avatar" style="background:var(--ouro); color:#111;">A</div>
+            <div class="dash-user-meta">
+              <h3 id="adminUserName">Administrador Geral</h3>
+              <p style="font-family:'Space Mono',monospace; font-size:11px; color:var(--ouro);">Perfil: Administrador</p>
+            </div>
+          </div>
+          <div>
+            <span class="eyebrow" style="color:var(--cinza);" id="adminCurrentTabLabel">Visão Geral</span>
+          </div>
+        </header>
+        
+        <div class="admin-welcome-card">
+          <span class="admin-welcome-icon">👋</span>
+          <h2 style="font-family:'Anton',sans-serif; text-transform:uppercase; color:var(--ouro); font-size:28px;">Bem-vindo ao Painel Admin</h2>
+          <p style="color:var(--cinza); font-size:14px; max-width:400px; line-height:1.6;">
+            Você está conectado como administrador da Alfa Academy. Use o menu lateral para gerenciar as configurações da escola, contas de usuários e relatórios.
+          </p>
+        </div>
+      </main>
+    </div>
     
   </div>
 </section>
@@ -885,19 +1138,25 @@ const ApiStore = {
   async login(u,s){
     try {
       const r=await fetch(`${API_BASE_URL}/api/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:u,senha:s})});
-      if(!r.ok) return false;
-      const d=await r.json(); 
-      authToken=d.token; 
-      treinadorNome=d.nome||'';
-      
-      // Salva na sessão
-      sessionStorage.setItem('authToken', authToken);
-      sessionStorage.setItem('treinadorNome', treinadorNome);
-      return true;
+      if(!r.ok) return null;
+      return await r.json();
     } catch(e) {
       console.error(e);
-      return false;
+      return null;
     }
+  },
+  async changePassword(token, newPassword){
+    const r=await fetch(`${API_BASE_URL}/api/auth/trocar-senha`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json', 'Authorization':'Bearer '+token},
+      body:JSON.stringify({nova_senha:newPassword})
+    });
+    if(!r.ok) {
+      let msg = 'Falha ao trocar senha';
+      try { msg = (await r.json()).erro || msg; } catch(e) {}
+      throw new Error(msg);
+    }
+    return r.json();
   },
   async listAtletas(cat){ return jsonOrThrow(await fetch(`${API_BASE_URL}/api/atletas?categoria=`+encodeURIComponent(cat))); },
   async addAtleta(a){ return jsonOrThrow(await fetch(`${API_BASE_URL}/api/atletas`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(a)})); },
@@ -920,6 +1179,7 @@ let categoriaAtual = CATEGORIAS[0];
 let activeTab = 'atleta';
 let currentAtletas = [];
 let currentPp = {};
+let treinadorPerfil = sessionStorage.getItem('treinadorPerfil') || '';
 
 // GERENCIAMENTO DE MENU MOBILE
 function toggleMenu() {
@@ -1229,23 +1489,35 @@ async function entrarTreinador(){
   
   if(!u || !s) { toast('Preencha o usuário e a senha.'); return; }
   
-  let ok = USE_API ? await db.login(u,s) : (u.toLowerCase()===TREINADOR.usuario.toLowerCase() && s===TREINADOR.senha);
-  if(ok){
+  let loginRes = null;
+  if (USE_API) {
+    loginRes = await db.login(u,s);
+  } else {
+    // Simulação Offline
+    if (u.toLowerCase() === 'admin' && s === 'admin123') {
+      loginRes = { token: 'mock-admin-token', nome: 'Administrador Geral', perfil: 'admin', precisa_trocar_senha: false };
+    } else if (u.toLowerCase() === 'reset' && s === 'reset123') {
+      loginRes = { token: 'mock-reset-token', nome: 'Usuário Reset', perfil: 'treinador', precisa_trocar_senha: true };
+    } else if (u.toLowerCase() === TREINADOR.usuario.toLowerCase() && s === TREINADOR.senha) {
+      loginRes = { token: 'mock-trainer-token', nome: 'Thiago Nascimento', perfil: 'treinador', precisa_trocar_senha: false };
+    }
+  }
+  
+  if(loginRes && loginRes.token){
     loginAttempts = 0;
-    coach=true;
-    aplicarCoach();
     
-    // Transiciona UI
-    document.getElementById('loginCard').style.display = 'none';
-    document.getElementById('dashboardPanel').style.display = 'block';
+    authToken = loginRes.token;
+    treinadorNome = loginRes.nome || '';
+    treinadorPerfil = loginRes.perfil || 'treinador';
     
-    // Atualiza cabeçalho do painel
-    document.getElementById('dashUserName').textContent = treinadorNome || 'Treinador Alfa';
-    document.getElementById('dashUserRole').textContent = 'Staff / Treinador Autorizado';
-    document.getElementById('dashAvatar').textContent = (treinadorNome || 'T').slice(0,1).toUpperCase();
-    
-    toast('Bem-vindo, ' + (treinadorNome || 'Treinador') + '.');
-    render();
+    if (loginRes.precisa_trocar_senha) {
+      document.getElementById('changePasswordModal').style.display = 'flex';
+      document.getElementById('newPasswordInput').value = '';
+      document.getElementById('changePasswordErr').textContent = '';
+      toast('Troca de senha obrigatória necessária.');
+    } else {
+      ativarSessao();
+    }
   }
   else {
     loginAttempts++;
@@ -1256,6 +1528,65 @@ async function entrarTreinador(){
       document.getElementById('loginErr').textContent = `Usuário ou senha incorretos. Tentativa ${loginAttempts}/5`;
     }
   }
+}
+
+function activarSessaoOuTrocar() {
+  // Apenas Helper
+}
+
+function ativarSessao(){
+  sessionStorage.setItem('authToken', authToken);
+  sessionStorage.setItem('treinadorNome', treinadorNome);
+  sessionStorage.setItem('treinadorPerfil', treinadorPerfil);
+  
+  coach = true;
+  document.getElementById('loginCard').style.display = 'none';
+  
+  if (treinadorPerfil === 'admin') {
+    document.getElementById('adminPanel').style.display = 'flex';
+    document.getElementById('dashboardPanel').style.display = 'none';
+    document.getElementById('adminUserName').textContent = treinadorNome;
+    toast('Bem-vindo, Administrador ' + treinadorNome + '.');
+  } else {
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('dashboardPanel').style.display = 'block';
+    document.getElementById('dashUserName').textContent = treinadorNome;
+    document.getElementById('dashUserRole').textContent = 'Staff / Treinador Autorizado';
+    document.getElementById('dashAvatar').textContent = treinadorNome.slice(0,1).toUpperCase();
+    aplicarCoach();
+    render();
+    toast('Bem-vindo, Treinador ' + treinadorNome + '.');
+  }
+}
+
+async function salvarNovaSenha(){
+  const newPass = document.getElementById('newPasswordInput').value.trim();
+  if (newPass.length < 6) {
+    document.getElementById('changePasswordErr').textContent = 'A senha deve ter pelo menos 6 caracteres.';
+    return;
+  }
+  
+  try {
+    if (USE_API) {
+      await ApiStore.changePassword(authToken, newPass);
+    }
+    document.getElementById('changePasswordModal').style.display = 'none';
+    toast('Senha alterada com sucesso!');
+    ativarSessao();
+  } catch(e) {
+    document.getElementById('changePasswordErr').textContent = e.message || 'Erro ao alterar senha.';
+  }
+}
+
+function setAdminTab(tab, event) {
+  if (event) event.preventDefault();
+  const items = document.querySelectorAll('.admin-menu-item');
+  items.forEach(el => el.classList.remove('active'));
+  const activeItem = Array.from(items).find(el => el.getAttribute('href') === '#' + 'admin-' + tab);
+  if (activeItem) activeItem.classList.add('active');
+  const labelMap = { 'visao': 'Visão Geral', 'usuarios': 'Gestão de Usuários', 'relatorios': 'Relatórios' };
+  document.getElementById('adminCurrentTabLabel').textContent = labelMap[tab] || 'Painel Admin';
+  toast('Acessando ' + labelMap[tab]);
 }
 
 function entrarAtleta(){
@@ -1281,17 +1612,18 @@ function entrarAtleta(){
 function logout() {
   sessionStorage.removeItem('authToken');
   sessionStorage.removeItem('treinadorNome');
+  sessionStorage.removeItem('treinadorPerfil');
   authToken = null;
   treinadorNome = '';
+  treinadorPerfil = '';
   coach = false;
   
-  // Limpa campos
   document.getElementById('loginUser').value = '';
   document.getElementById('loginPass').value = '';
   
-  // Transiciona UI
   document.getElementById('loginCard').style.display = 'block';
   document.getElementById('dashboardPanel').style.display = 'none';
+  document.getElementById('adminPanel').style.display = 'none';
   
   toast('Sessão encerrada com sucesso.');
 }
@@ -1336,17 +1668,28 @@ document.getElementById('evData').value=fmtISO(new Date());
 
 // Restaura sessão se houver
 if (authToken && treinadorNome) {
-  coach = true;
-  aplicarCoach();
-  document.getElementById('loginCard').style.display = 'none';
-  document.getElementById('dashboardPanel').style.display = 'block';
-  document.getElementById('dashUserName').textContent = treinadorNome;
-  document.getElementById('dashUserRole').textContent = 'Staff / Treinador Autorizado';
-  document.getElementById('dashAvatar').textContent = treinadorNome.slice(0,1).toUpperCase();
-  render();
+  ativarSessao();
 }
 
 </script>
+<!-- Modal de Forçar Troca de Senha -->
+<div class="modal-overlay" id="changePasswordModal" style="display:none;">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Segurança da Conta</h3>
+      <p>Defina sua nova senha definitiva</p>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="f" for="newPasswordInput">Nova Senha Definitiva</label>
+        <input id="newPasswordInput" type="password" placeholder="Digite sua nova senha" autocomplete="new-password">
+      </div>
+      <div class="login-err" id="changePasswordErr" style="margin-bottom:12px;"></div>
+      <button class="btn" onclick="salvarNovaSenha()">Definir Senha e Entrar</button>
+    </div>
+  </div>
+</div>
+
 <!-- Botão Flutuante do WhatsApp -->
 <a href="https://wa.me/5511971003787" class="whatsapp-float" target="_blank" aria-label="Fale conosco no WhatsApp">
   <svg class="whatsapp-icon" viewBox="0 0 24 24">
