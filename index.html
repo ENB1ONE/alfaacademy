@@ -130,8 +130,7 @@
 <body>
 <div class="gate show" id="gate">
   <div class="gate-card">
-    <!-- ATENÇÃO ANTIGRAVITY: Mantenha a imagem original em base64 aqui caso exista no arquivo fonte -->
-    <img class="gate-logo" src="data:image/png;base64,__LOGO_ALFA_ACADEMY_EMBUTIDA_NO_ARQUIVO_REAL__" alt="Alfa Academy">
+    <img class="gate-logo" src="./logo.png" alt="Alfa Academy">
     <h1>Alfa Academy</h1>
     <div class="gate-sub">Lista de Presença · Futebol de Campo</div>
     <div class="field"><label class="f" for="loginUser">Usuário</label><input id="loginUser" type="text" placeholder="Usuário" autocomplete="username"></div>
@@ -144,7 +143,7 @@
 </div>
 <header class="topo">
   <div class="topo-inner">
-    <img class="escudo" src="data:image/png;base64,__LOGO_ALFA_ACADEMY_EMBUTIDA_NO_ARQUIVO_REAL__" alt="Alfa Academy">
+    <img class="escudo" src="./logo.png" alt="Alfa Academy">
     <div class="marca">
       <span class="nome">Alfa Academy</span>
       <span class="sub">Lista de Presença · Futebol de Campo</span>
@@ -267,8 +266,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ATENÇÃO: Definição da URL Base da API (Backend na OCI)
-const API_BASE_URL = 'https://api.alfaacademy.com.br'; // Substitua pelo domínio real da API
+const API_BASE_URL = 'https://api.alfaacademy.com.br'; // Antigravity: Se houver outro subdomínio definido, atualizar aqui
 
 const USE_API = true;
 const CATEGORIAS = ['Sub-10','Sub-11','Sub-12','Sub-13','Sub-14','Sub-15','Sub-16','Sub-17','Sub-20'];
@@ -361,7 +359,7 @@ function renderQuadro(atletas,treinos,pp){
   const wrap=document.getElementById('quadroWrap');
   const hint=document.getElementById('quadroHint');
   if(!atletas.length){ wrap.innerHTML=`<div class="vazio"><b>Sem atletas em ${categoriaAtual}</b>Cadastre atletas no formulário abaixo.</div>`; hint.textContent=''; return; }
-  if(!treinos.length){ wrap.innerHTML=`<div class="vazio"><b>Sem treinos nesta semana</b>O quadro appears quando houver pelo menos um treino.</div>`; hint.textContent=''; return; }
+  if(!treinos.length){ wrap.innerHTML=`<div class="vazio"><b>Sem treinos nesta semana</b>O quadro aparece quando houver pelo menos um treino.</div>`; hint.textContent=''; return; }
   hint.textContent=coach?'clique para marcar':'somente leitura';
   const presSet={}; for(const t of treinos){ presSet[t.id]=new Set(pp[t.id]||[]); }
   let html='<table class="quadro"><thead><tr><th class="jname">Atleta</th>';
