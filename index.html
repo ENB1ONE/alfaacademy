@@ -1,271 +1,652 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alfa Academy — Lista de Presença</title>
+<title>Alfa Academy — Centro de Formação de Futebol</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --ouro:#F8C146;--ouro-2:#FFD166;--ouro-esc:#C99520;
-    --preto:#0F0F10;--preto-2:#18181A;--painel:#1A1A1C;
+    --preto:#0F0F10;--preto-2:#141416;--painel:#1A1A1C;
     --preto-3:#202024;--linha:#2C2C30;--linha-2:#3A3A40;
     --texto:#F3F1EA;--cinza:#9A968C;--cinza-2:#6F6C66;
-    --radius:14px;--maxw:1080px;
-    --sombra:0 1px 3px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);
+    --radius:14px;--maxw:1120px;
+    --sombra:0 4px 20px rgba(0,0,0,.5),0 10px 40px rgba(0,0,0,.4);
+    --sombra-card:0 4px 12px rgba(0,0,0,.3);
+    --gold-glow:0 0 15px rgba(248, 193, 70, 0.2);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{font-family:'Inter',system-ui,sans-serif;background:var(--preto);color:var(--texto);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
-  header.topo{background:#161617;border-bottom:3px solid var(--ouro);position:sticky;top:0;z-index:50;box-shadow:0 2px 16px rgba(0,0,0,.5)}
-  .topo-inner{display:flex;align-items:center;gap:14px;padding:12px 20px;max-width:var(--maxw);margin:0 auto}
-  .escudo{height:54px;width:auto;flex:none}
+  
+  /* TOPO / HEADER */
+  header.topo{background:rgba(22,22,23,0.95);backdrop-filter:blur(10px);border-bottom:3px solid var(--ouro);position:sticky;top:0;z-index:150;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+  .topo-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;max-width:var(--maxw);margin:0 auto}
+  .logo-block{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit}
+  .escudo{height:54px;width:auto;flex:none;transition:transform .2s}
+  .logo-block:hover .escudo{transform:scale(1.05)}
   .marca{display:flex;flex-direction:column;line-height:1}
   .marca .nome{font-family:'Anton',sans-serif;font-size:24px;letter-spacing:.4px;text-transform:uppercase;color:var(--ouro)}
   .marca .sub{font-family:'Space Mono',monospace;font-size:10px;color:var(--cinza);letter-spacing:2px;text-transform:uppercase;margin-top:5px;font-weight:700}
-  .topo-spacer{flex:1}
-  .coach-pill{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--ouro);border:1.5px solid var(--linha-2);padding:8px 14px;border-radius:999px;cursor:pointer;background:transparent;transition:all .15s}
-  .coach-pill:hover{border-color:var(--ouro)}
-  .coach-pill.on{border-color:var(--ouro);background:var(--ouro);color:#111}
-  .coach-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--cinza-2)}
-  .coach-pill.on .dot{background:#111}
-  .cat-bar{background:#161617;border-bottom:2px solid var(--ouro)}
-  .cat-inner{display:flex;gap:6px;max-width:var(--maxw);margin:0 auto;padding:10px 20px;overflow-x:auto}
-  .cat-btn{flex:none;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;letter-spacing:1px;color:var(--cinza);background:transparent;border:1.5px solid transparent;padding:8px 18px;border-radius:999px;cursor:pointer;transition:all .15s;text-transform:uppercase}
+  
+  /* MENU NAV DESKTOP */
+  nav.nav-desktop{display:flex;align-items:center;gap:24px}
+  nav.nav-desktop a{color:var(--cinza);text-decoration:none;font-weight:600;font-size:14px;transition:color .15s;text-transform:uppercase;letter-spacing:1px}
+  nav.nav-desktop a:hover{color:var(--texto)}
+  nav.nav-desktop a.active{color:var(--ouro)}
+  .nav-btn{background:var(--ouro);color:#111;padding:8px 18px;border-radius:20px;text-decoration:none;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:1px;transition:all .15s}
+  .nav-btn:hover{background:var(--ouro-2);box-shadow:var(--gold-glow);transform:translateY(-1px)}
+  
+  /* MENU NAV MOBILE */
+  .menu-toggle{display:none;flex-direction:column;gap:5px;background:transparent;border:none;cursor:pointer;padding:8px;z-index:200}
+  .menu-toggle span{width:25px;height:3px;background-color:var(--ouro);border-radius:2px;transition:all .25s ease-in-out}
+  .menu-toggle.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+  .menu-toggle.open span:nth-child(2){opacity:0}
+  .menu-toggle.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+  
+  nav.nav-mobile{display:none;position:absolute;top:100%;left:0;width:100%;background:#161617;border-bottom:2px solid var(--ouro);padding:24px;flex-direction:column;gap:18px;box-shadow:0 10px 30px rgba(0,0,0,.5);z-index:140}
+  nav.nav-mobile a{color:var(--cinza);text-decoration:none;font-weight:600;font-size:15px;text-transform:uppercase;letter-spacing:1px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+  nav.nav-mobile a:hover, nav.nav-mobile a.active{color:var(--ouro)}
+  nav.nav-mobile .nav-btn{text-align:center;margin-top:10px}
+  
+  /* HERO SECTION */
+  section.hero-sec{background:radial-gradient(circle at 50% 30%, #201a08 0%, var(--preto) 70%);padding:90px 0 70px;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--linha)}
+  .hero-content{max-width:800px;margin:0 auto;position:relative;z-index:10}
+  .hero-badge{display:inline-block;background:rgba(248,193,70,0.1);border:1.5px solid var(--ouro);color:var(--ouro);font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:6px 14px;border-radius:999px;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px}
+  .hero-sec h1{font-family:'Anton',sans-serif;font-size:56px;letter-spacing:1px;text-transform:uppercase;color:var(--texto);line-height:1.1;margin-bottom:18px}
+  .hero-sec h1 span{color:var(--ouro)}
+  .hero-sec p{font-size:18px;color:var(--cinza);max-width:620px;margin:0 auto 28px}
+  .hero-ctas{display:flex;align-items:center;justify-content:center;gap:16px}
+  
+  /* SEÇÃO SOBRE NÓS */
+  section.sobre-sec{padding:80px 0;background:var(--preto-2)}
+  .sobre-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center}
+  .sec-title-area{margin-bottom:24px}
+  .sec-eyebrow{font-family:'Space Mono',monospace;font-size:11px;color:var(--ouro-esc);text-transform:uppercase;letter-spacing:2px;font-weight:700;display:block;margin-bottom:8px}
+  .sec-title{font-family:'Anton',sans-serif;font-size:38px;text-transform:uppercase;line-height:1.15;color:var(--texto)}
+  .sobre-text p{color:var(--cinza);font-size:15px;line-height:1.7;margin-bottom:20px}
+  .sobre-pillars{display:grid;grid-template-columns:1fr;gap:16px;margin-top:28px}
+  .pillar-card{background:var(--painel);border:1px solid var(--linha);padding:20px;border-radius:12px;display:flex;gap:16px;transition:transform .2s}
+  .pillar-card:hover{transform:translateY(-2px);border-color:var(--ouro)}
+  .pillar-icon{font-size:24px;color:var(--ouro);flex:none}
+  .pillar-info h3{font-size:16px;font-weight:700;color:var(--texto);margin-bottom:6px}
+  .pillar-info p{color:var(--cinza);font-size:13px;line-height:1.5;margin-bottom:0}
+  .sobre-media{position:relative;display:flex;justify-content:center}
+  .sobre-img-frame{border:2px solid var(--ouro);border-radius:var(--radius);padding:10px;background:var(--painel);box-shadow:var(--sombra);max-width:100%}
+  .sobre-img-frame img{width:100%;height:auto;border-radius:8px;display:block;filter:grayscale(10%);transition:filter .3s}
+  .sobre-img-frame:hover img{filter:grayscale(0%)}
+  
+  /* SEÇÃO CATEGORIAS */
+  section.categorias-sec{padding:80px 0;background:var(--preto)}
+  .categorias-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));gap:20px;margin-top:40px}
+  .cat-card{background:var(--painel);border:1px solid var(--linha);border-radius:var(--radius);padding:24px;transition:all .2s;text-align:center;box-shadow:var(--sombra-card)}
+  .cat-card:hover{border-color:var(--ouro);transform:translateY(-4px);box-shadow:var(--gold-glow)}
+  .cat-num{font-family:'Anton',sans-serif;font-size:36px;color:var(--ouro);line-height:1;margin-bottom:12px}
+  .cat-title{font-size:18px;font-weight:700;color:var(--texto);margin-bottom:8px}
+  .cat-desc{font-size:13px;color:var(--cinza);line-height:1.5}
+  
+  /* SEÇÃO COMPETIÇÕES */
+  section.comp-sec{padding:80px 0;background:var(--preto-2);border-top:1px solid var(--linha);border-bottom:1px solid var(--linha)}
+  .comp-intro{max-width:700px;margin-bottom:40px}
+  .comp-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:24px}
+  .comp-card{background:var(--painel);border:1px solid var(--linha);border-radius:var(--radius);padding:28px;box-shadow:var(--sombra-card);display:flex;flex-direction:column;gap:18px}
+  .comp-card h3{font-family:'Anton',sans-serif;font-size:22px;letter-spacing:.5px;color:var(--ouro);text-transform:uppercase}
+  .comp-card p{font-size:14px;color:var(--cinza);line-height:1.6}
+  .comp-tag{align-self:flex-start;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:#111;background:var(--ouro);padding:4px 10px;border-radius:4px;text-transform:uppercase}
+  
+  /* CONTATO */
+  section.contato-sec{padding:80px 0;background:var(--preto)}
+  .contato-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:48px}
+  .contato-info h3{font-size:20px;font-weight:700;margin-bottom:16px}
+  .contato-info p{color:var(--cinza);font-size:14px;line-height:1.6;margin-bottom:28px}
+  .info-item{display:flex;align-items:center;gap:14px;margin-bottom:20px;font-size:14px}
+  .info-icon{font-size:20px;color:var(--ouro)}
+  .contato-form{background:var(--painel);border:1px solid var(--linha);border-radius:var(--radius);padding:30px;box-shadow:var(--sombra)}
+  
+  /* ÁREA RESTRITA & PAINÉIS */
+  section.area-restrita-sec{padding:80px 0;background:var(--preto-2);border-top:1px solid var(--linha)}
+  .restrita-container{max-width:var(--maxw);margin:0 auto}
+  
+  /* CARD DE LOGIN (UNIFICADO) */
+  .login-card{background:var(--painel);border:1px solid var(--linha);border-radius:18px;max-width:420px;margin:0 auto;box-shadow:var(--sombra);overflow:hidden}
+  .login-tabs{display:flex;border-bottom:1px solid var(--linha)}
+  .login-tab-btn{flex:1;background:transparent;border:none;color:var(--cinza);padding:14px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;text-transform:uppercase;letter-spacing:1px}
+  .login-tab-btn.active{background:rgba(248,193,70,0.06);color:var(--ouro);border-bottom:2.5px solid var(--ouro)}
+  .login-form-body{padding:30px}
+  .login-head{text-align:center;margin-bottom:24px}
+  .login-head h3{font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase;color:var(--ouro)}
+  .login-head p{font-size:11px;font-family:'Space Mono',monospace;color:var(--cinza);margin-top:4px}
+  .login-err{color:#FF6B6B;font-size:12px;font-family:'Space Mono',monospace;min-height:18px;font-weight:700;margin-bottom:12px;text-align:left}
+  
+  /* DASHBOARD PANEL */
+  .dashboard-wrapper{display:none}
+  .dash-header{background:var(--painel);border:1px solid var(--linha);border-radius:var(--radius);padding:18px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sombra-card)}
+  .dash-user-info{display:flex;align-items:center;gap:14px}
+  .dash-user-avatar{width:42px;height:42px;background:var(--ouro);color:#111;font-family:'Anton',sans-serif;font-size:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .dash-user-meta h3{font-size:16px;font-weight:700}
+  .dash-user-meta p{font-family:'Space Mono',monospace;font-size:11px;color:var(--ouro)}
+  .dash-actions{display:flex;gap:12px}
+  .dash-actions button{width:auto}
+  
+  /* BARRA DE CATEGORIA DO PAINEL */
+  .cat-bar{background:var(--painel);border:1px solid var(--linha);border-radius:var(--radius);margin-bottom:24px;box-shadow:var(--sombra-card)}
+  .cat-inner{display:flex;gap:6px;padding:10px 18px;overflow-x:auto;scrollbar-width:thin}
+  .cat-btn{flex:none;font-family:'Space Mono',monospace;font-weight:700;font-size:12px;letter-spacing:1px;color:var(--cinza);background:transparent;border:1.5px solid transparent;padding:6px 14px;border-radius:999px;cursor:pointer;transition:all .15s;text-transform:uppercase}
   .cat-btn:hover{color:var(--texto)}
   .cat-btn.on{background:var(--ouro);color:#111;border-color:var(--ouro)}
-  .hero{padding:30px 0 20px}
-  .week-nav{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-  .week-nav button{background:var(--preto-2);border:1.5px solid var(--linha-2);color:var(--ouro);width:38px;height:38px;border-radius:10px;cursor:pointer;font-size:18px;transition:all .15s;line-height:1}
-  .week-nav button:hover{border-color:var(--ouro);background:var(--ouro);color:#111}
-  .week-label{font-family:'Space Mono',monospace;font-size:12px;color:var(--cinza);letter-spacing:1px;text-transform:uppercase}
-  .week-label b{color:var(--texto);display:block;font-size:15px;letter-spacing:.5px}
-  .week-hoje{margin-left:auto;font-family:'Space Mono',monospace;font-weight:700;font-size:12px;color:var(--ouro);border:1.5px solid var(--linha-2);background:transparent;padding:7px 14px;border-radius:8px;cursor:pointer}
-  .week-hoje:hover{border-color:var(--ouro)}
-  .hero-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
-  .panel{background:var(--painel);border:1px solid var(--linha);border-radius:var(--radius);box-shadow:var(--sombra)}
-  .panel-head{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--linha)}
+  
+  /* HERO GRID */
+  .hero-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;margin-bottom:24px}
+  .panel{background:var(--painel);border:1px solid var(--linha);border-radius:var(--radius);box-shadow:var(--sombra);overflow:hidden}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--linha);background:rgba(255,255,255,0.01)}
   .eyebrow{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ouro);font-weight:700}
   .panel-body{padding:18px}
-  .stat-row{display:flex;gap:14px}
-  .stat{flex:1;background:var(--preto-3);border:1px solid var(--linha);border-radius:12px;padding:16px}
+  
+  /* ESTATÍSTICAS */
+  .stat-row{display:flex;gap:12px}
+  .stat{flex:1;background:var(--preto-3);border:1px solid var(--linha);border-radius:12px;padding:14px}
   .stat.alta{background:var(--ouro);border-color:var(--ouro)}
-  .stat .num{font-family:'Anton',sans-serif;font-size:46px;line-height:.9;color:var(--ouro)}
+  .stat .num{font-family:'Anton',sans-serif;font-size:42px;line-height:.9;color:var(--ouro)}
   .stat.alta .num{color:#111}
-  .stat .lab{font-family:'Space Mono',monospace;font-size:10px;color:var(--cinza);letter-spacing:1px;text-transform:uppercase;margin-top:8px}
+  .stat .lab{font-family:'Space Mono',monospace;font-size:9px;color:var(--cinza);letter-spacing:1px;text-transform:uppercase;margin-top:8px}
   .stat.alta .lab{color:#3a2c00}
+  
+  /* LISTA DE TREINOS DA SEMANA */
   .ev-list{display:flex;flex-direction:column;gap:10px}
-  .ev-item{display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--preto-3);border:1px solid var(--linha);border-radius:12px}
-  .ev-cal{font-family:'Space Mono',monospace;text-align:center;min-width:46px}
-  .ev-cal .d{font-size:20px;font-weight:700;color:var(--ouro)}
-  .ev-cal .m{font-size:10px;color:var(--cinza);text-transform:uppercase}
+  .ev-item{display:flex;align-items:center;gap:14px;padding:10px 12px;background:var(--preto-3);border:1px solid var(--linha);border-radius:12px}
+  .ev-cal{font-family:'Space Mono',monospace;text-align:center;min-width:44px}
+  .ev-cal .d{font-size:18px;font-weight:700;color:var(--ouro)}
+  .ev-cal .m{font-size:9px;color:var(--cinza);text-transform:uppercase}
   .ev-meta{flex:1;min-width:0}
-  .ev-meta .t{font-weight:700;font-size:15px}
-  .ev-meta .s{font-family:'Space Mono',monospace;font-size:11px;color:var(--ouro-esc);text-transform:uppercase;letter-spacing:1px;font-weight:700}
-  .ev-count{font-family:'Anton',sans-serif;font-size:26px;color:var(--ouro);line-height:1;text-align:right}
-  .ev-count small{font-family:'Space Mono',monospace;font-size:10px;color:var(--cinza);display:block;font-weight:400;text-transform:uppercase}
-  section.bloco{padding:14px 0 36px}
-  .quadro-wrap{overflow-x:auto;border:1px solid var(--linha);border-radius:var(--radius);background:var(--painel);box-shadow:var(--sombra)}
-  table.quadro{border-collapse:collapse;width:100%;min-width:520px}
+  .ev-meta .t{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ev-meta .s{font-family:'Space Mono',monospace;font-size:10px;color:var(--ouro-esc);text-transform:uppercase;letter-spacing:1px;font-weight:700}
+  .ev-count{font-family:'Anton',sans-serif;font-size:24px;color:var(--ouro);line-height:1;text-align:right}
+  .ev-count small{font-family:'Space Mono',monospace;font-size:9px;color:var(--cinza);display:block;font-weight:400;text-transform:uppercase}
+  
+  /* QUADRO DE PRESENÇA */
+  .quadro-section{margin-bottom:24px}
+  .quadro-wrap{overflow-x:auto;border:1px solid var(--linha);border-radius:var(--radius);background:var(--painel);box-shadow:var(--sombra);scrollbar-width:thin}
+  table.quadro{border-collapse:collapse;width:100%;min-width:620px}
   table.quadro th,table.quadro td{border-bottom:1px solid var(--linha);text-align:center;padding:0}
   table.quadro thead th{background:var(--ouro);color:#111;padding:12px 8px;font-family:'Space Mono',monospace;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:1px}
-  table.quadro thead th .dd{color:#000;font-size:14px;display:block;margin-bottom:2px}
+  table.quadro thead th .dd{color:#000;font-size:13px;display:block;margin-bottom:2px}
   table.quadro thead th.jname{text-align:left;padding-left:18px;min-width:180px}
-  table.quadro tbody tr:hover{background:rgba(248,193,70,.05)}
-  table.quadro tbody td.jname{text-align:left;padding:11px 18px;font-weight:600;font-size:14px;color:var(--texto)}
-  table.quadro tbody td.jname .pos{font-family:'Space Mono',monospace;font-size:11px;color:var(--cinza);display:block;font-weight:400}
-  .cel{width:64px;height:48px}
+  table.quadro tbody tr{transition:background .1s}
+  table.quadro tbody tr:hover{background:rgba(248,193,70,.03)}
+  table.quadro tbody td.jname{text-align:left;padding:10px 18px;font-weight:600;font-size:13px;color:var(--texto)}
+  table.quadro tbody td.jname .pos{font-family:'Space Mono',monospace;font-size:10px;color:var(--cinza);display:block;font-weight:400}
+  .cel{width:64px;height:44px}
   .cel.clic{cursor:pointer}
-  .marca-p{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;border:2px solid var(--linha-2);transition:all .12s;background:var(--preto-3)}
+  .marca-p{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;border:2px solid var(--linha-2);transition:all .12s;background:var(--preto-3)}
   .marca-p.p{background:var(--ouro);border-color:var(--ouro)}
   .marca-p.p::after{content:"";width:8px;height:8px;border-radius:50%;background:#111}
-  .cel.clic:hover .marca-p{border-color:var(--ouro)}
-  table.quadro tfoot td{padding:12px 8px;font-family:'Anton',sans-serif;font-size:22px;color:var(--ouro);background:var(--preto-3)}
+  .cel.clic:hover .marca-p{border-color:var(--ouro);transform:scale(1.1)}
+  table.quadro tfoot td{padding:12px 8px;font-family:'Anton',sans-serif;font-size:20px;color:var(--ouro);background:var(--preto-3)}
   table.quadro tfoot td.jname{font-family:'Space Mono',monospace;font-size:11px;color:var(--ouro-esc);text-transform:uppercase;font-weight:700}
-  .vazio{padding:40px;text-align:center;color:var(--cinza);font-size:14px}
-  .vazio b{color:var(--texto);display:block;margin-bottom:4px;font-size:16px}
-  .duas{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding-bottom:56px}
+  
+  /* FORMULÁRIOS E CADASTROS */
+  .duas{display:grid;grid-template-columns:1fr 1fr;gap:20px}
   label.f{display:block;font-family:'Space Mono',monospace;font-size:11px;color:var(--ouro-esc);text-transform:uppercase;letter-spacing:1px;margin:0 0 6px;font-weight:700}
-  input,select{width:100%;background:var(--preto-3);border:1.5px solid var(--linha-2);color:var(--texto);padding:11px 13px;border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;transition:border-color .15s}
-  input:focus,select:focus{outline:none;border-color:var(--ouro)}
-  input::placeholder{color:var(--cinza-2)}
+  input,select,textarea{width:100%;background:var(--preto-3);border:1.5px solid var(--linha-2);color:var(--texto);padding:11px 13px;border-radius:10px;font-family:'Inter',sans-serif;font-size:14px;transition:border-color .15s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ouro);box-shadow:0 0 8px rgba(248, 193, 70, 0.15)}
+  input::placeholder,textarea::placeholder{color:var(--cinza-2)}
   select option{background:var(--preto-3);color:var(--texto)}
   .field{margin-bottom:14px}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--ouro);color:#111;border:none;padding:12px 18px;border-radius:10px;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background .15s;letter-spacing:.3px}
-  .btn:hover{background:var(--ouro-2)}
+  
+  /* BOTÕES */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--ouro);color:#111;border:none;padding:12px 18px;border-radius:10px;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:all .15s;letter-spacing:.3px;text-transform:uppercase}
+  .btn:hover{background:var(--ouro-2);box-shadow:var(--gold-glow);transform:translateY(-1px)}
   .btn.sec{background:transparent;border:1.5px solid var(--linha-2);color:var(--ouro)}
   .btn.sec:hover{border-color:var(--ouro);background:transparent}
-  .lista-j{display:flex;flex-direction:column;gap:8px;margin-top:4px;max-height:300px;overflow-y:auto}
-  .j-row{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--preto-3);border:1px solid var(--linha);border-radius:10px}
+  
+  /* LISTAS DE ATLETAS NO PAINEL */
+  .lista-j{display:flex;flex-direction:column;gap:8px;margin-top:4px;max-height:280px;overflow-y:auto;scrollbar-width:thin}
+  .j-row{display:flex;align-items:center;gap:12px;padding:9px 11px;background:var(--preto-3);border:1px solid var(--linha);border-radius:10px}
   .j-av{width:32px;height:32px;border-radius:50%;background:var(--ouro);color:#111;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:14px;flex:none}
   .j-info{flex:1;min-width:0}
-  .j-info .n{font-weight:600;font-size:14px}
-  .j-info .p{font-family:'Space Mono',monospace;font-size:11px;color:var(--cinza)}
+  .j-info .n{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .j-info .p{font-family:'Space Mono',monospace;font-size:10px;color:var(--cinza)}
+  
   .locked{opacity:.4;pointer-events:none;filter:grayscale(.4)}
   .lock-note{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(248,193,70,.06);border:1px solid var(--linha-2);border-radius:10px;font-size:13px;color:var(--cinza);margin-bottom:16px}
   .lock-note b{color:var(--ouro)}
-  .gate{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 26%, #2a2206 0%, #141414 55%, #0a0a0a 100%)}
-  .gate.show{display:flex}
-  .gate-card{background:var(--painel);border:1px solid var(--linha);border-radius:18px;padding:34px 30px 30px;width:100%;max-width:382px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.6)}
-  .gate-logo{height:104px;width:auto;margin-bottom:14px}
-  .gate-card h1{font-family:'Anton',sans-serif;font-size:25px;text-transform:uppercase;color:var(--ouro);line-height:1.05}
-  .gate-sub{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--ouro-esc);font-weight:700;margin:7px 0 22px}
-  .gate-card .field{text-align:left}
-  .gate-card .btn.sec{margin-top:10px}
-  .gate .err{color:#FF6B6B;font-size:12px;font-family:'Space Mono',monospace;min-height:16px;font-weight:700;margin:2px 0 6px;text-align:left}
-  .gate-foot{font-family:'Space Mono',monospace;font-size:10px;color:var(--cinza-2);letter-spacing:1px;margin-top:18px}
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ouro);color:#111;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:700;opacity:0;transition:all .25s;z-index:200;pointer-events:none;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+  .vazio{padding:30px;text-align:center;color:var(--cinza);font-size:13px}
+  .vazio b{color:var(--texto);display:block;margin-bottom:4px;font-size:15px}
+  
+  /* TOAST & FOOTER */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ouro);color:#111;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:700;opacity:0;transition:all .25s;z-index:300;pointer-events:none;box-shadow:0 8px 30px rgba(0,0,0,.5)}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  footer{border-top:1px solid var(--linha);padding:22px 0;text-align:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--cinza-2);letter-spacing:1px}
+  footer{border-top:1px solid var(--linha);padding:30px 0;text-align:center;font-family:'Space Mono',monospace;font-size:11px;color:var(--cinza-2);letter-spacing:1px;background:#161617}
+  
+  /* RESPONSIVIDADE */
+  @media (max-width:960px){
+    .sobre-grid{grid-template-columns:1fr;gap:36px}
+    .sobre-media{order:-1}
+    .contato-grid{grid-template-columns:1fr;gap:36px}
+  }
   @media (max-width:820px){
-    .hero-grid{grid-template-columns:1fr}.duas{grid-template-columns:1fr}
-    .marca .nome{font-size:19px}.escudo{height:46px}
+    .nav-desktop{display:none}
+    .menu-toggle{display:flex}
+    nav.nav-mobile.open{display:flex}
+    .hero-grid{grid-template-columns:1fr}
+    .duas{grid-template-columns:1fr}
+    .hero-sec h1{font-size:38px}
+    .hero-sec p{font-size:15px}
+    .dash-header{flex-direction:column;gap:16px;text-align:center}
+    .dash-user-info{flex-direction:column}
+    .dash-actions{width:100%}
+    .dash-actions button{flex:1}
   }
 </style>
 </head>
 <body>
-<div class="gate show" id="gate">
-  <div class="gate-card">
-    <img class="gate-logo" src="./logo.png" alt="Alfa Academy">
-    <h1>Alfa Academy</h1>
-    <div class="gate-sub">Lista de Presença · Futebol de Campo</div>
-    <div class="field"><label class="f" for="loginUser">Usuário</label><input id="loginUser" type="text" placeholder="Usuário" autocomplete="username"></div>
-    <div class="field" style="margin-bottom:4px"><label class="f" for="loginPass">Senha</label><input id="loginPass" type="password" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')entrarTreinador()"></div>
-    <div class="err" id="loginErr"></div>
-    <button class="btn" onclick="entrarTreinador()">Entrar como treinador</button>
-    <button class="btn sec" onclick="entrarAtleta()">Sou atleta — cadastrar e ver</button>
-    <div class="gate-foot">ACESSO RESTRITO · TREINADOR</div>
-  </div>
-</div>
+
+<!-- CABEÇALHO -->
 <header class="topo">
   <div class="topo-inner">
-    <img class="escudo" src="./logo.png" alt="Alfa Academy">
-    <div class="marca">
-      <span class="nome">Alfa Academy</span>
-      <span class="sub">Lista de Presença · Futebol de Campo</span>
-    </div>
-    <div class="topo-spacer"></div>
-    <button class="coach-pill" id="coachPill" onclick="toggleCoach()">
-      <span class="dot"></span><span id="coachPillTxt">Entrar</span>
+    <a href="#" class="logo-block">
+      <img class="escudo" src="./logo.png" alt="Alfa Academy Escudo">
+      <div class="marca">
+        <span class="nome">Alfa Academy</span>
+        <span class="sub">Centro de Formação</span>
+      </div>
+    </a>
+    
+    <nav class="nav-desktop">
+      <a href="#" class="active">Home</a>
+      <a href="#sobre">Sobre Nós</a>
+      <a href="#categorias">Categorias</a>
+      <a href="#competicoes">Competições</a>
+      <a href="#contato">Contato</a>
+      <a href="#area-restrita" class="nav-btn">Área Restrita</a>
+    </nav>
+    
+    <button class="menu-toggle" id="menuToggle" aria-label="Menu" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
     </button>
+    
+    <nav class="nav-mobile" id="navMobile">
+      <a href="#" class="active" onclick="closeMenu()">Home</a>
+      <a href="#sobre" onclick="closeMenu()">Sobre Nós</a>
+      <a href="#categorias" onclick="closeMenu()">Categorias</a>
+      <a href="#competicoes" onclick="closeMenu()">Competições</a>
+      <a href="#contato" onclick="closeMenu()">Contato</a>
+      <a href="#area-restrita" class="nav-btn" onclick="closeMenu()">Área Restrita</a>
+    </nav>
   </div>
 </header>
 
-<div class="cat-bar"><div class="cat-inner" id="catBar"></div></div>
-
-<div class="wrap hero">
-  <div class="week-nav">
-    <button onclick="mudarSemana(-1)" aria-label="Semana anterior">‹</button>
-    <button onclick="mudarSemana(1)" aria-label="Próxima semana">›</button>
-    <div class="week-label">Semana<b id="weekRange">—</b></div>
-    <button class="week-hoje" onclick="irHoje()">Hoje</button>
-  </div>
-  <div class="hero-grid">
-    <div class="panel">
-      <div class="panel-head">
-        <span class="eyebrow">Treinos da semana · <span id="catLabelHero"></span></span>
-        <span class="eyebrow" id="evCountHdr" style="color:var(--cinza)"></span>
-      </div>
-      <div class="panel-body"><div class="ev-list" id="evList"></div></div>
-    </div>
-    <div class="panel">
-      <div class="panel-head"><span class="eyebrow">Resumo</span></div>
-      <div class="panel-body">
-        <div class="stat-row">
-          <div class="stat alta"><div class="num" id="stConf">0</div><div class="lab">Presenças</div></div>
-          <div class="stat"><div class="num" id="stJog">0</div><div class="lab">Na categoria</div></div>
-        </div>
-        <div class="stat-row" style="margin-top:14px">
-          <div class="stat"><div class="num" id="stEv">0</div><div class="lab">Treinos</div></div>
-          <div class="stat"><div class="num" id="stMedia">0</div><div class="lab">Média/treino</div></div>
-        </div>
-      </div>
+<!-- HERO SECTION -->
+<section class="hero-sec">
+  <div class="wrap hero-content">
+    <div class="hero-badge">Formação & Desenvolvimento</div>
+    <h1>Formando campeões <span>dentro e fora</span> de campo</h1>
+    <p>O futuro do futebol começa aqui. Metodologia profissional e formação humana integradas para impulsionar jovens atletas em Guarulhos, São Paulo.</p>
+    <div class="hero-ctas">
+      <a href="#categorias" class="btn">Nossas Categorias</a>
+      <a href="#area-restrita" class="btn sec">Acessar Painel</a>
     </div>
   </div>
-</div>
-
-<section class="bloco wrap">
-  <div class="panel-head" style="border:none;padding:6px 0 14px">
-    <span class="eyebrow">Quadro de presença · atletas × treinos</span>
-    <span class="eyebrow" id="quadroHint" style="color:var(--cinza)"></span>
-  </div>
-  <div class="quadro-wrap" id="quadroWrap"></div>
 </section>
 
-<div class="wrap duas">
-  <div class="panel">
-    <div class="panel-head"><span class="eyebrow">Cadastrar como atleta</span></div>
-    <div class="panel-body">
-      <div class="field">
-        <label class="f" for="jNome">Nome completo</label>
-        <input id="jNome" type="text" placeholder="Nome e sobrenome" maxlength="60">
+<!-- SOBRE NÓS -->
+<section class="sobre-sec" id="sobre">
+  <div class="wrap sobre-grid">
+    <div class="sobre-text">
+      <div class="sec-title-area">
+        <span class="sec-eyebrow">Quem Somos</span>
+        <h2 class="sec-title">Desenvolvimento Humano e de Alto Rendimento</h2>
       </div>
-      <div class="row2">
-        <div class="field"><label class="f" for="jCat">Categoria</label><select id="jCat"></select></div>
-        <div class="field">
-          <label class="f" for="jPos">Posição</label>
-          <select id="jPos">
-            <option value="">Selecione</option>
-            <option>Goleiro</option><option>Zagueiro</option><option>Lateral</option><option>Volante</option><option>Meia</option><option>Atacante</option>
-          </select>
-        </div>
-      </div>
-      <div class="field">
-        <label class="f" for="jZap">WhatsApp <span style="text-transform:none">(opcional)</span></label>
-        <input id="jZap" type="text" placeholder="(11) 9...." maxlength="20">
-      </div>
-      <button class="btn" onclick="cadastrarAtleta()">Cadastrar atleta</button>
-      <div class="lista-j" id="listaJog" style="margin-top:18px"></div>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-head">
-      <span class="eyebrow">Área do treinador</span>
-      <span class="eyebrow" id="admStatus" style="color:var(--cinza)">Bloqueada</span>
-    </div>
-    <div class="panel-body">
-      <div class="lock-note" id="lockNote">
-        🔒 <span>Marcar presença e criar treinos é só pro <b>treinador</b>. Saia e entre como <b>treinador</b> pra liberar.</span>
-      </div>
-      <div id="admArea" class="locked">
-        <label class="f">Novo treino · <span id="catLabelAdm"></span></label>
-        <div class="row2">
-          <div class="field"><label class="f" for="evData">Data inicial</label><input id="evData" type="date"></div>
-          <div class="field"><label class="f" for="evTitulo">Identificação <span style="text-transform:none">(opcional)</span></label><input id="evTitulo" type="text" placeholder="Treino" maxlength="40"></div>
-        </div>
-        <div class="row2">
-          <div class="field"><label class="f" for="evRep">Repetição</label>
-            <select id="evRep" onchange="toggleRep()">
-              <option value="">Não repetir</option>
-              <option value="1">Toda segunda</option>
-              <option value="2">Toda terça</option>
-              <option value="3">Toda quarta</option>
-              <option value="4">Toda quinta</option>
-              <option value="5">Toda sexta</option>
-              <option value="6">Todo sábado</option>
-              <option value="0">Todo domingo</option>
-            </select>
+      <p>Fundada em Guarulhos/SP, a <b>Alfa Academy</b> consolidou-se como um dos principais pólos de formação e avaliação de futebol de base no estado de São Paulo. Inspirada em metodologias de grandes centros esportivos e de transformação social, nossa missão é lapidar talentos técnicos enquanto desenvolvemos a disciplina, o fair play e o protagonismo dos jovens.</p>
+      <p>Nossos treinos no futebol de campo combinam a precisão técnica da preparação atlética moderna com o acompanhamento social do esporte, garantindo caminhos claros de evolução para todas as idades.</p>
+      
+      <div class="sobre-pillars">
+        <div class="pillar-card">
+          <div class="pillar-icon">⚽</div>
+          <div class="pillar-info">
+            <h3>Metodologia Profissional</h3>
+            <p>Trabalho técnico, tático e físico direcionado para capacitar atletas para as exigências competitivas.</p>
           </div>
-          <div class="field" id="repAteWrap" style="display:none"><label class="f" for="evAte">Repetir até</label><input id="evAte" type="date"></div>
         </div>
-        <button class="btn" onclick="criarTreino()">Criar treino</button>
-        <p style="font-size:12px;color:var(--cinza);margin-top:14px;line-height:1.5">
-          Depois marque a presença direto no <b style="color:var(--vinho)">quadro acima</b> — clique nas bolinhas pra confirmar quem treinou.
-        </p>
+        <div class="pillar-card">
+          <div class="pillar-icon">🏆</div>
+          <div class="pillar-info">
+            <h3>Preparação e Vitrine</h3>
+            <p>Participação nos campeonatos estaduais mais tradicionais e peneiras estruturadas para clubes profissionais.</p>
+          </div>
+        </div>
+        <div class="pillar-card">
+          <div class="pillar-icon">🌱</div>
+          <div class="pillar-info">
+            <h3>Formação Integral</h3>
+            <p>Foco na educação, protagonismo e integridade ética dos atletas, preparando-os para os desafios da vida.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="sobre-media">
+      <div class="sobre-img-frame">
+        <div style="background: linear-gradient(135deg, #1b1b1f 0%, #111112 100%); width:100%; height:400px; max-width:380px; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
+          <img src="./logo.png" alt="Alfa Logo" style="height:120px; width:auto; margin-bottom:24px; filter: drop-shadow(0 0 10px rgba(248,193,70,0.3));">
+          <h4 style="font-family:'Anton',sans-serif; color:var(--ouro); font-size:22px; text-transform:uppercase; margin-bottom:8px;">Alfa Academy</h4>
+          <p style="font-size:12px; color:var(--cinza); line-height:1.5;">Escola Formadora Oficial de Futebol de Campo na cidade de Guarulhos - São Paulo.</p>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<footer>ALFA ACADEMY · LISTA DE PRESENÇA</footer>
+<!-- CATEGORIAS -->
+<section class="categorias-sec" id="categorias">
+  <div class="wrap">
+    <div class="sec-title-area" style="text-align:center">
+      <span class="sec-eyebrow">Programas</span>
+      <h2 class="sec-title">Nossas Categorias de Base</h2>
+      <p style="color:var(--cinza); max-width:550px; margin:10px auto 0; font-size:14px">O percurso ideal de desenvolvimento estruturado desde a iniciação esportiva até o Sub-20 profissionalizante.</p>
+    </div>
+    
+    <div class="categorias-grid">
+      <div class="cat-card">
+        <div class="cat-num">Sub-11</div>
+        <div class="cat-title">Iniciação & Coordenação</div>
+        <div class="cat-desc">Estágio focado em coordenação motora, habilidades básicas e prazer pelo jogo. (Inclui Sub-10)</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-num">Sub-13</div>
+        <div class="cat-title">Desenvolvimento Técnico</div>
+        <div class="cat-desc">Aprimoramento dos fundamentos do futebol de campo, passe, drible e fundamentos individuais. (Inclui Sub-12)</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-num">Sub-15</div>
+        <div class="cat-title">Evolução Tática</div>
+        <div class="cat-desc">Posicionamento tático, dinâmica de jogo coletivo em campo reduzido e campo oficial. (Inclui Sub-14)</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-num">Sub-17</div>
+        <div class="cat-title">Alta Performance</div>
+        <div class="cat-desc">Preparação física avançada, competitividade tática e disputas de torneios estaduais. (Inclui Sub-16)</div>
+      </div>
+      <div class="cat-card">
+        <div class="cat-num">Sub-20</div>
+        <div class="cat-title">Elite & Transição</div>
+        <div class="cat-desc">Última etapa de formação, focada em vitrine profissional, seletivas e táticas de jogo real.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETIÇÕES -->
+<section class="comp-sec" id="competicoes">
+  <div class="wrap">
+    <div class="comp-intro">
+      <span class="sec-eyebrow">Competitividade</span>
+      <h2 class="sec-title">Alfa Academy em Campo</h2>
+      <p style="color:var(--cinza); font-size:14px; margin-top:8px">Para nós, os torneios são essenciais para testar limites e construir espírito de grupo. Participamos dos maiores campeonatos paulistas de categoria de base.</p>
+    </div>
+    
+    <div class="comp-grid">
+      <div class="comp-card">
+        <span class="comp-tag">APF - Estadual</span>
+        <h3>Copa Ouro</h3>
+        <p>Torneio de base organizado pela Associação Paulista de Futebol (APF), servindo de palco competitivo tradicional para os elencos de base do estado.</p>
+      </div>
+      <div class="comp-card">
+        <span class="comp-tag">Municipal</span>
+        <h3>Taça Cidade de São Paulo</h3>
+        <p>Competição municipal acirrada que expõe nossos atletas de Guarulhos a testes de alta intensidade contra os melhores times da região metropolitana.</p>
+      </div>
+      <div class="comp-card">
+        <span class="comp-tag">Alto Nível</span>
+        <h3>Paulista Cup</h3>
+        <p>Um dos torneios privados de base mais disputados de São Paulo, atraindo observadores técnicos e scouts de grandes clubes nacionais.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTATO -->
+<section class="contato-sec" id="contato">
+  <div class="wrap contato-grid">
+    <div class="contato-info">
+      <div class="sec-title-area">
+        <span class="sec-eyebrow">Fale Conosco</span>
+        <h2 class="sec-title">Quer fazer parte da Alfa Academy?</h2>
+      </div>
+      <p>Seja para tirar dúvidas sobre horários, agendar uma aula experimental, entender o cronograma de seletivas (peneiras) ou firmar parcerias, nossa equipe de suporte está à disposição.</p>
+      
+      <div class="info-item">
+        <span class="info-icon">📍</span>
+        <span>Guarulhos, São Paulo — Brasil</span>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">📸</span>
+        <span>Instagram: <a href="https://www.instagram.com/alfa_academy.br/" target="_blank" style="color:var(--ouro); text-decoration:none">@alfa_academy.br</a></span>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">📧</span>
+        <span>contato@alfaacademy.com.br</span>
+      </div>
+    </div>
+    
+    <div class="contato-form">
+      <form id="contactForm" onsubmit="sendContact(event)">
+        <div class="field">
+          <label class="f" for="cNome">Nome completo</label>
+          <input id="cNome" type="text" placeholder="Nome completo" required maxlength="60">
+        </div>
+        <div class="field">
+          <label class="f" for="cEmail">E-mail</label>
+          <input id="cEmail" type="email" placeholder="nome@email.com" required maxlength="80">
+        </div>
+        <div class="field">
+          <label class="f" for="cZap">WhatsApp</label>
+          <input id="cZap" type="text" placeholder="(11) 99999-9999" required maxlength="20">
+        </div>
+        <div class="field">
+          <label class="f" for="cMsg">Mensagem</label>
+          <textarea id="cMsg" placeholder="Sua dúvida ou proposta" required rows="4" maxlength="400"></textarea>
+        </div>
+        <button class="btn" type="submit">Enviar Mensagem</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ÁREA RESTRITA -->
+<section class="area-restrita-sec" id="area-restrita">
+  <div class="wrap restrita-container">
+    
+    <!-- CARD DE LOGIN UNIFICADO -->
+    <div class="login-card" id="loginCard">
+      <div class="login-tabs">
+        <button class="login-tab-btn active" id="tabAtleta" onclick="setLoginTab('atleta')">Sou Atleta</button>
+        <button class="login-tab-btn" id="tabTreinador" onclick="setLoginTab('treinador')">Sou Treinador</button>
+      </div>
+      
+      <div class="login-form-body">
+        
+        <!-- Formulário Atleta -->
+        <div id="formAtleta">
+          <div class="login-head">
+            <h3>Acesso Atleta</h3>
+            <p>Consulte sua lista de presença e faça novos cadastros</p>
+          </div>
+          <div class="field">
+            <label class="f" for="atletaCatSelect">Selecione sua categoria</label>
+            <select id="atletaCatSelect"></select>
+          </div>
+          <button class="btn" onclick="entrarAtleta()">Acessar Painel</button>
+        </div>
+        
+        <!-- Formulário Treinador -->
+        <div id="formTreinador" style="display:none">
+          <div class="login-head">
+            <h3>Área Administrativa</h3>
+            <p>Gerenciamento de presenças, treinos e atletas</p>
+          </div>
+          <div class="field">
+            <label class="f" for="loginUser">Usuário</label>
+            <input id="loginUser" type="text" placeholder="Usuário" autocomplete="username">
+          </div>
+          <div class="field" style="margin-bottom:6px">
+            <label class="f" for="loginPass">Senha</label>
+            <input id="loginPass" type="password" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')entrarTreinador()">
+          </div>
+          <div class="login-err" id="loginErr"></div>
+          <button class="btn" onclick="entrarTreinador()">Entrar como treinador</button>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- PAINEL DE CONTROLE / DASHBOARD (DESBLOQUEADO APÓS LOGIN) -->
+    <div class="dashboard-wrapper" id="dashboardPanel">
+      
+      <!-- Cabeçalho do Painel -->
+      <div class="dash-header">
+        <div class="dash-user-info">
+          <div class="dash-user-avatar" id="dashAvatar">T</div>
+          <div class="dash-user-meta">
+            <h3 id="dashUserName">Thiago Nascimento</h3>
+            <p id="dashUserRole">Treinador / Staff</p>
+          </div>
+        </div>
+        <div class="dash-actions">
+          <button class="btn sec" style="padding: 8px 16px; font-size:12px;" onclick="logout()">Sair do Painel</button>
+        </div>
+      </div>
+      
+      <!-- Barra de Categorias -->
+      <div class="cat-bar"><div class="cat-inner" id="catBar"></div></div>
+      
+      <!-- Grid de Resumo e Eventos da Semana -->
+      <div class="hero-grid">
+        <div class="panel">
+          <div class="panel-head">
+            <span class="eyebrow">Treinos da semana · <span id="catLabelHero"></span></span>
+            <span class="eyebrow" id="evCountHdr" style="color:var(--cinza)"></span>
+          </div>
+          <div class="panel-body"><div class="ev-list" id="evList"></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><span class="eyebrow">Resumo</span></div>
+          <div class="panel-body">
+            <div class="stat-row">
+              <div class="stat alta"><div class="num" id="stConf">0</div><div class="lab">Presenças</div></div>
+              <div class="stat"><div class="num" id="stJog">0</div><div class="lab">Na categoria</div></div>
+            </div>
+            <div class="stat-row" style="margin-top:12px">
+              <div class="stat"><div class="num" id="stEv">0</div><div class="lab">Treinos</div></div>
+              <div class="stat"><div class="num" id="stMedia">0</div><div class="lab">Média/treino</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quadro de Presenças Principal -->
+      <div class="panel quad-wrapper" style="margin-bottom:24px">
+        <div class="panel-head">
+          <span class="eyebrow">Quadro de presença · atletas × treinos</span>
+          <span class="eyebrow" id="quadroHint" style="color:var(--cinza)"></span>
+        </div>
+        <div class="quadro-wrap" id="quadroWrap"></div>
+      </div>
+      
+      <!-- Formulários de Ação (Duas Colunas) -->
+      <div class="duas">
+        
+        <!-- Cadastro de Atleta -->
+        <div class="panel">
+          <div class="panel-head"><span class="eyebrow">Cadastrar como atleta</span></div>
+          <div class="panel-body">
+            <div class="field">
+              <label class="f" for="jNome">Nome completo</label>
+              <input id="jNome" type="text" placeholder="Nome e sobrenome" maxlength="60">
+            </div>
+            <div class="row2">
+              <div class="field"><label class="f" for="jCat">Categoria</label><select id="jCat"></select></div>
+              <div class="field">
+                <label class="f" for="jPos">Posição</label>
+                <select id="jPos">
+                  <option value="">Selecione</option>
+                  <option>Goleiro</option><option>Zagueiro</option><option>Lateral</option><option>Volante</option><option>Meia</option><option>Atacante</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label class="f" for="jZap">WhatsApp <span style="text-transform:none">(opcional)</span></label>
+              <input id="jZap" type="text" placeholder="(11) 9...." maxlength="20">
+            </div>
+            <button class="btn" onclick="cadastrarAtleta()">Cadastrar atleta</button>
+            <div class="lista-j" id="listaJog" style="margin-top:18px"></div>
+          </div>
+        </div>
+        
+        <!-- Área do Treinador (Criação de Treinos) -->
+        <div class="panel">
+          <div class="panel-head">
+            <span class="eyebrow">Área do treinador</span>
+            <span class="eyebrow" id="admStatus" style="color:var(--cinza)">Bloqueada</span>
+          </div>
+          <div class="panel-body">
+            <div class="lock-note" id="lockNote">
+              🔒 <span>Marcar presença e criar treinos é restrito para o <b>Treinador</b>. Faça login correspondente para gerenciar.</span>
+            </div>
+            <div id="admArea" class="locked">
+              <label class="f">Novo treino · <span id="catLabelAdm"></span></label>
+              <div class="row2">
+                <div class="field"><label class="f" for="evData">Data inicial</label><input id="evData" type="date"></div>
+                <div class="field"><label class="f" for="evTitulo">Identificação <span style="text-transform:none">(opcional)</span></label><input id="evTitulo" type="text" placeholder="Treino" maxlength="40"></div>
+              </div>
+              <div class="row2">
+                <div class="field"><label class="f" for="evRep">Repetição</label>
+                  <select id="evRep" onchange="toggleRep()">
+                    <option value="">Não repetir</option>
+                    <option value="1">Toda segunda</option>
+                    <option value="2">Toda terça</option>
+                    <option value="3">Toda quarta</option>
+                    <option value="4">Toda quinta</option>
+                    <option value="5">Toda sexta</option>
+                    <option value="6">Todo sábado</option>
+                    <option value="0">Todo domingo</option>
+                  </select>
+                </div>
+                <div class="field" id="repAteWrap" style="display:none"><label class="f" for="evAte">Repetir até</label><input id="evAte" type="date"></div>
+              </div>
+              <button class="btn" onclick="criarTreino()">Criar treino</button>
+              <p style="font-size:12px;color:var(--cinza);margin-top:14px;line-height:1.5">
+                Depois marque a presença direto no <b style="color:var(--ouro-esc)">quadro acima</b> — clique nas bolinhas pra confirmar quem participou.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      
+    </div>
+    
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>ALFA ACADEMY · CENTRO DE FORMAÇÃO DE FUTEBOL · TODOS OS DIREITOS RESERVADOS</footer>
 
 <div class="toast" id="toast"></div>
 
 <script>
+// FORÇA HTTPS EM PRODUÇÃO
+if (window.location.protocol === 'http:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+  window.location.href = window.location.href.replace('http:', 'https:');
+}
+
 const API_BASE_URL = 'https://alfa-api.servicesbr.duckdns.org';
 
 const USE_API = true;
@@ -286,14 +667,29 @@ const MemoryStore = (() => {
   };
 })();
 
-let authToken=null, treinadorNome='';
+let authToken = sessionStorage.getItem('authToken') || null;
+let treinadorNome = sessionStorage.getItem('treinadorNome') || '';
+let coach = !!authToken;
+
 function authHeaders(){ return authToken ? {'Authorization':'Bearer '+authToken} : {}; }
 async function jsonOrThrow(r){ if(!r.ok){ let m='Erro no servidor'; try{ m=(await r.json()).erro||m; }catch(e){} throw new Error(m); } return r.json(); }
 const ApiStore = {
   async login(u,s){
-    const r=await fetch(`${API_BASE_URL}/api/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:u,senha:s})});
-    if(!r.ok) return false;
-    const d=await r.json(); authToken=d.token; treinadorNome=d.nome||''; return true;
+    try {
+      const r=await fetch(`${API_BASE_URL}/api/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:u,senha:s})});
+      if(!r.ok) return false;
+      const d=await r.json(); 
+      authToken=d.token; 
+      treinadorNome=d.nome||'';
+      
+      // Salva na sessão
+      sessionStorage.setItem('authToken', authToken);
+      sessionStorage.setItem('treinadorNome', treinadorNome);
+      return true;
+    } catch(e) {
+      console.error(e);
+      return false;
+    }
   },
   async listAtletas(cat){ return jsonOrThrow(await fetch(`${API_BASE_URL}/api/atletas?categoria=`+encodeURIComponent(cat))); },
   async addAtleta(a){ return jsonOrThrow(await fetch(`${API_BASE_URL}/api/atletas`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(a)})); },
@@ -313,7 +709,31 @@ function diaSemana(iso){ return ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'][new
 
 let semanaAtual = inicioSemana(new Date());
 let categoriaAtual = CATEGORIAS[0];
-let coach = false;
+let activeTab = 'atleta';
+
+// GERENCIAMENTO DE MENU MOBILE
+function toggleMenu() {
+  const toggle = document.getElementById('menuToggle');
+  const nav = document.getElementById('navMobile');
+  toggle.classList.toggle('open');
+  nav.classList.toggle('open');
+}
+function closeMenu() {
+  const toggle = document.getElementById('menuToggle');
+  const nav = document.getElementById('navMobile');
+  toggle.classList.remove('open');
+  nav.classList.remove('open');
+}
+
+// ALTERNA ENTRE LOGIN ATLETA E TREINADOR
+function setLoginTab(tab) {
+  activeTab = tab;
+  document.getElementById('tabAtleta').classList.toggle('active', tab === 'atleta');
+  document.getElementById('tabTreinador').classList.toggle('active', tab === 'treinador');
+  document.getElementById('formAtleta').style.display = tab === 'atleta' ? 'block' : 'none';
+  document.getElementById('formTreinador').style.display = tab === 'treinador' ? 'block' : 'none';
+  document.getElementById('loginErr').textContent = '';
+}
 
 function renderCatBar(){
   document.getElementById('catBar').innerHTML = CATEGORIAS.map(c=>
@@ -326,14 +746,25 @@ function renderCatBar(){
 function setCategoria(c){ categoriaAtual=c; document.getElementById('jCat').value=c; renderCatBar(); render(); }
 
 async function render(){
-  const ini=fmtISO(semanaAtual), fim=fmtISO(addDias(semanaAtual,6));
-  document.getElementById('weekRange').textContent=`${fmtCurto(ini)} – ${fmtCurto(fim)}`;
-  document.getElementById('catLabelHero').textContent=categoriaAtual;
-  const [atletas, treinos] = await Promise.all([db.listAtletas(categoriaAtual), db.listTreinos(categoriaAtual,ini,fim)]);
-  const pp={}; for(const t of treinos){ pp[t.id]=await db.listPresencas(t.id); }
-  renderHero(atletas,treinos,pp);
-  renderQuadro(atletas,treinos,pp);
-  renderListaAtletas(atletas);
+  try {
+    const ini=fmtISO(semanaAtual), fim=fmtISO(addDias(semanaAtual,6));
+    document.getElementById('weekRange').textContent=`${fmtCurto(ini)} – ${fmtCurto(fim)}`;
+    document.getElementById('catLabelHero').textContent=categoriaAtual;
+    const [atletas, treinos] = await Promise.all([db.listAtletas(categoriaAtual), db.listTreinos(categoriaAtual,ini,fim)]);
+    const pp={}; 
+    for(const t of treinos){ 
+      try {
+        pp[t.id]=await db.listPresencas(t.id); 
+      } catch(e) {
+        pp[t.id]=[];
+      }
+    }
+    renderHero(atletas,treinos,pp);
+    renderQuadro(atletas,treinos,pp);
+    renderListaAtletas(atletas);
+  } catch(e) {
+    console.error(e);
+  }
 }
 
 function renderHero(atletas,treinos,pp){
@@ -344,7 +775,7 @@ function renderHero(atletas,treinos,pp){
   document.getElementById('stMedia').textContent=treinos.length?Math.round(total/treinos.length):0;
   document.getElementById('evCountHdr').textContent=treinos.length?`${treinos.length} treino(s)`:'';
   const lista=document.getElementById('evList');
-  if(!treinos.length){ lista.innerHTML=`<div class="vazio"><b>Nenhum treino nesta semana</b>O treinador pode criar um treino pra ${categoriaAtual}.</div>`; return; }
+  if(!treinos.length){ lista.innerHTML=`<div class="vazio"><b>Nenhum treino nesta semana</b>O treinador pode criar um treino para ${categoriaAtual}.</div>`; return; }
   lista.innerHTML=treinos.map(t=>{
     const n=pp[t.id]?.length||0;
     return `<div class="ev-item">
@@ -382,7 +813,7 @@ function renderQuadro(atletas,treinos,pp){
 
 function renderListaAtletas(atletas){
   const el=document.getElementById('listaJog');
-  if(!atletas.length){ el.innerHTML=`<div style="font-size:13px;color:var(--cinza);padding:8px 0">Nenhum atleta em ${categoriaAtual} ainda.</div>`; return; }
+  if(!atletas.length){ el.innerHTML=`<div class="vazio">Nenhum atleta cadastrado.</div>`; return; }
   el.innerHTML=atletas.map(a=>{
     const ini=a.nome.trim().slice(0,1).toUpperCase();
     return `<div class="j-row"><div class="j-av">${ini}</div><div class="j-info"><div class="n">${esc(a.nome)}</div><div class="p">${esc(a.posicao||'Sem posição')} · ${esc(a.categoria)}</div></div></div>`;
@@ -396,19 +827,28 @@ async function cadastrarAtleta(){
   const categoria=document.getElementById('jCat').value;
   const posicao=document.getElementById('jPos').value;
   const contato=document.getElementById('jZap').value.trim();
-  if(nome.length<2){ toast('Digite o nome.'); return; }
+  
+  // VALIDAÇÕES DE SEGURANÇA E FORMATO
+  if(nome.length < 2 || nome.length > 60){ toast('O nome deve ter entre 2 e 60 caracteres.'); return; }
+  if(!/^[a-zA-ZÀ-ÿ\s]+$/.test(nome)){ toast('O nome deve conter apenas letras e espaços.'); return; }
+  if(contato && (contato.length < 8 || contato.length > 20 || !/^[0-9+\s()-]+$/.test(contato))){
+    toast('Número de WhatsApp inválido.');
+    return;
+  }
+  
   try{
     await db.addAtleta({nome,categoria,posicao,contato});
     document.getElementById('jNome').value=''; document.getElementById('jPos').value=''; document.getElementById('jZap').value='';
     categoriaAtual=categoria; renderCatBar();
-    toast('Atleta cadastrado!');
+    toast('Atleta cadastrado com sucesso!');
     render();
   }catch(e){ toast(e.message||'Falha ao cadastrar.'); }
 }
 
 function toggleRep(){ document.getElementById('repAteWrap').style.display = document.getElementById('evRep').value!=='' ? 'block':'none'; }
+
 async function criarTreino(){
-  if(!coach){ toast('Entre como treinador.'); return; }
+  if(!coach){ toast('Acesso restrito ao treinador.'); return; }
   const data=document.getElementById('evData').value;
   const titulo=document.getElementById('evTitulo').value.trim()||'Treino';
   const rep=document.getElementById('evRep').value;
@@ -416,7 +856,7 @@ async function criarTreino(){
   try{
     if(rep===''){
       const r=await db.addTreino({titulo,data,categoria:categoriaAtual});
-      toast(r? 'Treino criado.' : 'Já existe treino nessa data.');
+      toast(r? 'Treino criado com sucesso.' : 'Já existe treino nessa data.');
     }else{
       const ate=document.getElementById('evAte').value;
       if(!ate){ toast('Escolha até quando repetir.'); return; }
@@ -433,35 +873,139 @@ async function criarTreino(){
 function mudarSemana(n){ semanaAtual=addDias(semanaAtual,n*7); render(); }
 function irHoje(){ semanaAtual=inicioSemana(new Date()); render(); }
 
-function toggleCoach(){ if(coach){ coach=false; aplicarCoach(); } abrirGate(); }
-function abrirGate(){ document.getElementById('gate').classList.add('show'); document.getElementById('loginErr').textContent=''; setTimeout(()=>document.getElementById('loginUser').focus(),50); }
-function fecharGate(){ document.getElementById('gate').classList.remove('show'); ['loginUser','loginPass'].forEach(i=>document.getElementById(i).value=''); document.getElementById('loginErr').textContent=''; }
+// LIMITES DE TENTATIVAS DE LOGIN
+let loginAttempts = 0;
+let lockUntil = 0;
+
 async function entrarTreinador(){
+  if (Date.now() < lockUntil) {
+    const r = Math.round((lockUntil - Date.now()) / 1000);
+    toast(`Muitas tentativas. Bloqueado por mais ${r}s.`);
+    return;
+  }
+  
   const u=document.getElementById('loginUser').value.trim();
   const s=document.getElementById('loginPass').value;
+  
+  if(!u || !s) { toast('Preencha o usuário e a senha.'); return; }
+  
   let ok = USE_API ? await db.login(u,s) : (u.toLowerCase()===TREINADOR.usuario.toLowerCase() && s===TREINADOR.senha);
-  if(ok){ coach=true; aplicarCoach(); fecharGate(); toast('Bem-vindo, Thiago.'); }
-  else { document.getElementById('loginErr').textContent='Usuário ou senha incorretos.'; }
+  if(ok){
+    loginAttempts = 0;
+    coach=true;
+    aplicarCoach();
+    
+    // Transiciona UI
+    document.getElementById('loginCard').style.display = 'none';
+    document.getElementById('dashboardPanel').style.display = 'block';
+    
+    // Atualiza cabeçalho do painel
+    document.getElementById('dashUserName').textContent = treinadorNome || 'Treinador Alfa';
+    document.getElementById('dashUserRole').textContent = 'Staff / Treinador Autorizado';
+    document.getElementById('dashAvatar').textContent = (treinadorNome || 'T').slice(0,1).toUpperCase();
+    
+    toast('Bem-vindo, ' + (treinadorNome || 'Treinador') + '.');
+    render();
+  }
+  else {
+    loginAttempts++;
+    if(loginAttempts >= 5) {
+      lockUntil = Date.now() + 30000; // bloqueia por 30s
+      toast('Acesso bloqueado por 30 segundos devido a 5 falhas consecutivas.');
+    } else {
+      document.getElementById('loginErr').textContent = `Usuário ou senha incorretos. Tentativa ${loginAttempts}/5`;
+    }
+  }
 }
-function entrarAtleta(){ coach=false; aplicarCoach(); fecharGate(); toast('Acesso de atleta.'); }
+
+function entrarAtleta(){
+  coach=false;
+  const selCat = document.getElementById('atletaCatSelect').value;
+  categoriaAtual = selCat;
+  renderCatBar();
+  aplicarCoach();
+  
+  // Transiciona UI
+  document.getElementById('loginCard').style.display = 'none';
+  document.getElementById('dashboardPanel').style.display = 'block';
+  
+  // Atualiza cabeçalho do painel
+  document.getElementById('dashUserName').textContent = 'Modo de Visualização';
+  document.getElementById('dashUserRole').textContent = 'Atleta — Categoria ' + categoriaAtual;
+  document.getElementById('dashAvatar').textContent = 'A';
+  
+  toast('Acesso liberado como Atleta (Leitura).');
+  render();
+}
+
+function logout() {
+  sessionStorage.removeItem('authToken');
+  sessionStorage.removeItem('treinadorNome');
+  authToken = null;
+  treinadorNome = '';
+  coach = false;
+  
+  // Limpa campos
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  
+  // Transiciona UI
+  document.getElementById('loginCard').style.display = 'block';
+  document.getElementById('dashboardPanel').style.display = 'none';
+  
+  toast('Sessão encerrada com sucesso.');
+}
+
 function aplicarCoach(){
-  document.getElementById('coachPill').classList.toggle('on',coach);
-  document.getElementById('coachPillTxt').textContent=coach?(treinadorNome||'Treinador'):'Entrar';
   document.getElementById('admStatus').textContent=coach?'Liberada':'Bloqueada';
   document.getElementById('admArea').classList.toggle('locked',!coach);
   document.getElementById('lockNote').style.display=coach?'none':'flex';
-  render();
 }
 
 function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 let toastTimer;
 function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2200); }
 
+// FORMULÁRIO DE CONTATO (MOCK DE ENVIO)
+function sendContact(event) {
+  event.preventDefault();
+  const nome = document.getElementById('cNome').value.trim();
+  const email = document.getElementById('cEmail').value.trim();
+  const zap = document.getElementById('cZap').value.trim();
+  const msg = document.getElementById('cMsg').value.trim();
+  
+  if (nome.length < 2 || email.length < 5 || msg.length < 5) {
+    toast('Preencha os campos corretamente.');
+    return;
+  }
+  
+  toast('Sua mensagem foi enviada! Entraremos em contato.');
+  document.getElementById('contactForm').reset();
+}
+
+// INICIALIZAÇÃO
 if(!USE_API && MemoryStore._seed) MemoryStore._seed();
+
+// Popula seletores
+document.getElementById('atletaCatSelect').innerHTML = CATEGORIAS.map(c=>`<option value="${c}">${c}</option>`).join('');
+document.getElementById('jCat').innerHTML = CATEGORIAS.map(c=>`<option value="${c}">${c}</option>`).join('');
+
 renderCatBar();
 document.getElementById('jCat').value=categoriaAtual;
 document.getElementById('evData').value=fmtISO(new Date());
-render();
+
+// Restaura sessão se houver
+if (authToken && treinadorNome) {
+  coach = true;
+  aplicarCoach();
+  document.getElementById('loginCard').style.display = 'none';
+  document.getElementById('dashboardPanel').style.display = 'block';
+  document.getElementById('dashUserName').textContent = treinadorNome;
+  document.getElementById('dashUserRole').textContent = 'Staff / Treinador Autorizado';
+  document.getElementById('dashAvatar').textContent = treinadorNome.slice(0,1).toUpperCase();
+  render();
+}
+
 </script>
 </body>
 </html>
