@@ -203,6 +203,7 @@
           <a href="#admin-visao" class="admin-menu-item active" onclick="setAdminTab('visao', event)">Visão Geral</a>
           <a href="#admin-usuarios" class="admin-menu-item" onclick="setAdminTab('usuarios', event)">Gestão de Usuários</a>
           <a href="#admin-relatorios" class="admin-menu-item" onclick="setAdminTab('relatorios', event)">Relatórios</a>
+          <a href="dashboard-treinador.html" class="admin-menu-item" style="border-color: rgba(248,193,70,0.3); color: var(--ouro);">Modo Treinador (Chamada)</a>
         </div>
         <button class="btn sec" style="padding:10px; margin-top:20px; font-size:12px;" onclick="logout()">Sair do Painel</button>
       </aside>
@@ -227,6 +228,50 @@
           <p style="color:var(--cinza); font-size:14px; max-width:400px; line-height:1.6;">
             Você está conectado como administrador da Alfa Academy. Use o menu lateral para gerenciar as configurações da escola, contas de usuários e relatórios.
           </p>
+        </div>
+        
+        <!-- Painel de Gestão de Atletas (Admin) -->
+        <div id="adminGestaoSection" style="display:none; margin-top: 20px;">
+          <div class="panel" style="max-width: 500px; margin: 0 auto; background: var(--painel); border: 1px solid var(--linha); padding: 24px; border-radius: var(--radius);">
+            <h3 style="font-family:'Anton', sans-serif; color: var(--ouro); margin-bottom: 20px; text-transform: uppercase; font-size: 20px;">Cadastrar Novo Atleta</h3>
+            
+            <div class="field">
+              <label class="f" for="adminAtletaNome">Nome do Atleta</label>
+              <input id="adminAtletaNome" type="text" placeholder="Nome completo" required>
+            </div>
+            
+            <div class="field">
+              <label class="f" for="adminAtletaCat">Categoria</label>
+              <select id="adminAtletaCat">
+                <option value="Sub-10">Sub-10</option>
+                <option value="Sub-11">Sub-11</option>
+                <option value="Sub-12">Sub-12</option>
+                <option value="Sub-13">Sub-13</option>
+                <option value="Sub-14">Sub-14</option>
+                <option value="Sub-15">Sub-15</option>
+                <option value="Sub-16">Sub-16</option>
+                <option value="Sub-17">Sub-17</option>
+                <option value="Sub-20">Sub-20</option>
+              </select>
+            </div>
+            
+            <div class="field">
+              <label class="f" for="adminAtletaPos">Posição</label>
+              <select id="adminAtletaPos">
+                <option value="Goleiro">Goleiro</option>
+                <option value="Zagueiro">Zagueiro</option>
+                <option value="Lateral Esquerdo">Lateral Esquerdo</option>
+                <option value="Lateral Direito">Lateral Direito</option>
+                <option value="Volante">Volante</option>
+                <option value="Meia">Meia</option>
+                <option value="Ponta Esquerda">Ponta Esquerda</option>
+                <option value="Ponta Direita">Ponta Direita</option>
+                <option value="Centroavante">Centroavante</option>
+              </select>
+            </div>
+            
+            <button class="btn" onclick="adminCadastrarAtleta()">Cadastrar Atleta</button>
+          </div>
         </div>
       </main>
     </div>
@@ -264,7 +309,48 @@
           if (activeItem) activeItem.classList.add('active');
           const labelMap = { 'visao': 'Visão Geral', 'usuarios': 'Gestão de Usuários', 'relatorios': 'Relatórios' };
           document.getElementById('adminCurrentTabLabel').textContent = labelMap[tab] || 'Painel Admin';
+          
+          if (tab === 'usuarios') {
+            document.querySelector('.admin-welcome-card').style.display = 'none';
+            document.getElementById('adminGestaoSection').style.display = 'block';
+          } else {
+            document.querySelector('.admin-welcome-card').style.display = 'flex';
+            document.getElementById('adminGestaoSection').style.display = 'none';
+          }
           toast('Acessando ' + labelMap[tab]);
+        }
+
+        async function adminCadastrarAtleta() {
+          const nome = document.getElementById('adminAtletaNome').value.trim();
+          const cat = document.getElementById('adminAtletaCat').value;
+          const pos = document.getElementById('adminAtletaPos').value;
+          
+          if (nome.length < 2 || nome.length > 60) {
+            toast('Nome deve ter entre 2 e 60 caracteres.');
+            return;
+          }
+          
+          try {
+            toast('Salvando atleta...');
+            const res = await fetch(`https://alfa-api.servicesbr.duckdns.org/api/admin/atletas`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({ nome, categoria: cat, posicao: pos })
+            });
+            
+            if (!res.ok) {
+              const err = await res.json();
+              throw new Error(err.erro || 'Falha ao cadastrar atleta.');
+            }
+            
+            toast('Atleta cadastrado com sucesso!');
+            document.getElementById('adminAtletaNome').value = '';
+          } catch(e) {
+            toast(e.message || 'Erro de conexão.');
+          }
         }
 
         function logout() {

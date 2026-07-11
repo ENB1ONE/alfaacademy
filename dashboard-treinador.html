@@ -176,7 +176,9 @@
 <body>
     <div class="topbar">
         <h2>Chamada do Treinador</h2>
-        <button class="btn-logout" onclick="logout()">Sair</button>
+        <div id="topbarActions" style="display:flex; gap:10px; align-items:center;">
+            <!-- Injetado dinamicamente -->
+        </div>
     </div>
 
     <!-- Filtro de Categorias -->
@@ -269,7 +271,7 @@
         const profile = localStorage.getItem('alfa_profile');
         const nome = localStorage.getItem('alfa_nome');
 
-        if (!token) {
+        if (!token || (profile !== 'treinador' && profile !== 'admin' && profile !== 'Administrador')) {
             localStorage.clear();
             window.location.href = 'login.html';
         }
@@ -285,7 +287,19 @@
             const turmaSelect = document.getElementById('turmaSelect');
             turmaSelect.innerHTML = CATEGORIAS.map(c => `<option value="${c}">${c}</option>`).join('');
             
-            // Populate positions select list inside manager
+            // Inject Topbar actions
+            const actionsDiv = document.getElementById('topbarActions');
+            if (profile === 'admin' || profile === 'Administrador') {
+                actionsDiv.innerHTML = `
+                    <button class="btn-logout" style="border-color:var(--ouro); color:var(--ouro);" onclick="window.location.href='dashboard-admin.html'">Voltar ao Painel Admin</button>
+                    <button class="btn-logout" onclick="logout()">Sair</button>
+                `;
+            } else {
+                actionsDiv.innerHTML = `
+                    <button class="btn-logout" onclick="logout()">Sair</button>
+                `;
+            }
+            
             carregarCategoria();
         });
 
@@ -314,7 +328,7 @@
             currentCategory = document.getElementById('turmaSelect').value;
             try {
                 // Fetch Atletas
-                const resAtletas = await fetch(`${API_BASE_URL}/api/atletas?categoria=${encodeURIComponent(currentCategory)}`, {
+                const resAtletas = await fetch(`${API_BASE_URL}/api/chamada/atletas/${encodeURIComponent(currentCategory)}`, {
                     headers: authHeaders()
                 });
                 currentAtletas = await resAtletas.json();
