@@ -1139,7 +1139,16 @@ const ApiStore = {
     try {
       const r=await fetch(`${API_BASE_URL}/api/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usuario:u,senha:s})});
       if(!r.ok) return null;
-      return await r.json();
+      const d=await r.json();
+      if(d && d.token && d.usuario) {
+        return {
+          token: d.token,
+          nome: d.usuario.nome,
+          perfil: d.usuario.perfil,
+          precisa_trocar_senha: d.usuario.precisa_trocar_senha
+        };
+      }
+      return null;
     } catch(e) {
       console.error(e);
       return null;
@@ -1149,7 +1158,7 @@ const ApiStore = {
     const r=await fetch(`${API_BASE_URL}/api/auth/trocar-senha`,{
       method:'POST',
       headers:{'Content-Type':'application/json', 'Authorization':'Bearer '+token},
-      body:JSON.stringify({nova_senha:newPassword})
+      body:JSON.stringify({novaSenha:newPassword})
     });
     if(!r.ok) {
       let msg = 'Falha ao trocar senha';
@@ -1498,6 +1507,8 @@ async function entrarTreinador(){
       loginRes = { token: 'mock-admin-token', nome: 'Administrador Geral', perfil: 'admin', precisa_trocar_senha: false };
     } else if (u.toLowerCase() === 'reset' && s === 'reset123') {
       loginRes = { token: 'mock-reset-token', nome: 'Usuário Reset', perfil: 'treinador', precisa_trocar_senha: true };
+    } else if (u.toLowerCase() === 'alfadmin' && s === 'Admin@123') {
+      loginRes = { token: 'mock-alfadmin-token', nome: 'Alfa Admin', perfil: 'admin', precisa_trocar_senha: true };
     } else if (u.toLowerCase() === TREINADOR.usuario.toLowerCase() && s === TREINADOR.senha) {
       loginRes = { token: 'mock-trainer-token', nome: 'Thiago Nascimento', perfil: 'treinador', precisa_trocar_senha: false };
     }
