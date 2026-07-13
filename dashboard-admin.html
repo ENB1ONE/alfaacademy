@@ -7,7 +7,79 @@
     <!-- Anton, Inter, Space Mono -->
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    
     <style>
+        /* Mobile first additions */
+        @media (max-width: 768px) {
+            .admin-container { flex-direction: column; }
+            .admin-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--linha); display: flex; flex-direction: row; overflow-x: auto; padding: 10px; }
+            .admin-logo { display: none; }
+            .admin-menu { flex-direction: row; margin: 0; display: flex; gap: 10px; }
+            .admin-menu-item { margin: 0; font-size: 13px; padding: 10px; white-space: nowrap; }
+            .admin-content { padding: 15px; }
+            .metric-grid { grid-template-columns: 1fr; }
+            .subtabs-nav { flex-wrap: wrap; }
+            .subtab-btn { flex: 1 1 auto; text-align: center; }
+            
+            /* Responsive tables */
+            .data-table { display: block; overflow-x: auto; white-space: nowrap; }
+        }
+        
+        /* Hero Header */
+        .hero-header {
+            position: relative;
+            background: linear-gradient(rgba(10,10,12,0.6), rgba(10,10,12,0.9)), url('assets/img/alfa_academy_hero.png') center 20%/cover no-repeat;
+            border-radius: var(--radius);
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--sombra);
+            border: 1px solid rgba(248, 193, 70, 0.15);
+            overflow: hidden;
+        }
+        .hero-header::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, rgba(248,193,70,0.1) 0%, transparent 100%);
+            pointer-events: none;
+        }
+        .hero-title {
+            font-family: 'Anton', sans-serif;
+            font-size: 32px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0 10px 0;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-subtitle {
+            font-size: 15px;
+            color: #ddd;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+        }
+        
+        .btn-back {
+            background: transparent;
+            color: var(--ouro);
+            border: 1px solid var(--ouro);
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        .btn-back:hover {
+            background: rgba(248,193,70,0.1);
+        }
+
         .admin-layout {
             display: flex;
             min-height: 100vh;
@@ -387,7 +459,13 @@
           </div>
         </header>
         
-        <!-- ================= TAB: VISÃO GERAL ================= -->
+                  <!-- HERO HEADER -->
+          <div class="hero-header" id="heroHeader">
+              <h1 class="hero-title">Painel de Controle</h1>
+              <p class="hero-subtitle">Bem-vindo ao centro de comando do Alfa Academy.</p>
+          </div>
+          
+          <!-- ================= TAB: VISÃO GERAL ================= -->
         <div id="adminVisaoSection">
             <!-- Metrics Grid -->
             <div class="metrics-grid">
@@ -437,13 +515,53 @@
         
         <!-- ================= TAB: GESTÃO DE USUÁRIOS ================= -->
         <div id="adminGestaoSection" style="display:none; margin-top: 10px;">
-            <!-- Sub-tabs nav -->
-            <div class="subtabs-nav">
-                <button class="subtab-btn active" id="subtabAtletasBtn" onclick="setSubTab('atletas')">Cadastrar Atleta</button>
-                <button class="subtab-btn" id="subtabTreinadoresBtn" onclick="setSubTab('treinadores')">Cadastrar Treinador</button>
-            </div>
+                          <!-- Sub-tabs nav -->
+              <button class="btn-back" onclick="setAdminTab('visao')"><i class="fas fa-arrow-left"></i> Voltar ao Painel</button>
+              <div class="subtabs-nav">
+                  <button class="subtab-btn active" id="subtabAtletasBtn" onclick="setSubTab('atletas')">Atletas</button>
+                  <button class="subtab-btn" id="subtabTreinadoresBtn" onclick="setSubTab('treinadores')">Treinadores</button>
+                  <button class="subtab-btn" id="subtabAvisosBtn" onclick="setSubTab('avisos')">Mural de Avisos</button>
+              </div>
             
-            <!-- Cadastro de Atleta (Evoluído) -->
+                          <!-- FORM AVISOS -->
+              <div id="subtabAvisosForm" style="display:none;">
+                  <div class="form-section">
+                      <h3>Adicionar Novo Aviso</h3>
+                      <form id="formAddAviso" style="display:flex; flex-direction:column; gap:12px; max-width:500px;" onsubmit="return false;">
+                          <input type="text" id="avisoTitulo" class="input-dark" placeholder="Título (ex: Feriado Nacional)" required>
+                          <textarea id="avisoDescricao" class="input-dark" placeholder="Descrição da atividade ou aviso..." required style="min-height:80px;"></textarea>
+                          <select id="avisoTipo" class="input-dark">
+                              <option value="Aviso">Aviso Geral</option>
+                              <option value="Servidor">Sistema/Servidor</option>
+                              <option value="Presença">Lembrete de Presença</option>
+                              <option value="Evento">Evento/Jogo</option>
+                          </select>
+                          <button type="button" class="btn" id="btnSalvarAviso" onclick="salvarAviso()" style="align-self:flex-start;">Publicar Aviso</button>
+                      </form>
+                  </div>
+                  
+                  <div class="form-section" style="margin-top: 30px;">
+                      <h3>Avisos Publicados</h3>
+                      <div style="overflow-x:auto;">
+                          <table class="data-table">
+                              <thead>
+                                  <tr>
+                                      <th>Título</th>
+                                      <th>Tipo</th>
+                                      <th>Data</th>
+                                      <th>Ações</th>
+                                  </tr>
+                              </thead>
+                              <tbody id="tblAvisosCorpo">
+                                  <tr><td colspan="4" style="text-align:center; padding:15px; color:var(--cinza);">Carregando mural...</td></tr>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+
+              <!-- Cadastro de Atleta (EvoluA-do) -->
+              <div id="subtabAtletasForm" style="display:block;"> (Evoluído) -->
             <div id="subtabAtletasForm" style="display:block;">
                 <div class="panel" style="max-width: 500px; background: var(--painel); border: 1px solid var(--linha); padding: 24px; border-radius: var(--radius); box-shadow: var(--sombra);">
                     <h3 style="font-family:'Anton', sans-serif; color: var(--ouro); margin-bottom: 20px; text-transform: uppercase; font-size: 20px;">Cadastrar Novo Atleta</h3>
@@ -670,7 +788,12 @@
           const activeItem = Array.from(items).find(el => el.getAttribute('href') === '#' + 'admin-' + tab);
           if (activeItem) activeItem.classList.add('active');
           
-          const labelMap = { 'visao': 'Visão Geral', 'usuarios': 'Gestão de Usuários', 'relatorios': 'Relatórios' };
+                      const labelMap = { 'visao': 'Visão Geral', 'usuarios': 'Gestão de Usuários', 'relatorios': 'Relatórios' };
+            document.getElementById('adminCurrentTabLabel').textContent = labelMap[tab] || 'Painel Admin';
+            
+            const heroTitle = document.querySelector('.hero-title');
+            if(heroTitle) heroTitle.textContent = labelMap[tab] || 'Painel Admin';
+
           document.getElementById('adminCurrentTabLabel').textContent = labelMap[tab] || 'Painel Admin';
           
           // Switch main divs
@@ -691,7 +814,7 @@
         function setSubTab(subtab) {
             document.getElementById('subtabAtletasBtn').classList.toggle('active', subtab === 'atletas');
             document.getElementById('subtabTreinadoresBtn').classList.toggle('active', subtab === 'treinadores');
-            document.getElementById('subtabAvisosBtn').classList.toggle('active', subtab === 'avisos');
+            if(document.getElementById('subtabAvisosBtn')) document.getElementById('subtabAvisosBtn').classList.toggle('active', subtab === 'avisos');
             document.getElementById('subtabAtletasForm').style.display = subtab === 'atletas' ? 'block' : 'none';
             document.getElementById('subtabTreinadoresForm').style.display = subtab === 'treinadores' ? 'block' : 'none';
             document.getElementById('subtabAvisosForm').style.display = subtab === 'avisos' ? 'block' : 'none';

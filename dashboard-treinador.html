@@ -71,12 +71,18 @@
     <script>
 
         const API_BASE_URL = 'https://alfa-api.servicesbr.duckdns.org';
-        const token = localStorage.getItem('token');
-        const perfil = localStorage.getItem('perfil');
+        
+        const token = localStorage.getItem('alfa_token');
+        const perfil = localStorage.getItem('alfa_perfil');
 
-        if (!token || perfil !== 'Treinador' && perfil !== 'Administrador' && perfil !== 'admin') {
+        if (!token || (perfil !== 'Treinador' && perfil !== 'Administrador' && perfil !== 'admin')) {
             window.location.href = 'login.html';
         }
+        
+        if (perfil === 'Administrador' || perfil === 'admin') {
+            document.getElementById('btnVoltarAdmin').style.display = 'block';
+        }
+
 
         const CATEGORIAS = ['Sub-11', 'Sub-13', 'Sub-15', 'Sub-17', 'Sub-20'];
         let currentCategory = null;
