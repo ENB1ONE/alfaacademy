@@ -399,7 +399,7 @@
                     <div class="metric-value" id="valTotalAtletas">0</div>
                     <div class="metric-subtitle">Atletas ativos na escola</div>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card" onclick="setAdminTab('usuarios'); setSubTab('treinadores')" style="cursor:pointer;" title="Gerenciar treinadores">
                     <div class="metric-header">
                         <span class="metric-title">Treinadores</span>
                         <span class="metric-icon">⚽</span>
@@ -407,7 +407,7 @@
                     <div class="metric-value" id="valTotalTreinadores">3</div>
                     <div class="metric-subtitle">Comissão técnica autorizada</div>
                 </div>
-                <div class="metric-card">
+                <div class="metric-card" onclick="setAdminTab('usuarios'); setSubTab('atletas')" style="cursor:pointer;" title="Ver atletas no DM">
                     <div class="metric-header">
                         <span class="metric-title">No Departamento Médico</span>
                         <span class="metric-icon">🏥</span>
@@ -583,12 +583,37 @@
         </div>
         
         <!-- ================= TAB: RELATÓRIOS ================= -->
+        
         <div id="adminRelatoriosSection" style="display:none; margin-top: 10px;">
             <div class="panel" style="background: var(--painel); border: 1px solid var(--linha); padding: 24px; border-radius: var(--radius);">
-                <h3 style="font-family:'Anton', sans-serif; color: var(--ouro); margin-bottom: 12px; text-transform: uppercase; font-size: 20px;">Relatórios Gerenciais</h3>
-                <p style="color:var(--cinza); font-size:13px;">Estatísticas de presença consolidada e controle de caixa esportivo estarão disponíveis nesta seção brevemente.</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                    <h3 style="font-family:'Anton', sans-serif; color: var(--ouro); text-transform: uppercase; font-size: 20px; margin:0;">Relatórios Gerenciais</h3>
+                    <button class="btn sec" onclick="carregarRelatorio()" style="height:38px; padding:0 15px;"><i class="fas fa-sync"></i> Atualizar Relatório</button>
+                </div>
+                
+                <div style="background:var(--fundo-card); padding:20px; border-radius:12px; margin-bottom:20px; border:1px solid var(--linha);">
+                    <h4 style="color:var(--ouro); margin-bottom:5px; font-size:14px; text-transform:uppercase;">Estatística de Frequência - Visão Geral</h4>
+                    <p style="color:var(--cinza); font-size:13px; margin-bottom: 20px;">Taxa média de presença por categoria nos últimos 30 dias.</p>
+                    
+                    <div style="overflow-x:auto;">
+                        <table style="width:100%; border-collapse:collapse; color:white; font-size:14px; text-align:left;">
+                            <thead>
+                                <tr style="border-bottom:1px solid var(--ouro);">
+                                    <th style="padding:10px;">Categoria</th>
+                                    <th style="padding:10px;">Total Sessões</th>
+                                    <th style="padding:10px;">Atletas Ativos</th>
+                                    <th style="padding:10px;">Presença Média</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblRelatorioFrequencia">
+                                <tr><td colspan="4" style="text-align:center; padding:15px; color:var(--cinza);">Clique em atualizar para carregar os dados.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
+
       </main>
     </div>
 
@@ -662,12 +687,17 @@
         }
 
         // Sub tabs of Gestão de Usuários
+        
         function setSubTab(subtab) {
             document.getElementById('subtabAtletasBtn').classList.toggle('active', subtab === 'atletas');
             document.getElementById('subtabTreinadoresBtn').classList.toggle('active', subtab === 'treinadores');
+            document.getElementById('subtabAvisosBtn').classList.toggle('active', subtab === 'avisos');
             document.getElementById('subtabAtletasForm').style.display = subtab === 'atletas' ? 'block' : 'none';
             document.getElementById('subtabTreinadoresForm').style.display = subtab === 'treinadores' ? 'block' : 'none';
+            document.getElementById('subtabAvisosForm').style.display = subtab === 'avisos' ? 'block' : 'none';
+            if(subtab === 'avisos') carregarGestaoAvisos();
         }
+
 
         
         async function carregarAvisos() {
@@ -946,7 +976,97 @@
               }
           }
 
-          function logout() {
+          
+        async function carregarGestaoAvisos() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/admin/avisos`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if(res.ok) {
+                    const data = await res.json();
+                    const list = data.avisos || [];
+                    const tbody = document.getElementById('tblAvisosCorpo');
+                    if(!list.length) {
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:10px; color:var(--cinza);">Nenhum aviso no mural.</td></tr>';
+                        return;
+                    }
+                    tbody.innerHTML = list.map(a => {
+                        const d = new Date(a.data_criacao).toLocaleDateString('pt-BR');
+                        return `<tr style="border-bottom:1px solid var(--linha);">
+                            <td style="padding:10px 5px; font-weight:600;">${a.titulo}</td>
+                            <td style="padding:10px 5px; color:var(--cinza);"><span class="recent-tag" style="position:static;">${a.tipo}</span></td>
+                            <td style="padding:10px 5px; color:var(--cinza);">${d}</td>
+                            <td style="padding:10px 5px; text-align:center;"><button onclick="excluirAviso(${a.id})" style="background:none; border:none; color:#f87171; cursor:pointer;" title="Excluir">Excluir</button></td>
+                        </tr>`;
+                    }).join('');
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function salvarAviso() {
+            const titulo = document.getElementById('avisoTitulo').value;
+            const descricao = document.getElementById('avisoDescricao').value;
+            const tipo = document.getElementById('avisoTipo').value;
+            if(!titulo || !descricao) { toast('Preencha título e descrição'); return; }
+            
+            const btn = document.getElementById('btnSalvarAviso');
+            btn.innerHTML = 'Publicando...'; btn.disabled = true;
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/admin/avisos`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ titulo, descricao, tipo })
+                });
+                if(res.ok) {
+                    toast('Aviso publicado no mural!');
+                    document.getElementById('avisoTitulo').value = '';
+                    document.getElementById('avisoDescricao').value = '';
+                    carregarGestaoAvisos();
+                } else throw new Error('Erro da API');
+            } catch(e) { toast('Falha ao salvar aviso'); }
+            finally { btn.innerHTML = 'Publicar Aviso'; btn.disabled = false; }
+        }
+
+        async function excluirAviso(id) {
+            if(!confirm('Remover este aviso do mural?')) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/admin/avisos/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if(res.ok) {
+                    toast('Aviso removido.');
+                    carregarGestaoAvisos();
+                }
+            } catch(e) { toast('Falha ao excluir'); }
+        }
+
+        async function carregarRelatorio() {
+            document.getElementById('tblRelatorioFrequencia').innerHTML = '<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--cinza);"><i class="fas fa-spinner fa-spin"></i> Processando dados...</td></tr>';
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/admin/relatorios`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if(res.ok) {
+                    const data = await res.json();
+                    const list = data.estatisticas || [];
+                    const tbody = document.getElementById('tblRelatorioFrequencia');
+                    if(!list.length) {
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--cinza);">Nenhum dado de chamada registrado.</td></tr>';
+                        return;
+                    }
+                    tbody.innerHTML = list.map(c => `
+                        <tr style="border-bottom:1px solid var(--linha);">
+                            <td style="padding:10px 5px; font-weight:600;">Sub-${c.categoria.replace('Sub-', '')}</td>
+                            <td style="padding:10px 5px; color:var(--cinza);">${c.total_sessoes}</td>
+                            <td style="padding:10px 5px; color:var(--cinza);">${c.atletas_ativos}</td>
+                            <td style="padding:10px 5px; color:var(--ouro); font-weight:bold;">${Math.round(c.presenca_media || 0)}%</td>
+                        </tr>
+                    `).join('');
+                } else { throw new Error('Erro na API'); }
+            } catch(e) { 
+                console.error(e);
+                document.getElementById('tblRelatorioFrequencia').innerHTML = '<tr><td colspan="4" style="text-align:center; padding:15px; color:#f87171;">Erro ao carregar relatório.</td></tr>';
+            }
+        }
+
+        function logout() {
             localStorage.clear();
             window.location.href = 'login.html';
         }
