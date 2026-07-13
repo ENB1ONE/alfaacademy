@@ -570,8 +570,8 @@
                         <div class="field">
                             <label class="f" for="adminTreinadorPerfil">Perfil de Acesso</label>
                             <select id="adminTreinadorPerfil">
-                                <option value="treinador">Treinador</option>
-                                <option value="admin">Administrador</option>
+                                <option value="Treinador">Treinador</option>
+                                <option value="Administrador">Administrador</option>
                             </select>
                         </div>
                     </div>
@@ -694,10 +694,15 @@
                 });
                 if (res.ok) {
                     const data = await res.json();
-                    document.getElementById('valTotalAtletas').textContent = data.totalAtletas ?? 0;
-                    document.getElementById('valTotalTreinadores').textContent = data.totalTreinadores ?? 3;
-                    document.getElementById('valAtletasDM').textContent = data.atletasDM ?? 1;
-                    document.getElementById('valPresencaMedia').textContent = (data.presencaMedia ?? 92) + '%';
+                    if (data && data.success && data.metricas) {
+                        const m = data.metricas;
+                        document.getElementById('valTotalAtletas').textContent = m.total_atletas ?? 0;
+                        document.getElementById('valTotalTreinadores').textContent = m.total_treinadores ?? 3;
+                        document.getElementById('valAtletasDM').textContent = m.total_dm ?? 0;
+                        document.getElementById('valPresencaMedia').textContent = '92%';
+                    } else {
+                        fallbackMetricas();
+                    }
                 } else {
                     fallbackMetricas();
                 }
@@ -713,7 +718,8 @@
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
-                    const list = await res.json();
+                    const listJson = await res.json();
+                    const list = listJson.atletas || [];
                     document.getElementById('valTotalAtletas').textContent = list.length || 0;
                 }
             } catch(e) {}
@@ -725,7 +731,8 @@
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (!res.ok) return;
-                const list = await res.json();
+                const data = await res.json();
+                const list = data.atletas || [];
                 const tbody = document.getElementById('tblAtletasCorpo');
                 if (!list.length) {
                     tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:10px; color:var(--cinza);">Nenhum atleta cadastrado.</td></tr>';
@@ -757,7 +764,8 @@
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (!res.ok) return;
-                const list = await res.json();
+                const data = await res.json();
+                const list = data.treinadores || [];
                 const tbody = document.getElementById('tblTreinadoresCorpo');
                 if (!list.length) {
                     tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:10px; color:var(--cinza);">Nenhum treinador cadastrado.</td></tr>';
@@ -766,8 +774,8 @@
                 tbody.innerHTML = list.map(t => {
                     return `<tr style="border-bottom:1px solid var(--linha);">
                         <td style="padding:10px 5px; font-weight:600;">${t.nome}</td>
-                        <td style="padding:10px 5px; color:var(--cinza);">${t.usuario}</td>
-                        <td style="padding:10px 5px; color:var(--ouro); font-family:'Space Mono',monospace; font-size:11px;">${t.perfil || 'treinador'}</td>
+                        <td style="padding:10px 5px; color:var(--cinza);">${t.usuario_lc || t.usuario || ''}</td>
+                        <td style="padding:10px 5px; color:var(--ouro); font-family:'Space Mono',monospace; font-size:11px;">${t.perfil || 'Treinador'}</td>
                     </tr>`;
                 }).join('');
             } catch(e) {
@@ -826,9 +834,9 @@
                   nome: nomeInput, 
                   categoria: cat, 
                   posicao: pos,
-                  nomeResponsavel: resp,
-                  telefoneResponsavel: tel,
-                  statusMedico: med
+                  nome_responsavel: resp || null,
+                  telefone_responsavel: tel || null,
+                  status_medico: med
               })
             });
             
@@ -873,7 +881,7 @@
                     },
                     body: JSON.stringify({
                         nome: nomeInput,
-                        usuario: user,
+                        usuario_lc: user,
                         senha: pass,
                         perfil: perf
                     })
