@@ -391,7 +391,7 @@
         <div id="adminVisaoSection">
             <!-- Metrics Grid -->
             <div class="metrics-grid">
-                <div class="metric-card">
+                <div class="metric-card" onclick="setAdminTab('usuarios'); setSubTab('atletas')" style="cursor:pointer;" title="Ver ficha de atletas">
                     <div class="metric-header">
                         <span class="metric-title">Total de Atletas</span>
                         <span class="metric-icon">👥</span>
@@ -428,29 +428,10 @@
             <!-- Recent Activities -->
             <div class="recent-section">
                 <h3 class="recent-title">Avisos e Atividades Recentes</h3>
-                <div class="recent-list">
-                    <div class="recent-item">
-                        <div class="recent-info">
-                            <b>Inscrições Abertas Paulista Cup 2026</b>
-                            <span>Divulgado pela comissão técnica central</span>
-                        </div>
-                        <span class="recent-tag">Aviso</span>
-                    </div>
-                    <div class="recent-item">
-                        <div class="recent-info">
-                            <b>Backup do Banco de Dados Concluído</b>
-                            <span>Rotina automática no PostgreSQL na OCI</span>
-                        </div>
-                        <span class="recent-tag">Servidor</span>
-                    </div>
-                    <div class="recent-item">
-                        <div class="recent-info">
-                            <b>Thiago Nascimento registrou treino</b>
-                            <span>Frequência salva para categoria Sub-15</span>
-                        </div>
-                        <span class="recent-tag">Presença</span>
-                    </div>
+                <div class="recent-list" id="listaAvisos">
+                    <div style="color:var(--cinza); padding:10px;">Carregando avisos...</div>
                 </div>
+            </div>
             </div>
         </div>
         
@@ -688,6 +669,34 @@
             document.getElementById('subtabTreinadoresForm').style.display = subtab === 'treinadores' ? 'block' : 'none';
         }
 
+        
+        async function carregarAvisos() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/admin/avisos`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if(res.ok) {
+                    const data = await res.json();
+                    const container = document.getElementById('listaAvisos');
+                    if(data.avisos && data.avisos.length > 0) {
+                        container.innerHTML = data.avisos.map(a => `
+                            <div class="recent-item">
+                                <div class="recent-info">
+                                    <b>${a.titulo}</b>
+                                    <span>${a.descricao}</span>
+                                </div>
+                                <span class="recent-tag">${a.tipo}</span>
+                            </div>
+                        `).join('');
+                    } else {
+                        container.innerHTML = '<div style="color:var(--cinza); padding:10px;">Nenhum aviso no mural.</div>';
+                    }
+                }
+            } catch(e) {
+                console.error('Erro ao carregar avisos', e);
+            }
+        }
+
         async function carregarMetricas() {
             try {
                 const res = await fetch(`${API_BASE_URL}/api/admin/metricas`, {
@@ -700,6 +709,7 @@
                         document.getElementById('valTotalAtletas').textContent = m.total_atletas ?? 0;
                         document.getElementById('valTotalTreinadores').textContent = m.total_treinadores ?? 3;
                         document.getElementById('valAtletasDM').textContent = m.total_dm ?? 0;
+                        carregarAvisos();
                         document.getElementById('valPresencaMedia').textContent = '92%';
                     } else {
                         fallbackMetricas();
