@@ -1,219 +1,70 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Painel do Treinador - Alfa Academy</title>
-    <!-- Anton, Inter, Space Mono -->
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        body { 
-            background-color: #121212; 
-            color: #fff; 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; 
-            padding: 20px; 
-            padding-bottom: 80px; 
-        }
-        .topbar { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-bottom: 2px solid #ffc107; 
-            padding-bottom: 15px; 
-            margin-bottom: 25px; 
-        }
-        .topbar h2 { 
-            margin: 0; 
-            color: #ffc107; 
-            font-family: 'Anton', sans-serif; 
-            letter-spacing: 1px; 
-            text-transform: uppercase;
-        }
-        .btn-logout { 
-            background: transparent; 
-            color: #ffc107; 
-            border: 1px solid #ffc107; 
-            padding: 8px 15px; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 12px;
-            transition: 0.2s;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .btn-logout:hover {
-            background: #ffc107;
-            color: #000;
-        }
-        
-        .filters { margin-bottom: 20px; }
-        .filters label {
-            display: block;
-            font-family: 'Space Mono', monospace;
-            font-size: 11px;
-            color: #ffc107;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-        }
-        .filters select { 
-            width: 100%; 
-            padding: 12px; 
-            background-color: #1e1e1e; 
-            color: #fff; 
-            border: 1px solid #333; 
-            border-radius: 6px; 
-            font-size: 16px; 
-            height: 48px;
-        }
-
-        .atleta-card { 
-            background-color: #1e1e1e; 
-            border: 1px solid #333; 
-            padding: 16px; 
-            border-radius: 12px; 
-            margin-bottom: 14px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-        .atleta-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-        .atleta-nome { 
-            font-weight: 700; 
-            font-size: 17px; 
-            color: #fff;
-        }
-        .atleta-posicao { 
-            font-size: 11px; 
-            color: #aaa; 
-            background: #2a2a2a; 
-            padding: 4px 10px; 
-            border-radius: 6px; 
-            font-family: 'Space Mono', monospace;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        
-        .acoes-presenca { 
-            display: flex; 
-            gap: 8px; 
-        }
-        .btn-chamada { 
-            flex: 1; 
-            padding: 14px 6px; 
-            border: 2px solid transparent; 
-            border-radius: 8px; 
-            font-weight: 800; 
-            font-size: 12px; 
-            cursor: pointer; 
-            transition: all 0.15s; 
-            opacity: 0.35; 
-            font-family: 'Space Mono', monospace;
-            text-align: center;
-            height: 48px;
-        }
-        .btn-chamada.active { 
-            opacity: 1; 
-            border-color: #fff;
-        }
-        .btn-presente { background-color: #28a745; color: white; }
-        .btn-ausente { background-color: #dc3545; color: white; }
-        .btn-justificado { background-color: #ffc107; color: black; }
-
-        .btn-salvar-tudo { 
-            width: 100%; 
-            padding: 18px; 
-            background-color: #ffc107; 
-            color: #000; 
-            border: none; 
-            border-radius: 8px; 
-            font-weight: 900; 
-            font-size: 16px; 
-            text-transform: uppercase; 
-            margin-top: 20px; 
-            cursor: pointer; 
-            transition: 0.2s;
-            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
-            font-family: 'Inter', sans-serif;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .btn-salvar-tudo:hover {
-            background-color: #e0a800;
-        }
-
-        .btn-loading {
-            position: relative;
-            color: transparent !important;
-            pointer-events: none;
-        }
-        .btn-loading::after {
-            content: "";
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            top: 50%;
-            left: 50%;
-            margin-top: -10px;
-            margin-left: -10px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #000;
-            animation: spin 0.8s ease-in-out infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .vazio {
-            text-align: center;
-            padding: 40px;
-            color: var(--cinza);
-            border: 1px dashed var(--linha);
-            border-radius: var(--radius);
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-    <div class="topbar">
-        <h2>Lista de Presença</h2>
-        <div id="topbarActions" style="display:flex; gap:10px; align-items:center;">
+<body class="dark-theme">
+    <!-- Navbar Mobile-First -->
+    <nav class="mobile-nav">
+        <div class="nav-brand">
+            <img src="logo.png" alt="Alfa Academy" onerror="this.src='https://via.placeholder.com/40x40?text=ALFA'">
+            <div class="nav-brand-text">
+                <span class="n">Alfa Academy</span>
+                <span class="p">Coach CRM</span>
+            </div>
+        </div>
+        <div class="nav-actions" id="topbarActions">
             <!-- Injetado dinamicamente -->
         </div>
-    </div>
+    </nav>
 
-    <!-- Filtro de Categorias -->
-    <div class="filters">
-        <label for="turmaSelect">Selecione a Categoria (Turma):</label>
-        <select id="turmaSelect" onchange="carregarCategoria()">
-            <!-- Populated dynamically -->
-        </select>
-    </div>
+    <!-- Content Area -->
+    <main class="coach-container">
+        
+        <!-- HEADER DO DIA -->
+        <header class="day-header">
+            <h1 id="diaAtual">Hoje</h1>
+            <p>Selecione a sessão de treino para realizar a chamada.</p>
+        </header>
 
-    <!-- Botões de Ação Rápida -->
-    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <button class="btn" style="background:#28a745; color:#fff; padding:10px 16px; font-size:12px; border-radius:6px; height: 38px; border: none; font-weight: 700; cursor: pointer;" onclick="marcarTodosPresentes()">Marcar Todos Presentes</button>
-    </div>
+        <!-- VIEW 1: SELEÇÃO DE SESSÃO DE TREINO -->
+        <div id="viewSessoes" class="view-active">
+            <div class="sessoes-grid" id="sessoesContainer">
+                <!-- Cards injetados via JS -->
+            </div>
+        </div>
 
-    <!-- Container da Lista de Atletas -->
-    <div id="listaAtletas">
-        <div class="vazio">Selecione uma categoria para começar.</div>
-    </div>
+        <!-- VIEW 2: LISTA DE CHAMADA -->
+        <div id="viewChamada" class="view-hidden">
+            <div class="chamada-header">
+                <button class="btn-voltar" onclick="voltarSessoes()">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+                <h2 id="tituloSessaoAtual">Sessão Sub-15</h2>
+            </div>
+            
+            <div class="chamada-acoes">
+                <button class="btn-all-present" onclick="marcarTodosPresentes()">
+                    <i class="fas fa-check-double"></i> Marcar Todos Presentes
+                </button>
+            </div>
 
-    <!-- Ação de salvar chamada -->
-    <button class="btn-salvar-tudo" id="btnSalvarChamada" onclick="enviarChamada()">Salvar Chamada do Dia</button>
+            <div class="lista-atletas-crm" id="listaAtletas">
+                <!-- Atletas injetados via JS -->
+            </div>
+
+            <!-- Floating Action Button para Salvar -->
+            <button class="fab-salvar" id="btnSalvarChamada" onclick="enviarChamada()">
+                <i class="fas fa-save"></i> SALVAR CHAMADA
+            </button>
+        </div>
+
+    </main>
 
     <div class="toast" id="toast"></div>
 
@@ -221,7 +72,7 @@
         const API_BASE_URL = 'https://alfa-api.servicesbr.duckdns.org';
         const CATEGORIAS = ['Sub-10','Sub-11','Sub-12','Sub-13','Sub-14','Sub-15','Sub-16','Sub-17','Sub-20'];
         
-        // Session Verification
+        // Verificação de Sessão
         const token = localStorage.getItem('alfa_token');
         const profile = localStorage.getItem('alfa_profile');
         const nome = localStorage.getItem('alfa_nome');
@@ -231,64 +82,76 @@
             window.location.href = 'login.html';
         }
 
-        let currentCategory = CATEGORIAS[0];
+        let currentCategory = null;
         let currentAtletas = [];
-        let localPresencas = {}; // map of athlete_id -> status
+        let localPresencas = {}; // map de id do atleta -> status
 
-        // Init page
         document.addEventListener('DOMContentLoaded', () => {
-            // Populate category select
-            const turmaSelect = document.getElementById('turmaSelect');
-            turmaSelect.innerHTML = CATEGORIAS.map(c => `<option value="${c}">${c}</option>`).join('');
-            
-            // Inject Topbar actions
-            const actionsDiv = document.getElementById('topbarActions');
-            if (profile === 'admin' || profile === 'Administrador') {
-                actionsDiv.innerHTML = `
-                    <button class="btn-logout" style="border-color:var(--ouro); color:var(--ouro);" onclick="window.location.href='dashboard-admin.html'">Voltar ao Painel Admin</button>
-                    <button class="btn-logout" onclick="logout()">Sair</button>
-                `;
-            } else {
-                actionsDiv.innerHTML = `
-                    <button class="btn-logout" onclick="logout()">Sair</button>
-                `;
-            }
-            
-            carregarCategoria();
+            configurarData();
+            configurarNavbar();
+            renderSessoes();
         });
 
-        // Helper Toast
-        function toast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3000);
+        function configurarData() {
+            const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dataStr = new Date().toLocaleDateString('pt-BR', opcoes);
+            document.getElementById('diaAtual').innerText = dataStr.charAt(0).toUpperCase() + dataStr.slice(1);
         }
 
-        function authHeaders() {
-            return {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            };
+        function configurarNavbar() {
+            const actionsDiv = document.getElementById('topbarActions');
+            let html = '';
+            if (profile === 'admin' || profile === 'Administrador') {
+                html += <button class="btn-nav-icon" onclick="window.location.href='dashboard-admin.html'" title="Painel Admin"><i class="fas fa-shield-alt"></i></button>;
+            }
+            html += <button class="btn-nav-icon" onclick="logout()" title="Sair"><i class="fas fa-sign-out-alt"></i></button>;
+            actionsDiv.innerHTML = html;
         }
 
-        async function carregarCategoria() {
-            currentCategory = document.getElementById('turmaSelect').value;
+        // VIEW 1: Renderizar Cards de Sessões
+        function renderSessoes() {
+            const container = document.getElementById('sessoesContainer');
+            container.innerHTML = CATEGORIAS.map(cat => 
+                <div class="sessao-card" onclick="abrirSessao('')">
+                    <div class="sessao-icon"><i class="fas fa-futbol"></i></div>
+                    <div class="sessao-info">
+                        <h3>Treino </h3>
+                        <p>Toque para iniciar chamada</p>
+                    </div>
+                    <div class="sessao-arrow"><i class="fas fa-chevron-right"></i></div>
+                </div>
+            ).join('');
+        }
+
+        function voltarSessoes() {
+            document.getElementById('viewChamada').className = 'view-hidden';
+            document.getElementById('viewSessoes').className = 'view-active';
+            currentCategory = null;
+        }
+
+        // VIEW 2: Abrir Chamada de uma Sessão
+        async function abrirSessao(categoria) {
+            currentCategory = categoria;
+            document.getElementById('tituloSessaoAtual').innerText = \Treino \\;
+            
+            document.getElementById('viewSessoes').className = 'view-hidden';
+            document.getElementById('viewChamada').className = 'view-active';
+            
+            document.getElementById('listaAtletas').innerHTML = '<div class="carregando"><i class="fas fa-spinner fa-spin"></i> Carregando atletas...</div>';
+            
             try {
-                // Fetch Atletas
-                const resAtletas = await fetch(`${API_BASE_URL}/api/chamada/atletas/${encodeURIComponent(currentCategory)}`, {
-                    headers: authHeaders()
+                const res = await fetch(\\/api/chamada/atletas/\\, {
+                    headers: { 'Authorization': \Bearer \\ }
                 });
-                const resJson = await resAtletas.json();
+                const resJson = await res.json();
                 currentAtletas = resJson.atletas || [];
-                
-                // Reset local presence map
-                localPresencas = {};
+                localPresencas = {}; // Resetar presenças locais ao abrir
                 
                 renderListaAtletas();
             } catch(e) {
                 console.error(e);
-                toast('Erro ao buscar dados do servidor.');
+                toast('Erro ao carregar atletas. Tente novamente.');
+                voltarSessoes();
             }
         }
 
@@ -301,39 +164,69 @@
 
             container.innerHTML = currentAtletas.map(a => {
                 const status = localPresencas[a.id] || '';
-                return `
-                <div class="atleta-card" data-id="${a.id}">
-                    <div class="atleta-header">
-                        <span class="atleta-nome">${a.nome}</span>
-                        <span class="atleta-posicao">${a.posicao || 'Sem posição'}</span>
+                // Definir iniciais para o avatar
+                const iniciais = a.nome.substring(0, 2).toUpperCase();
+                
+                return \
+                <div class="crm-atleta-card" data-id="\">
+                    <div class="crm-atleta-info">
+                        <div class="crm-avatar">\</div>
+                        <div class="crm-detalhes">
+                            <h4>\</h4>
+                            <span>\</span>
+                        </div>
                     </div>
-                    <div class="acoes-presenca">
-                        <button class="btn-chamada btn-presente ${status === 'presente' ? 'active' : ''}" onclick="selecionarEstado(this, ${a.id}, 'presente')">PRESENTE</button>
-                        <button class="btn-chamada btn-ausente ${status === 'ausente' ? 'active' : ''}" onclick="selecionarEstado(this, ${a.id}, 'ausente')">AUSENTE</button>
-                        <button class="btn-chamada btn-justificado ${status === 'justificado' ? 'active' : ''}" onclick="selecionarEstado(this, ${a.id}, 'justificado')">JUSTIFICADO</button>
+                    <div class="crm-acoes">
+                        <div class="crm-btn-group">
+                            <button class="crm-btn presente \" onclick="selecionarEstado(this, \, 'presente')">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="crm-btn ausente \" onclick="selecionarEstado(this, \, 'ausente')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <button class="crm-btn justificado \" onclick="selecionarEstado(this, \, 'justificado')">
+                                <i class="fas fa-briefcase-medical"></i>
+                            </button>
+                        </div>
+                        <div class="crm-status-label">
+                            \
+                        </div>
                     </div>
-                </div>`;
+                </div>\;
             }).join('');
         }
 
         function selecionarEstado(btn, aid, status) {
-            const parent = btn.closest('.acoes-presenca');
+            const card = btn.closest('.crm-atleta-card');
+            const group = card.querySelector('.crm-btn-group');
+            const label = card.querySelector('.crm-status-label');
             
+            // Se clicar no já ativo, desmarca
             if (btn.classList.contains('active')) {
                 btn.classList.remove('active');
                 delete localPresencas[aid];
+                label.innerText = 'Pendente';
+                label.style.color = 'var(--cinza)';
             } else {
-                parent.querySelectorAll('.btn-chamada').forEach(b => b.classList.remove('active'));
+                group.querySelectorAll('.crm-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 localPresencas[aid] = status;
+                
+                if (status === 'presente') {
+                    label.innerText = 'Presente';
+                    label.style.color = '#28a745';
+                } else if (status === 'ausente') {
+                    label.innerText = 'Ausente';
+                    label.style.color = '#dc3545';
+                } else {
+                    label.innerText = 'DM / Justif.';
+                    label.style.color = '#f8c146';
+                }
             }
         }
 
-        async function marcarTodosPresentes() {
-            if (!currentAtletas.length) {
-                toast('Sem atletas na lista.');
-                return;
-            }
+        function marcarTodosPresentes() {
+            if (!currentAtletas.length) return;
             currentAtletas.forEach(a => {
                 localPresencas[a.id] = 'presente';
             });
@@ -343,25 +236,29 @@
 
         async function enviarChamada() {
             if (!currentAtletas.length) {
-                toast('Nenhum atleta listado.');
+                toast('Nenhum atleta na lista.');
                 return;
             }
             
             const btn = document.getElementById('btnSalvarChamada');
             
             try {
-                btn.classList.add('btn-loading');
-                toast('Salvando chamada...');
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SALVANDO...';
+                btn.style.opacity = '0.7';
+                btn.disabled = true;
                 
-                // Map localPresencas to backend array, default to 'ausente' if not selected
+                // Tratar quem não foi clicado como 'ausente' por padrão (opcional) ou não enviar
                 const chamadaPayload = currentAtletas.map(a => ({
                     atleta_id: a.id,
                     status: localPresencas[a.id] || 'ausente'
                 }));
                 
-                const res = await fetch(`${API_BASE_URL}/api/chamada/salvar`, {
+                const res = await fetch(\\/api/chamada/salvar\, {
                     method: 'POST',
-                    headers: authHeaders(),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': \Bearer \\
+                    },
                     body: JSON.stringify({ chamada: chamadaPayload })
                 });
 
@@ -370,13 +267,24 @@
                     throw new Error(errData.erro || 'Falha ao salvar chamada.');
                 }
 
-                toast('CHAMADA REGISTRADA COM SUCESSO!');
+                toast('CHAMADA SALVA COM SUCESSO!');
+                setTimeout(() => voltarSessoes(), 1500);
+
             } catch(e) {
                 console.error(e);
                 toast(e.message || 'Falha ao sincronizar chamada.');
             } finally {
-                btn.classList.remove('btn-loading');
+                btn.innerHTML = '<i class="fas fa-save"></i> SALVAR CHAMADA';
+                btn.style.opacity = '1';
+                btn.disabled = false;
             }
+        }
+
+        function toast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
         }
 
         function logout() {
