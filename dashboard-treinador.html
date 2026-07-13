@@ -80,7 +80,7 @@
         }
         
         if (perfil === 'Administrador' || perfil === 'admin') {
-            document.getElementById('btnVoltarAdmin').style.display = 'block';
+            const btn = document.getElementById('btnVoltarAdmin'); if(btn) btn.style.display = 'block';
         }
 
 
