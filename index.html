@@ -61,10 +61,22 @@
   nav.nav-mobile .nav-btn{text-align:center;margin-top:10px}
   
   /* HERO SECTION */
-  section.hero-sec{background:radial-gradient(circle at 50% 30%, #201a08 0%, var(--preto) 70%);padding:90px 0 70px;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--linha)}
+  section.hero-sec{
+    background: linear-gradient(rgba(10,10,12,0.4), rgba(10,10,12,0.95)), url('assets/img/alfa_academy_hero.png') center/cover no-repeat fixed;
+    padding:140px 0 90px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--linha);
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+}
   .hero-content{max-width:800px;margin:0 auto;position:relative;z-index:10}
   .hero-badge{display:inline-block;background:rgba(248,193,70,0.1);border:1.5px solid var(--ouro);color:var(--ouro);font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:6px 14px;border-radius:999px;text-transform:uppercase;letter-spacing:2px;margin-bottom:20px}
-  .hero-sec h1{font-family:'Anton',sans-serif;font-size:56px;letter-spacing:1px;text-transform:uppercase;color:var(--texto);line-height:1.1;margin-bottom:18px}
+  
+  .hero-sec h1{font-family:'Anton',sans-serif;font-size:clamp(3.5rem, 8vw, 6rem);letter-spacing:2px;text-transform:uppercase;color:var(--texto);line-height:1.1;margin-bottom:18px;text-shadow: 0 8px 25px rgba(0,0,0,0.8);}
+
   .hero-sec h1 span{color:var(--ouro)}
   .hero-sec p{font-size:18px;color:var(--cinza);max-width:620px;margin:0 auto 28px}
   .hero-ctas{display:flex;align-items:center;justify-content:center;gap:16px}
@@ -97,10 +109,34 @@
   .cat-desc{font-size:13px;color:var(--cinza);line-height:1.5}
   
   /* SEÇÃO COMPETIÇÕES */
-  section.comp-sec{padding:80px 0;background:var(--preto-2);border-top:1px solid var(--linha);border-bottom:1px solid var(--linha)}
+  section.comp-sec{
+    padding:100px 0;
+    background: linear-gradient(rgba(20,20,22,0.85), rgba(20,20,22,0.95)), url('assets/img/alfa_training_bg.png') center/cover no-repeat fixed;
+    border-top:1px solid var(--linha);
+    border-bottom:1px solid var(--linha);
+}
   .comp-intro{max-width:700px;margin-bottom:40px}
   .comp-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:24px}
-  .comp-card{background:var(--painel);border:1px solid var(--linha);border-radius:var(--radius);padding:28px;box-shadow:var(--sombra-card);display:flex;flex-direction:column;gap:18px}
+  
+  .comp-card{
+      background:rgba(26,26,28,0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border:1px solid rgba(248,193,70,0.15);
+      border-radius:var(--radius);
+      padding:28px;
+      box-shadow:var(--sombra-card);
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      transition: all 0.3s;
+  }
+  .comp-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(248,193,70,0.5);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+  }
+
   .comp-card h3{font-family:'Anton',sans-serif;font-size:22px;letter-spacing:.5px;color:var(--ouro);text-transform:uppercase}
   .comp-card p{font-size:14px;color:var(--cinza);line-height:1.6}
   .comp-tag{align-self:flex-start;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:#111;background:var(--ouro);padding:4px 10px;border-radius:4px;text-transform:uppercase}
@@ -242,7 +278,9 @@
     nav.nav-mobile.open{display:flex}
     .hero-grid{grid-template-columns:1fr}
     .duas{grid-template-columns:1fr}
-    .hero-sec h1{font-size:38px}
+    
+  .hero-sec h1{font-family:'Anton',sans-serif;font-size:clamp(3.5rem, 8vw, 6rem);letter-spacing:2px;text-transform:uppercase;color:var(--texto);line-height:1.1;margin-bottom:18px;text-shadow: 0 8px 25px rgba(0,0,0,0.8);}
+
     .hero-sec p{font-size:15px}
     .dash-header{flex-direction:column;gap:16px;text-align:center}
     .dash-user-info{flex-direction:column}
