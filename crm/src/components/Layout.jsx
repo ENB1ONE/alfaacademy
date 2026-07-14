@@ -32,7 +32,7 @@ export default function Layout() {
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <aside style={{ width: 260, background: 'var(--painel)', borderRight: '1px solid var(--linha)', padding: 20, display: 'flex', flexDirection: 'column' }}>
-        <h2 style={{ color: 'var(--ouro)', marginBottom: 40, textAlign: 'center', fontSize: 22 }}>Alfa Academy</h2>
+        <div style={{ textAlign: 'center', marginBottom: 30 }}><img src='/alfa_logo.png' alt='Alfa Academy' style={{ width: 120 }} /></div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <NavLink to="/" icon={LayoutDashboard}>Visão Geral</NavLink>
           <NavLink to="/chamada" icon={ClipboardCheck}>Lista de Chamada</NavLink>

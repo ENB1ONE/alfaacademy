@@ -1,66 +1,84 @@
 import { useState, useEffect } from 'react';
 import api from '../api';
-import { Check, X, UserMinus, Activity } from 'lucide-react';
+import { Save } from 'lucide-react';
 
 export default function Attendance() {
-  const [atletas, setAtletas] = useState([]);
   const [categoria, setCategoria] = useState('Sub-15');
+  const [atletas, setAtletas] = useState([]);
+  const [presencas, setPresencas] = useState({});
 
-  useEffect(() => {
-    carregarAtletas();
-  }, [categoria]);
-
-  const carregarAtletas = async () => {
+  const loadAtletas = async () => {
     try {
       const res = await api.get('/api/admin/atletas');
-      const filtrados = res.data.filter(a => a.categoria === categoria);
-      setAtletas(filtrados.map(a => ({ ...a, presencaStatus: null })));
+      const list = Array.isArray(res.data) ? res.data : (res.data?.atletas || []);
+      const filtrados = list.filter(a => a.categoria === categoria);
+      setAtletas(filtrados);
+      
+      const obj = {};
+      filtrados.forEach(a => { obj[a.id] = true; });
+      setPresencas(obj);
     } catch (e) {
       console.error(e);
     }
   };
 
-  const handleStatus = (id, status) => {
-    setAtletas(atletas.map(a => a.id === id ? { ...a, presencaStatus: status } : a));
+  useEffect(() => { loadAtletas(); }, [categoria]);
+
+  const handleSave = async () => {
+    try {
+      const payload = atletas.map(a => ({
+        atleta_id: a.id,
+        presente: presencas[a.id]
+      }));
+      await api.post('/api/admin/chamadas', { categoria, presencas: payload });
+      alert('Lista de chamada salva com sucesso!');
+    } catch (e) {
+      alert('Erro ao salvar lista de chamada. Verifique se o servidor suporta esta função.');
+    }
   };
 
-  const submitChamada = async () => {
-    // Aqui seria enviada a lista para a API
-    alert('Chamada registrada com sucesso para o ' + categoria + '!');
-  };
+  const btnStyle = (cat) => ({
+    padding: '8px 16px', borderRadius: 8, background: categoria === cat ? 'var(--ouro)' : 'transparent',
+    color: categoria === cat ? '#000' : 'var(--ouro)', border: '1px solid var(--ouro)', cursor: 'pointer'
+  });
 
   return (
     <div>
-      <h1 style={{ color: 'var(--ouro)' }}>Lista de Chamada Oficial</h1>
-      <p style={{ color: 'var(--cinza)', marginBottom: 30 }}>Marque a frequAancia no próprio campo pelo celular.</p>
-
-      <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
+      <h1 style={{ color: 'var(--ouro)', marginBottom: 10 }}>Lista de Chamada Oficial</h1>
+      <p style={{ color: 'var(--cinza)', marginBottom: 20 }}>Selecione a categoria para realizar a chamada do dia.</p>
+      
+      <div style={{ display: 'flex', gap: 10, marginBottom: 30 }}>
         {['Sub-11', 'Sub-13', 'Sub-15', 'Sub-17', 'Sub-20'].map(cat => (
-          <button key={cat} onClick={() => setCategoria(cat)} className={`btn ${categoria !== cat ? 'outline' : ''}`} style={{ padding: '8px 16px' }}>
-            {cat}
+          <button key={cat} onClick={() => setCategoria(cat)} style={btnStyle(cat)}>{cat}</button>
+        ))}
+      </div>
+
+      <div className="card" style={{ padding: '0 20px 20px 20px' }}>
+        {atletas.length === 0 ? (
+          <p style={{ padding: 20, textAlign: 'center', color: 'var(--cinza)' }}>Nenhum atleta nesta categoria.</p>
+        ) : (
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 20 }}>
+            <thead>
+              <tr><th style={{ textAlign: 'left', padding: 15, borderBottom: '1px solid var(--linha)', color: 'var(--cinza)' }}>Atleta</th><th style={{ textAlign: 'center', padding: 15, borderBottom: '1px solid var(--linha)', color: 'var(--cinza)' }}>Presente?</th></tr>
+            </thead>
+            <tbody>
+              {atletas.map(a => (
+                <tr key={a.id}>
+                  <td style={{ padding: 15, borderBottom: '1px solid var(--linha)' }}><strong>{a.nome}</strong></td>
+                  <td style={{ padding: 15, borderBottom: '1px solid var(--linha)', textAlign: 'center' }}>
+                    <input type="checkbox" checked={presencas[a.id]} onChange={e => setPresencas({...presencas, [a.id]: e.target.checked})} style={{ width: 24, height: 24, accentColor: 'var(--ouro)' }} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        {atletas.length > 0 && (
+          <button onClick={handleSave} className="btn" style={{ width: '100%', marginTop: 20, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
+            <Save size={20} /> Salvar Chamada do {categoria}
           </button>
-        ))}
+        )}
       </div>
-
-      <div style={{ display: 'grid', gap: 15 }}>
-        {atletas.length === 0 ? <p>Nenhum atleta nesta categoria.</p> : null}
-        {atletas.map(a => (
-          <div key={a.id} className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 20px' }}>
-            <div>
-              <strong style={{ display: 'block', fontSize: 18 }}>{a.nome}</strong>
-              <span style={{ color: 'var(--cinza)', fontSize: 14 }}>Posição: {a.posicao}</span>
-            </div>
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button onClick={() => handleStatus(a.id, 'Presente')} style={{ padding: 10, borderRadius: 8, background: a.presencaStatus === 'Presente' ? '#22c55e' : 'rgba(255,255,255,0.1)', color: '#fff' }}><Check size={20}/></button>
-              <button onClick={() => handleStatus(a.id, 'Faltou')} style={{ padding: 10, borderRadius: 8, background: a.presencaStatus === 'Faltou' ? '#ef4444' : 'rgba(255,255,255,0.1)', color: '#fff' }}><X size={20}/></button>
-              <button onClick={() => handleStatus(a.id, 'Justificado')} title="Falta Justificada" style={{ padding: 10, borderRadius: 8, background: a.presencaStatus === 'Justificado' ? '#eab308' : 'rgba(255,255,255,0.1)', color: '#fff' }}><UserMinus size={20}/></button>
-              <button onClick={() => handleStatus(a.id, 'Lesionado')} title="Lesionado/DM" style={{ padding: 10, borderRadius: 8, background: a.presencaStatus === 'Lesionado' ? '#a855f7' : 'rgba(255,255,255,0.1)', color: '#fff' }}><Activity size={20}/></button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <button onClick={submitChamada} className="btn" style={{ marginTop: 30, width: '100%', padding: 20, fontSize: 18 }}>Confirmar Presenças do {categoria}</button>
     </div>
   );
 }
