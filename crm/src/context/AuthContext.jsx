@@ -21,9 +21,9 @@ export function AuthProvider({ children }) {
     const res = await api.post('/api/auth/login', { usuario: username, senha: password });
     if (res.data.token) {
       localStorage.setItem('alfa_token', res.data.token);
-      localStorage.setItem('alfa_perfil', res.data.perfil);
-      localStorage.setItem('alfa_nome', res.data.nome);
-      setUser(res.data);
+      localStorage.setItem('alfa_perfil', res.data.usuario?.perfil);
+      localStorage.setItem('alfa_nome', res.data.usuario?.nome);
+      setUser({ token: res.data.token, perfil: res.data.usuario?.perfil, nome: res.data.usuario?.nome });
       return res.data;
     }
     throw new Error('Falha no login');
