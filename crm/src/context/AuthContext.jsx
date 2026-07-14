@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (username, password) => {
-    const res = await api.post('/api/auth/login', { username, password });
+    const res = await api.post('/api/auth/login', { usuario: username, senha: password });
     if (res.data.token) {
       localStorage.setItem('alfa_token', res.data.token);
       localStorage.setItem('alfa_perfil', res.data.perfil);
