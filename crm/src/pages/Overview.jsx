@@ -9,7 +9,7 @@ export default function Overview() {
     const fetchMetrics = async () => {
       try {
         const res = await api.get('/api/admin/metricas');
-        setMetrics(res.data);
+        setMetrics({ total_atletas: res.data.metricas?.total_atletas || 0, lesionados: res.data.metricas?.total_dm || 0, total_treinadores: res.data.metricas?.total_treinadores || 0 });
       } catch (e) {
         console.error(e);
       }

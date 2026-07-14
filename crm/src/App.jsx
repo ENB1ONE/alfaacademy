@@ -26,8 +26,8 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
             <Route index element={<Overview />} />
-            <Route path="atletas" element={<PrivateRoute allowedRoles={['Administrador', 'admin']}><Athletes /></PrivateRoute>} />
-            <Route path="equipe" element={<PrivateRoute allowedRoles={['Administrador', 'admin']}><Staff /></PrivateRoute>} />
+            <Route path="atletas" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><Athletes /></PrivateRoute>} />
+            <Route path="equipe" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><Staff /></PrivateRoute>} />
             <Route path="chamada" element={<Attendance />} />
           </Route>
         </Routes>

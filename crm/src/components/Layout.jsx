@@ -13,7 +13,7 @@ export default function Layout() {
     navigate('/login');
   };
 
-  const isAdmin = user?.perfil === 'Administrador' || user?.perfil === 'admin';
+  const isAdmin = ['Administrador', 'admin', 'Admin'].includes(user?.perfil);
 
   const NavLink = ({ to, icon: Icon, children }) => {
     const isActive = location.pathname === to || (to !== '/' && location.pathname.startsWith(to));
