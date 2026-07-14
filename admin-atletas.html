@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Administrador - Alfa Academy</title>
+    <!-- Anton, Inter, Space Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
+
+    <div class="mobile-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <button class="hamburger-btn" onclick="toggleSidebar(true)">☰</button>
+            <span style="font-family:'Anton',sans-serif; color:var(--ouro); text-transform:uppercase; font-size:16px;">Alfa Admin</span>
+        </div>
+        <div class="dash-user-avatar" id="mobAvatar" style="width:34px; height:34px; font-size:14px;">A</div>
+    </div>
+
+    <div class="admin-layout">
+      <script src="js/admin-sidebar.js"></script>
+      
+      <main class="admin-content">
+        <header class="admin-content-header">
+          <div class="dash-user-info" style="margin-bottom:0;">
+            <div class="dash-user-avatar" id="desktopAvatar">A</div>
+            <div class="dash-user-meta">
+              <h3 id="adminUserName">Administrador Geral</h3>
+              <p style="font-family:'Space Mono',monospace; font-size:11px; color:var(--ouro); font-weight:700;">Perfil: Administrador</p>
+            </div>
+          </div>
+          <div>
+            <span class="eyebrow" style="color:var(--cinza);" id="adminCurrentTabLabel">Visão Geral</span>
+          </div>
+        </header>
+        
+                            <!-- HERO HEADER -->
+          <div class="hero-header" id="heroHeader">
+              <h1 class="hero-title" id="pageTitle">Gestão de Atletas</h1>
+              <p class="hero-subtitle">Bem-vindo ao centro de comando do Alfa Academy.</p>
+          </div>
+
+<div class="page-content">
+
+                <div class="panel" style="max-width: 500px; background: var(--painel); border: 1px solid var(--linha); padding: 24px; border-radius: var(--radius); box-shadow: var(--sombra);">
+                    <h3 style="font-family:'Anton', sans-serif; color: var(--ouro); margin-bottom: 20px; text-transform: uppercase; font-size: 20px;">Cadastrar Novo Atleta</h3>
+                    
+                    <div class="field">
+                        <label class="f" for="adminAtletaNome">Nome do Atleta</label>
+                        <input id="adminAtletaNome" type="text" placeholder="Nome completo" required>
+                    </div>
+                    
+                    <div class="row2">
+                        <div class="field">
+                            <label class="f" for="adminAtletaCat">Categoria</label>
+                            <select id="adminAtletaCat">
+                                <option value="Sub-10">Sub-10</option>
+                                <option value="Sub-11">Sub-11</option>
+                                <option value="Sub-12">Sub-12</option>
+                                <option value="Sub-13">Sub-13</option>
+                                <option value="Sub-14">Sub-14</option>
+                                <option value="Sub-15">Sub-15</option>
+                                <option value="Sub-16">Sub-16</option>
+                                <option value="Sub-17">Sub-17</option>
+                                <option value="Sub-20">Sub-20</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label class="f" for="adminAtletaPos">Posição</label>
+                            <select id="adminAtletaPos">
+                                <option value="Goleiro">Goleiro</option>
+                                <option value="Zagueiro">Zagueiro</option>
+                                <option value="Lateral Esquerdo">Lateral Esquerdo</option>
+                                <option value="Lateral Direito">Lateral Direito</option>
+                                <option value="Volante">Volante</option>
+                                <option value="Meia">Meia</option>
+                                <option value="Ponta Esquerda">Ponta Esquerda</option>
+                                <option value="Ponta Direita">Ponta Direita</option>
+                                <option value="Centroavante">Centroavante</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="field">
+                        <label class="f" for="adminAtletaResp">Nome do Responsável</label>
+                        <input id="adminAtletaResp" type="text" placeholder="Nome do pai ou mãe">
+                    </div>
+                    
+                    <div class="row2">
+                        <div class="field">
+                            <label class="f" for="adminAtletaTel">Telefone/WhatsApp</label>
+                            <input id="adminAtletaTel" type="text" placeholder="11999999999">
+                        </div>
+                        <div class="field">
+                            <label class="f" for="adminAtletaMed">Status Médico</label>
+                            <select id="adminAtletaMed">
+                                <option value="Apto">Apto</option>
+                                <option value="Lesionado">Lesionado</option>
+                                <option value="Afastado">Afastado</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" id="btnAdminCadAtleta" onclick="adminCadastrarAtleta()">Cadastrar Atleta</button>
+                </div>
+                
+                <!-- Lista de Atletas Cadastrados -->
+                <div class="panel" style="margin-top:20px; background: var(--painel); border: 1px solid var(--linha); padding: 24px; border-radius: var(--radius); box-shadow: var(--sombra);">
+                  <h3 style="font-family:'Anton', sans-serif; color: var(--ouro); margin-bottom: 15px; text-transform: uppercase; font-size: 18px;">Atletas Cadastrados</h3>
+                  <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                      <thead>
+                        <tr style="border-bottom: 1px solid var(--linha); color: var(--ouro);">
+                          <th style="padding: 10px 5px;">Nome</th>
+                          <th style="padding: 10px 5px;">Categoria</th>
+                          <th style="padding: 10px 5px;">Posição</th>
+                          <th style="padding: 10px 5px;">Status Médico</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tblAtletasCorpo">
+                        <!-- Injetado dinamicamente -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            
+</div>
+    </div>
+</body>
+</html>
