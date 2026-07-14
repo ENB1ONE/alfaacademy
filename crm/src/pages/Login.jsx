@@ -25,7 +25,7 @@ export default function Login() {
       height: '100vh',
       alignItems: 'center',
       justifyContent: 'center',
-      background: "linear-gradient(rgba(10,10,12,0.85), rgba(10,10,12,0.6)), url('/alfaacademy/assets/img/alfa_mosaic_bg.png') center/cover no-repeat fixed"
+      background: "linear-gradient(rgba(10,10,12,0.85), rgba(10,10,12,0.6)), url('/alfaacademy/assets/img/alfa_mosaic_bg.png') center/cover no-repeat"
     }}>
       <div className="card" style={{ maxWidth: 400, width: '100%', backdropFilter: 'blur(12px)', background: 'rgba(18,18,20,0.65)' }}>
         <h2 style={{ textAlign: 'center', color: 'var(--ouro)', marginBottom: 20 }}>ALFA ACADEMY</h2>
