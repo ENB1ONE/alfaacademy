@@ -22,7 +22,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter basename="/alfaacademy/crm">
+      <BrowserRouter basename="/alfaacademy/admin">
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
