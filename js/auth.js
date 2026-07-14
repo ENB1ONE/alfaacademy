@@ -27,7 +27,7 @@ document.getElementById('authForm').addEventListener('submit', async (e) => {
         localStorage.setItem('alfa_token', 'mock-admin-token');
         localStorage.setItem('alfa_profile', 'admin');
         localStorage.setItem('alfa_nome', 'Administrador Geral');
-        window.location.href = 'dashboard-admin.html';
+        window.location.href = 'admin-dashboard.html';
         return;
     } else if (user.toLowerCase() === 'reset' && pass === 'reset123') {
         tempToken = 'mock-reset-token';
@@ -94,7 +94,7 @@ function persistAndRedirect(token, perfil, nome) {
     toast('Redirecionando...');
     setTimeout(() => {
         if (perfil === 'admin' || perfil === 'Administrador') {
-            window.location.href = 'dashboard-admin.html';
+            window.location.href = 'admin-dashboard.html';
         } else {
             window.location.href = 'dashboard-treinador.html';
         }
