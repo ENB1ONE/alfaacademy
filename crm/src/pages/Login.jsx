@@ -20,8 +20,14 @@ export default function Login() {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="card" style={{ maxWidth: 400, width: '100%' }}>
+    <div style={{
+      display: 'flex',
+      height: '100vh',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: "linear-gradient(rgba(10,10,12,0.85), rgba(10,10,12,0.6)), url('/alfaacademy/assets/img/alfa_mosaic_bg.png') center/cover no-repeat fixed"
+    }}>
+      <div className="card" style={{ maxWidth: 400, width: '100%', backdropFilter: 'blur(12px)', background: 'rgba(18,18,20,0.65)' }}>
         <h2 style={{ textAlign: 'center', color: 'var(--ouro)', marginBottom: 20 }}>ALFA ACADEMY</h2>
         {error && <div style={{ color: '#ef4444', marginBottom: 10, textAlign: 'center' }}>{error}</div>}
         <form onSubmit={handleSubmit}>
@@ -29,7 +35,7 @@ export default function Login() {
           <input type="text" value={username} onChange={e => setUsername(e.target.value)} required />
           <label>Senha</label>
           <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
-          <button type="submit" className="btn" style={{ width: '100%' }}>Entrar</button>
+          <button type="submit" className="btn" style={{ width: '100%', marginTop: 10 }}>Entrar</button>
         </form>
       </div>
     </div>

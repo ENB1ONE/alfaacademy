@@ -6,7 +6,6 @@ import Layout from './components/Layout';
 import Overview from './pages/Overview';
 import Athletes from './pages/Athletes';
 import Staff from './pages/Staff';
-import Notices from './pages/Notices';
 import Attendance from './pages/Attendance';
 
 const PrivateRoute = ({ children, allowedRoles }) => {
@@ -29,7 +28,6 @@ export default function App() {
             <Route index element={<Overview />} />
             <Route path="atletas" element={<PrivateRoute allowedRoles={['Administrador', 'admin']}><Athletes /></PrivateRoute>} />
             <Route path="equipe" element={<PrivateRoute allowedRoles={['Administrador', 'admin']}><Staff /></PrivateRoute>} />
-            <Route path="avisos" element={<PrivateRoute allowedRoles={['Administrador', 'admin']}><Notices /></PrivateRoute>} />
             <Route path="chamada" element={<Attendance />} />
           </Route>
         </Routes>
