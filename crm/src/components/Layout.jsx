@@ -1,7 +1,7 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, Users, UserCog, ClipboardCheck, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, UserCog, ClipboardCheck, LogOut, Folders } from 'lucide-react';
 
 export default function Layout() {
   const { user, logout } = useContext(AuthContext);
@@ -39,7 +39,14 @@ export default function Layout() {
           {isAdmin && (
             <>
               <NavLink to="/atletas" icon={Users}>Atletas</NavLink>
+              
+          {isAdmin && (
+            <>
               <NavLink to="/equipe" icon={UserCog}>Treinadores</NavLink>
+              <NavLink to="/categorias" icon={Folders}>Categorias</NavLink>
+            </>
+          )}
+
             </>
           )}
         </nav>

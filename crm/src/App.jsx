@@ -6,6 +6,7 @@ import Layout from './components/Layout';
 import Overview from './pages/Overview';
 import Athletes from './pages/Athletes';
 import Staff from './pages/Staff';
+import Categories from './pages/Categories';
 import Attendance from './pages/Attendance';
 
 const PrivateRoute = ({ children, allowedRoles }) => {
