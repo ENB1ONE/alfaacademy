@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import { useContext } from 'react';
 import Login from './pages/Login';
@@ -22,7 +22,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter basename="/alfaacademy/admin">
+      <HashRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
@@ -33,7 +33,7 @@ export default function App() {
             <Route path="chamada" element={<Attendance />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </AuthProvider>
   );
 }
