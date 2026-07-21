@@ -33,10 +33,10 @@ export default function Layout() {
   };
 
   return (
-        <div className="layout" style={{ display: 'flex', minHeight: '100vh', flexDirection: 'column' }}>
+        <div className="layout">
       
       {/* Mobile Header */}
-      <div className="mobile-header" style={{ display: 'none', justifyContent: 'space-between', alignItems: 'center', padding: '15px 20px', background: 'var(--painel)', borderBottom: '1px solid var(--linha)' }}>
+      <div className="mobile-header">
         <img src='/alfaacademy/admin/alfa_logo.png' alt='Alfa Academy' style={{ width: 100 }} />
         <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ background: 'none', border: 'none', color: 'var(--ouro)' }}>
           {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -45,7 +45,7 @@ export default function Layout() {
 
       <div style={{ display: 'flex', flexGrow: 1, position: 'relative' }}>
 
-      <aside className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`} style={{ width: 260, flexShrink: 0, background: 'var(--painel)', borderRight: '1px solid var(--linha)', padding: 20, display: 'flex', flexDirection: 'column' }}>
+      <aside className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
         <div style={{ textAlign: 'center', marginBottom: 30 }}><img src='/alfaacademy/admin/alfa_logo.png' alt='Alfa Academy' style={{ width: 120 }} /></div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <NavLink to="/" icon={LayoutDashboard}>Visão Geral</NavLink>
@@ -69,7 +69,7 @@ export default function Layout() {
           <LogOut size={18} /> Sair
         </button>
       </aside>
-      <main className="main-content" style={{ flexGrow: 1, padding: 40, overflowY: 'auto', overflowX: 'hidden' }}>
+      <main className="main-content">
         <Outlet />
       </main>
       </div>
