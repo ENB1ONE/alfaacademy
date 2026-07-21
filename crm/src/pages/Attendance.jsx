@@ -3,15 +3,26 @@ import api from '../api';
 import { Save } from 'lucide-react';
 
 export default function Attendance() {
-  const [categoria, setCategoria] = useState('Sub-15');
+  const [categoria, setCategoria] = useState('');
+  const [categorias, setCategorias] = useState([]);
   const [atletas, setAtletas] = useState([]);
   const [presencas, setPresencas] = useState({});
+
+  
+  const loadCategorias = async () => {
+    try {
+      const res = await api.get('/api/admin/categorias');
+      const cats = res.data.categorias || res.data;
+      setCategorias(cats);
+      if (cats.length > 0 && !categoria) setCategoria(cats[0].id);
+    } catch (e) { console.error(e); }
+  };
 
   const loadAtletas = async () => {
     try {
       const res = await api.get('/api/admin/atletas');
       const list = Array.isArray(res.data) ? res.data : (res.data?.atletas || []);
-      const filtrados = list.filter(a => a.categoria === categoria);
+      const filtrados = list.filter(a => a.categoria_id === categoria);
       setAtletas(filtrados);
       
       const obj = {};
@@ -22,7 +33,8 @@ export default function Attendance() {
     }
   };
 
-  useEffect(() => { loadAtletas(); }, [categoria]);
+  useEffect(() => { loadCategorias(); }, []);
+  useEffect(() => { if(categoria) loadAtletas(); }, [categoria]);
 
   const handleSave = async () => {
     try {
@@ -30,7 +42,7 @@ export default function Attendance() {
         atleta_id: a.id,
         presente: presencas[a.id]
       }));
-      await api.post('/api/admin/chamadas', { categoria, presencas: payload });
+      await api.post('/api/admin/chamadas', { categoria_id: categoria, presencas: payload });
       alert('Lista de chamada salva com sucesso!');
     } catch (e) {
       alert('Erro ao salvar lista de chamada. Verifique se o servidor suporta esta função.');
@@ -48,9 +60,7 @@ export default function Attendance() {
       <p style={{ color: 'var(--cinza)', marginBottom: 20 }}>Selecione a categoria para realizar a chamada do dia.</p>
       
       <div style={{ display: 'flex', gap: 10, marginBottom: 30 }}>
-        {['Sub-11', 'Sub-13', 'Sub-15', 'Sub-17', 'Sub-20'].map(cat => (
-          <button key={cat} onClick={() => setCategoria(cat)} style={btnStyle(cat)}>{cat}</button>
-        ))}
+        {categorias.map(cat => (<button key={cat.id} onClick={() => setCategoria(cat.id)} style={btnStyle(cat.id)}>{cat.nome}</button>))}
       </div>
 
       <div className="card" style={{ padding: '0 20px 20px 20px' }}>
@@ -75,7 +85,7 @@ export default function Attendance() {
         )}
         {atletas.length > 0 && (
           <button onClick={handleSave} className="btn" style={{ width: '100%', marginTop: 20, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
-            <Save size={20} /> Salvar Chamada do {categoria}
+            <Save size={20} /> Salvar Chamada
           </button>
         )}
       </div>

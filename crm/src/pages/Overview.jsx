@@ -24,7 +24,7 @@ export default function Overview() {
         const list = Array.isArray(r2.data) ? r2.data : (r2.data?.atletas || []);
         
         const counts = {};
-        list.forEach(a => { counts[a.categoria] = (counts[a.categoria] || 0) + 1; });
+        list.forEach(a => { const cat = a.categoria_nome || a.categoria || 'Sem Categoria'; counts[cat] = (counts[cat] || 0) + 1; });
         const chartData = Object.keys(counts).map(k => ({ name: k, value: counts[k] }));
         setDist(chartData);
 
