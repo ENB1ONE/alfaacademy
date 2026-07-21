@@ -32,6 +32,7 @@ export default function App() {
             <Route path="equipe" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><Staff /></PrivateRoute>} />
             <Route path="categorias" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><Categories /></PrivateRoute>} />
             <Route path="chamada" element={<Attendance />} />
+            <Route path="historico-chamadas" element={<AttendanceHistory />} />
           </Route>
         </Routes>
       </HashRouter>

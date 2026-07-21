@@ -1,7 +1,7 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { LayoutDashboard, Users, UserCog, ClipboardCheck, LogOut, Folders } from 'lucide-react';
+import { LayoutDashboard, Users, UserCog, ClipboardCheck, BookOpen, LogOut, Folders } from 'lucide-react';
 
 export default function Layout() {
   const { user, logout } = useContext(AuthContext);
@@ -35,7 +35,7 @@ export default function Layout() {
         <div style={{ textAlign: 'center', marginBottom: 30 }}><img src='/alfaacademy/admin/alfa_logo.png' alt='Alfa Academy' style={{ width: 120 }} /></div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <NavLink to="/" icon={LayoutDashboard}>Visão Geral</NavLink>
-          <NavLink to="/chamada" icon={ClipboardCheck}>Lista de Chamada</NavLink>
+          <NavLink to="/chamada" icon={ClipboardCheck, BookOpen}>Lista de Chamada</NavLink>
           {isAdmin && (
             <>
               <NavLink to="/atletas" icon={Users}>Atletas</NavLink>
