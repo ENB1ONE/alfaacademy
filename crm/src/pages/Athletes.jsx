@@ -7,7 +7,16 @@ export default function Athletes() {
   const [showForm, setShowForm] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [form, setForm] = useState({ nome: '', categoria: 'Sub-15', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto' });
+  const [categorias, setCategorias] = useState([]);
+  const [form, setForm] = useState({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto' });
+
+  
+  const loadCategorias = async () => {
+    try {
+      const res = await api.get('/api/admin/categorias');
+      setCategorias(res.data.categorias || res.data);
+    } catch (e) { console.error(e); }
+  };
 
   const loadAtletas = async () => {
     try {
@@ -18,7 +27,7 @@ export default function Athletes() {
     }
   };
 
-  useEffect(() => { loadAtletas(); }, []);
+  useEffect(() => { loadAtletas(); loadCategorias(); }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +41,7 @@ export default function Athletes() {
       setEditMode(false);
       setEditingId(null);
       loadAtletas();
-      setForm({ nome: '', categoria: 'Sub-15', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto' });
+      setForm({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto' });
     } catch (e) {
       alert('Erro ao salvar atleta');
     }
@@ -75,7 +84,7 @@ export default function Athletes() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
         <h1 style={{ color: 'var(--ouro)' }}>Gestão de Atletas</h1>
-        <button onClick={() => { setShowForm(!showForm); setEditMode(false); setForm({ nome: '', categoria: 'Sub-15', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto' }); }} className="btn" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <button onClick={() => { setShowForm(!showForm); setEditMode(false); setForm({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto' }); }} className="btn" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Plus size={20} /> Novo Atleta
         </button>
       </div>
@@ -85,7 +94,7 @@ export default function Athletes() {
           <h3>{editMode ? 'Editar Atleta' : 'Cadastrar Novo Atleta'}</h3>
           <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15, marginTop: 15 }}>
             <div style={{ gridColumn: '1 / -1' }}><label>Nome Completo</label><input type="text" value={form.nome} onChange={e=>setForm({...form, nome: e.target.value})} required /></div>
-            <div><label>Categoria</label><select value={form.categoria} onChange={e=>setForm({...form, categoria: e.target.value})}><option>Sub-11</option><option>Sub-13</option><option>Sub-15</option><option>Sub-17</option><option>Sub-20</option></select></div>
+            <div><label>Categoria</label><select value={form.categoria_id || ""} onChange={e=>setForm({...form, categoria_id: e.target.value})}><option value="">Selecione...</option>{categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}</select></div>
             <div><label>Posição</label><input type="text" value={form.posicao} onChange={e=>setForm({...form, posicao: e.target.value})} placeholder="Ex: Atacante" /></div>
             <div><label>Nome do Responsável</label><input type="text" value={form.nome_responsavel} onChange={e=>setForm({...form, nome_responsavel: e.target.value})} /></div>
             <div><label>Telefone</label><input type="text" value={form.telefone_responsavel} onChange={e=>setForm({...form, telefone_responsavel: e.target.value})} /></div>
