@@ -2,7 +2,7 @@ import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useState } from 'react';
-import { LayoutDashboard, Menu, X,, Users, UserCog, ClipboardCheck, BookOpen, LogOut, Folders } from 'lucide-react';
+import { LayoutDashboard, Menu, X, Users, UserCog, ClipboardCheck, BookOpen, LogOut, Folders } from 'lucide-react';
 
 export default function Layout() {
   const { user, logout } = useContext(AuthContext);
