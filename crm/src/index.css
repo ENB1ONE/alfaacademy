@@ -34,11 +34,7 @@ input:focus { border-color: var(--ouro); }
 
 
 /* ====== RESPONSIVIDADE (MOBILE) ====== */
-@media (max-width: 768px) {
-  /* Layout principal */
-  .layout {
-    flex-direction: column !important;
-  }
+
   
   /* Esconde a sidebar lateral no mobile (ou transforma num menu de topo/baixo) */
   .sidebar {
@@ -100,5 +96,32 @@ input:focus { border-color: var(--ouro); }
   }
   div[style*="grid-template-columns: 1fr 1fr"] {
     grid-template-columns: 1fr !important;
+  }
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+  .layout { flex-direction: column !important; }
+  .mobile-header { display: flex !important; }
+  .sidebar { 
+    position: absolute; 
+    top: 0; 
+    left: -100%; 
+    width: 100% !important; 
+    height: 100%; 
+    z-index: 999; 
+    transition: left 0.3s ease; 
+    border-right: none !important;
+  }
+  .sidebar.open {
+    left: 0;
+  }
+  .main-content {
+    padding: 20px !important;
+    width: 100%;
+  }
+  /* Ocultar a logo de dentro da sidebar no mobile porque já tem no header */
+  .sidebar > div:first-child {
+    display: none !important;
   }
 }
