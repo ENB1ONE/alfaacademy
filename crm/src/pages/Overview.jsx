@@ -14,9 +14,9 @@ export default function Overview() {
       try {
         const res = await api.get('/api/admin/metricas');
         setMetrics({
-          total_atletas: res.data.metricas?.total_atletas || 0,
-          lesionados: res.data.metricas?.total_dm || 0,
-          total_treinadores: res.data.metricas?.total_treinadores || 0
+          total_atletas: res.data.total_atletas || 0,
+          lesionados: res.data.departamento_medico || 0,
+          total_treinadores: res.data.equipe_tecnica || 0
         });
 
         // Fetch atletas to build the category distribution chart
