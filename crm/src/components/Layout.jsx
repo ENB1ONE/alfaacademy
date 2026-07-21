@@ -36,6 +36,7 @@ export default function Layout() {
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
           <NavLink to="/" icon={LayoutDashboard}>Visão Geral</NavLink>
           <NavLink to="/chamada" icon={ClipboardCheck}>Lista de Chamada</NavLink>
+          <NavLink to="/historico-chamadas" icon={BookOpen}>Histórico de Presenças</NavLink>
           {isAdmin && (
             <>
               <NavLink to="/atletas" icon={Users}>Atletas</NavLink>
