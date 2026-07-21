@@ -96,9 +96,7 @@ input:focus { border-color: var(--ouro); }
   }
   div[style*="grid-template-columns: 1fr 1fr"] {
     grid-template-columns: 1fr !important;
-  }
-}
-
+  } 
 /* Responsive Layout */
 @media (max-width: 768px) {
   .layout { flex-direction: column !important; }
