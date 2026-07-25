@@ -9,6 +9,7 @@ import Staff from './pages/Staff';
 import Categories from './pages/Categories';
 import Attendance from './pages/Attendance';
 import AttendanceHistory from './pages/AttendanceHistory';
+import AttendanceReport from './pages/AttendanceReport';
 
 const PrivateRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useContext(AuthContext);
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="categorias" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><Categories /></PrivateRoute>} />
             <Route path="chamada" element={<Attendance />} />
             <Route path="historico-chamadas" element={<AttendanceHistory />} />
+            <Route path="frequencia" element={<AttendanceReport />} />
           </Route>
         </Routes>
       </HashRouter>

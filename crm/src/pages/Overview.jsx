@@ -76,8 +76,8 @@ export default function Overview() {
           </div>
         </div>
 
-        <div className="card">
-          <h3 style={{ marginBottom: 20 }}>Top Atletas Faltosos</h3>
+        <div className="card" style={{ cursor: 'pointer', transition: '0.2s' }} onClick={() => navigate('/frequencia')} title="Ver Relatório Completo">
+          <h3 style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between' }}>Top Atletas Faltosos <span style={{fontSize: 12, color: 'var(--ouro)', fontWeight: 'normal'}}>Ver Todos &rarr;</span></h3>
           <div style={{ height: 300 }}>
             {metrics.top_faltosos.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
