@@ -1,205 +1,249 @@
 ﻿import React, { useState, useEffect } from 'react';
 import api from '../api';
-import { CalendarDays, Users, Trophy, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalIcon, Plus, X, Users } from 'lucide-react';
 
 export default function AttendanceHistory() {
-  const [activeTab, setActiveTab] = useState('ranking');
-  const [ranking, setRanking] = useState([]);
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [treinos, setTreinos] = useState([]);
-  const [modalTreino, setModalTreino] = useState(null);
+  const [categorias, setCategorias] = useState([]);
+  const [selectedDayEvents, setSelectedDayEvents] = useState(null); // { date: string, events: [] }
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+  const [scheduleCat, setScheduleCat] = useState('');
+  const [scheduleTitle, setScheduleTitle] = useState('Jogo Oficial');
+  
+  // Detalhes do treino selecionado para ver presenças
+  const [viewingTreinoId, setViewingTreinoId] = useState(null);
   const [presencasDetail, setPresencasDetail] = useState([]);
 
   useEffect(() => {
-    loadData();
+    loadTreinos();
+    loadCategorias();
   }, []);
 
-  const loadData = async () => {
+  const loadTreinos = async () => {
     try {
-      const resRank = await api.get('/api/admin/historico-chamadas');
-      setRanking(resRank.data.ranking || []);
-
-      const resTreinos = await api.get('/api/admin/treinos');
-      setTreinos(resTreinos.data.treinos || []);
+      const res = await api.get('/api/admin/treinos');
+      setTreinos(res.data);
     } catch (e) {
       console.error(e);
     }
   };
 
-  const openTreino = async (treino) => {
+  const loadCategorias = async () => {
     try {
-      const res = await api.get(`/api/admin/treinos/${treino.id}/presencas`);
-      setPresencasDetail(res.data.presencas || []);
-      setModalTreino(treino);
-    } catch (e) {
-      alert("Erro ao carregar lista de presenças");
+      const res = await api.get('/api/admin/categorias');
+      setCategorias(res.data.categorias || res.data);
+      if ((res.data.categorias || res.data).length > 0) {
+          setScheduleCat((res.data.categorias || res.data)[0].id);
+      }
+    } catch (e) { console.error(e); }
+  };
+
+  const loadPresencas = async (id) => {
+    try {
+      const res = await api.get(`/api/admin/treinos/${id}/presencas`);
+      setPresencasDetail(res.data);
+      setViewingTreinoId(id);
+    } catch (e) { console.error(e); }
+  };
+
+  // Funções do Calendário
+  const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
+  const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
+
+  const handlePrevMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+  };
+
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+  const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+  const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
+
+  const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
+  const days = [];
+  for (let i = 0; i < firstDay; i++) {
+    days.push(null);
+  }
+  for (let i = 1; i <= daysInMonth; i++) {
+    days.push(i);
+  }
+
+  const today = new Date();
+  const isToday = (day) => {
+    return day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear();
+  };
+
+  const getEventsForDay = (day) => {
+    if (!day) return [];
+    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    return treinos.filter(t => t.data.startsWith(dateStr));
+  };
+
+  const openDay = (day) => {
+    if (!day) return;
+    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const evts = getEventsForDay(day);
+    setSelectedDayEvents({ date: dateStr, day, events: evts });
+    setViewingTreinoId(null);
+    setIsModalOpen(true);
+    setIsScheduleOpen(false);
+  };
+
+  const handleScheduleEvent = async () => {
+    try {
+      await api.post('/api/admin/eventos', {
+        categoria_id: scheduleCat,
+        data: selectedDayEvents.date,
+        titulo: scheduleTitle,
+        tipo: 'JOGO'
+      });
+      alert('Evento agendado com sucesso!');
+      loadTreinos();
+      setIsScheduleOpen(false);
+      setIsModalOpen(false);
+    } catch(e) {
+      alert('Erro ao agendar evento.');
     }
   };
 
-  const getFrequenciaColor = (perc) => {
-    if (perc >= 80) return '#10b981'; // Green
-    if (perc >= 50) return '#eab308'; // Yellow
-    return '#ef4444'; // Red
-  };
-
   return (
-    <div style={{ color: 'var(--texto)' }}>
-      <h2 style={{ color: 'var(--ouro)', marginBottom: 20 }}>Relatórios de Frequência</h2>
+    <div>
+      <h1 style={{ color: 'var(--ouro)', marginBottom: 10 }}>Histórico & Agenda</h1>
+      <p style={{ color: 'var(--cinza)', marginBottom: 20 }}>Navegue pelo calendário para ver presenças ou agendar jogos.</p>
+      
+      <div className="card" style={{ padding: 20 }}>
+        {/* Calendar Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <button onClick={handlePrevMonth} className="btn outline" style={{ padding: '8px 12px' }}><ChevronLeft size={20} /></button>
+          <h2 style={{ margin: 0, color: 'var(--texto)' }}>{monthNames[currentMonth]} {currentYear}</h2>
+          <button onClick={handleNextMonth} className="btn outline" style={{ padding: '8px 12px' }}><ChevronRight size={20} /></button>
+        </div>
 
-      <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
-        <button 
-          onClick={() => setActiveTab('ranking')}
-          style={{ 
-            background: activeTab === 'ranking' ? 'var(--ouro)' : 'var(--fundo-card)', 
-            color: activeTab === 'ranking' ? '#000' : 'var(--cinza)',
-            border: 'none', padding: '10px 20px', borderRadius: 8, cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: 8, fontWeight: 'bold'
-          }}>
-          <Trophy size={18} /> Ranking de Atletas
-        </button>
-        <button 
-          onClick={() => setActiveTab('treinos')}
-          style={{ 
-            background: activeTab === 'treinos' ? 'var(--ouro)' : 'var(--fundo-card)', 
-            color: activeTab === 'treinos' ? '#000' : 'var(--cinza)',
-            border: 'none', padding: '10px 20px', borderRadius: 8, cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: 8, fontWeight: 'bold'
-          }}>
-          <CalendarDays size={18} /> Histórico de Treinos
-        </button>
+        {/* Calendar Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 10, textAlign: 'center', marginBottom: 10 }}>
+          {weekDays.map(wd => (
+            <div key={wd} style={{ fontWeight: 'bold', color: 'var(--cinza)', fontSize: 14 }}>{wd}</div>
+          ))}
+        </div>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 10 }}>
+          {days.map((day, idx) => {
+            const evts = getEventsForDay(day);
+            const hasJogo = evts.some(e => e.tipo === 'JOGO');
+            
+            return (
+              <div 
+                key={idx} 
+                onClick={() => openDay(day)}
+                style={{ 
+                  aspectRatio: '1/1', 
+                  background: day ? 'rgba(255,255,255,0.02)' : 'transparent', 
+                  borderRadius: 8,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  cursor: day ? 'pointer' : 'default',
+                  border: isToday(day) ? '2px solid var(--ouro)' : '1px solid var(--linha)',
+                  position: 'relative'
+                }}
+              >
+                {day && (
+                  <>
+                    <span style={{ fontSize: 18, color: isToday(day) ? 'var(--ouro)' : 'var(--texto)', fontWeight: isToday(day) ? 'bold' : 'normal' }}>{day}</span>
+                    <div style={{ display: 'flex', gap: 3, marginTop: 5, flexWrap: 'wrap', justifyContent: 'center' }}>
+                      {evts.map(e => (
+                         <div key={e.id} style={{ width: 6, height: 6, borderRadius: '50%', background: e.tipo === 'JOGO' ? '#EF4444' : 'var(--ouro)' }} title={e.titulo} />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {activeTab === 'ranking' && (
-        <div className="card">
-          <h3 style={{ marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Users size={20} color="var(--ouro)"/> Desempenho Geral de Frequência
-          </h3>
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr>
-                  <th style={{ padding: '10px', borderBottom: '1px solid #333' }}>Atleta</th>
-                  <th style={{ padding: '10px', borderBottom: '1px solid #333' }}>Categoria</th>
-                  <th style={{ padding: '10px', borderBottom: '1px solid #333', textAlign: 'center' }}>Presenças</th>
-                  <th style={{ padding: '10px', borderBottom: '1px solid #333', textAlign: 'center' }}>Faltas</th>
-                  <th style={{ padding: '10px', borderBottom: '1px solid #333', textAlign: 'center' }}>Total</th>
-                  <th style={{ padding: '10px', borderBottom: '1px solid #333', textAlign: 'center' }}>Frequência (%)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ranking.length === 0 ? (
-                  <tr><td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>Nenhum dado encontrado.</td></tr>
-                ) : (
-                  ranking.map((r, idx) => (
-                    <tr key={idx} style={{ borderBottom: '1px solid #222' }}>
-                      <td style={{ padding: '10px' }}><strong>{r.nome}</strong></td>
-                      <td style={{ padding: '10px' }}>{r.categoria_nome}</td>
-                      <td style={{ padding: '10px', textAlign: 'center', color: '#10b981' }}>{r.presencas}</td>
-                      <td style={{ padding: '10px', textAlign: 'center', color: '#ef4444' }}>{r.faltas}</td>
-                      <td style={{ padding: '10px', textAlign: 'center' }}>{r.total_treinos}</td>
-                      <td style={{ padding: '10px', textAlign: 'center' }}>
-                        <span style={{ 
-                          background: getFrequenciaColor(r.frequencia), 
-                          color: '#fff', padding: '4px 8px', borderRadius: 12, fontWeight: 'bold', fontSize: 14
-                        }}>
-                          {r.frequencia}%
-                        </span>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+      {/* Modal do Dia */}
+      {isModalOpen && selectedDayEvents && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div className="card" style={{ width: '90%', maxWidth: 600, maxHeight: '90vh', overflowY: 'auto', position: 'relative' }}>
+            <button onClick={() => setIsModalOpen(false)} style={{ position: 'absolute', top: 15, right: 15, background: 'none', color: 'var(--cinza)' }}><X size={24} /></button>
+            
+            <h2 style={{ marginBottom: 5, color: 'var(--ouro)' }}>Dia {selectedDayEvents.day} de {monthNames[currentMonth]}</h2>
+            
+            {!isScheduleOpen ? (
+                <>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                        <span style={{ color: 'var(--cinza)' }}>{selectedDayEvents.events.length} evento(s) neste dia</span>
+                        <button onClick={() => setIsScheduleOpen(true)} className="btn" style={{ padding: '6px 12px', fontSize: 12, display: 'flex', gap: 5, alignItems: 'center' }}><Plus size={16} /> Agendar Jogo Oficial</button>
+                    </div>
 
-      {activeTab === 'treinos' && (
-        <div className="card">
-          <h3 style={{ marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <CalendarDays size={20} color="var(--ouro)"/> Treinos Realizados
-          </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 15 }}>
-            {treinos.length === 0 ? (
-              <p>Nenhum treino registrado ainda.</p>
+                    {selectedDayEvents.events.length === 0 ? (
+                        <p style={{ textAlign: 'center', padding: 40, color: 'var(--cinza)' }}>Nenhum evento registrado.</p>
+                    ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                            {selectedDayEvents.events.map(evt => (
+                                <div key={evt.id} style={{ border: '1px solid var(--linha)', borderRadius: 8, padding: 15 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: viewingTreinoId === evt.id ? 15 : 0 }}>
+                                        <div>
+                                            <h3 style={{ margin: 0, color: evt.tipo === 'JOGO' ? '#EF4444' : 'var(--texto)' }}>{evt.titulo || 'Treino'}</h3>
+                                            <p style={{ margin: 0, color: 'var(--cinza)', fontSize: 14 }}>Categoria: {evt.categoria_nome}</p>
+                                        </div>
+                                        {viewingTreinoId !== evt.id ? (
+                                            <button onClick={() => loadPresencas(evt.id)} className="btn outline" style={{ padding: '6px 12px', fontSize: 12 }}>Ver Presenças</button>
+                                        ) : (
+                                            <button onClick={() => setViewingTreinoId(null)} className="btn outline" style={{ padding: '6px 12px', fontSize: 12, border: 'none' }}>Ocultar</button>
+                                        )}
+                                    </div>
+                                    
+                                    {viewingTreinoId === evt.id && (
+                                        <div style={{ background: 'rgba(0,0,0,0.2)', padding: 10, borderRadius: 8 }}>
+                                            {presencasDetail.length === 0 ? <p style={{ margin:0, color:'var(--cinza)' }}>Nenhum atleta na lista.</p> : (
+                                                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 5 }}>
+                                                    {presencasDetail.map(p => (
+                                                        <li key={p.atleta_id} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: 4, fontSize: 14 }}>
+                                                            <span>{p.atleta_nome}</span>
+                                                            <span style={{ color: p.status === 'P' ? '#10B981' : '#EF4444', fontWeight: 'bold' }}>{p.status}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </>
             ) : (
-              treinos.map(t => (
-                <div key={t.id} 
-                     onClick={() => openTreino(t)}
-                     style={{ 
-                       background: 'var(--fundo)', padding: 15, borderRadius: 8, border: '1px solid #333',
-                       cursor: 'pointer', transition: '0.2s'
-                     }}
-                     onMouseOver={e => e.currentTarget.style.borderColor = 'var(--ouro)'}
-                     onMouseOut={e => e.currentTarget.style.borderColor = '#333'}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                    <span style={{ color: 'var(--cinza)', fontSize: 14 }}>
-                      {new Date(t.data + 'T00:00:00').toLocaleDateString('pt-BR')}
-                    </span>
-                    <span style={{ background: '#333', padding: '2px 8px', borderRadius: 4, fontSize: 12 }}>
-                      {t.categoria_nome}
-                    </span>
-                  </div>
-                  <h4 style={{ marginBottom: 15 }}>{t.titulo}</h4>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
-                    <span style={{ color: '#10b981' }}>{t.presentes} Presentes</span>
-                    <span style={{ color: '#ef4444' }}>{t.ausentes} Faltas</span>
-                  </div>
+                <div style={{ marginTop: 20 }}>
+                    <h3 style={{ marginBottom: 15 }}>Novo Jogo Oficial</h3>
+                    <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Categoria</label>
+                    <select value={scheduleCat} onChange={e => setScheduleCat(e.target.value)} style={{ marginBottom: 15 }}>
+                        {categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
+                    </select>
+                    
+                    <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Título do Evento</label>
+                    <input type="text" value={scheduleTitle} onChange={e => setScheduleTitle(e.target.value)} style={{ marginBottom: 20 }} />
+                    
+                    <div style={{ display: 'flex', gap: 10 }}>
+                        <button onClick={handleScheduleEvent} className="btn" style={{ flex: 1 }}>Confirmar Agendamento</button>
+                        <button onClick={() => setIsScheduleOpen(false)} className="btn outline" style={{ flex: 1 }}>Cancelar</button>
+                    </div>
                 </div>
-              ))
             )}
           </div>
         </div>
       )}
-
-      {/* Modal Detalhe do Treino */}
-      {modalTreino && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
-          background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
-        }}>
-          <div style={{ 
-            background: 'var(--fundo-card)', width: '90%', maxWidth: 500, borderRadius: 12, padding: 25,
-            maxHeight: '90vh', overflowY: 'auto'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <h3 style={{ color: 'var(--ouro)' }}>Lista de Presença</h3>
-              <button onClick={() => setModalTreino(null)} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}>
-                <X size={24} />
-              </button>
-            </div>
-            
-            <p style={{ color: 'var(--cinza)', marginBottom: 5 }}>Data: {new Date(modalTreino.data + 'T00:00:00').toLocaleDateString('pt-BR')}</p>
-            <p style={{ color: 'var(--cinza)', marginBottom: 20 }}>Categoria: {modalTreino.categoria_nome}</p>
-
-            <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr>
-                  <th style={{ paddingBottom: 10, borderBottom: '1px solid #333' }}>Atleta</th>
-                  <th style={{ textAlign: 'right', paddingBottom: 10, borderBottom: '1px solid #333' }}>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {presencasDetail.map((p, idx) => (
-                  <tr key={idx}>
-                    <td style={{ padding: '10px 0', borderBottom: '1px solid #222' }}>{p.atleta_nome}</td>
-                    <td style={{ textAlign: 'right', padding: '10px 0', borderBottom: '1px solid #222' }}>
-                      <span style={{ 
-                        background: p.status === 'P' ? '#10b98122' : '#ef444422',
-                        color: p.status === 'P' ? '#10b981' : '#ef4444',
-                        padding: '4px 12px', borderRadius: 4, fontWeight: 'bold'
-                      }}>
-                        {p.status === 'P' ? 'Presente' : 'Falta'}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }
