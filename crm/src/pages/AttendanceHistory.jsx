@@ -43,7 +43,7 @@ export default function AttendanceHistory() {
   const loadPresencas = async (id) => {
     try {
       const res = await api.get(`/api/admin/treinos/${id}/presencas`);
-      setPresencasDetail(res.data);
+      setPresencasDetail(res.data.presencas || res.data || []);
       setViewingTreinoId(id);
     } catch (e) { console.error(e); }
   };
@@ -119,7 +119,7 @@ export default function AttendanceHistory() {
       <h1 style={{ color: 'var(--ouro)', marginBottom: 10 }}>Histórico & Agenda</h1>
       <p style={{ color: 'var(--cinza)', marginBottom: 20 }}>Navegue pelo calendário para ver presenças ou agendar jogos.</p>
       
-      <div className="card" style={{ padding: 20 }}>
+      <div className="card" style={{ padding: 20, maxWidth: 900, margin: '0 auto' }}>
         {/* Calendar Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
           <button onClick={handlePrevMonth} className="btn outline" style={{ padding: '8px 12px' }}><ChevronLeft size={20} /></button>
@@ -143,15 +143,17 @@ export default function AttendanceHistory() {
               <div 
                 key={idx} 
                 onClick={() => openDay(day)}
-                style={{ 
-                                    background: day ? 'rgba(255,255,255,0.02)' : 'transparent', 
+                style={{
+                  minHeight: 90,
+                  padding: '10px 5px',
+                  background: day ? 'rgba(255,255,255,0.03)' : 'transparent', 
                   borderRadius: 8,
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'center',
+                  justifyContent: 'flex-start',
                   alignItems: 'center',
                   cursor: day ? 'pointer' : 'default',
-                  border: isToday(day) ? '2px solid var(--ouro)' : '1px solid var(--linha)',
+                  border: day ? (isToday(day) ? '2px solid var(--ouro)' : '1px solid var(--linha)') : 'none',
                   position: 'relative'
                 }}
               >
