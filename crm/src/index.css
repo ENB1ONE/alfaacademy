@@ -109,3 +109,15 @@ input:focus { border-color: var(--ouro); }
     white-space: nowrap;
   }
 }
+
+.calendar-day {
+  min-height: 80px;
+  padding: 5px;
+}
+@media (max-width: 768px) {
+  .calendar-day {
+    aspect-ratio: 1 / 1;
+    min-height: auto;
+    padding: 0px;
+  }
+}

@@ -144,8 +144,7 @@ export default function AttendanceHistory() {
                 key={idx} 
                 onClick={() => openDay(day)}
                 style={{ 
-                  aspectRatio: '1/1', 
-                  background: day ? 'rgba(255,255,255,0.02)' : 'transparent', 
+                                    background: day ? 'rgba(255,255,255,0.02)' : 'transparent', 
                   borderRadius: 8,
                   display: 'flex',
                   flexDirection: 'column',
