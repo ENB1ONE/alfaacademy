@@ -24,7 +24,7 @@ export default function AttendanceHistory() {
   const loadTreinos = async () => {
     try {
       const res = await api.get('/api/admin/treinos');
-      setTreinos(res.data);
+      setTreinos(res.data.treinos || res.data || []);
     } catch (e) {
       console.error(e);
     }
