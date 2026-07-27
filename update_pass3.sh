@@ -1,0 +1,2 @@
+cd /opt/alfa-api
+node -e 'const bcrypt = require("bcryptjs"); const { Pool } = require("pg"); const pool = new Pool({ user: "alfa_user", host: "localhost", database: "alfa_db", password: "alfa123", port: 5432 }); const hash = bcrypt.hashSync("alfa@2026", 10); pool.query("UPDATE treinadores SET senha_hash = $1 WHERE usuario_lc = $2", [hash, "alfadmin"]).then(() => { console.log("Password updated!"); process.exit(0); });'

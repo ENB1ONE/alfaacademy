@@ -1,4 +1,4 @@
-
+﻿new_css = """
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
@@ -244,3 +244,6 @@ tbody tr:last-child td { border-bottom: none; }
     padding: 5px;
   }
 }
+"""
+with open("crm/src/index.css", "w", encoding="utf-8") as f:
+    f.write(new_css)

@@ -28,11 +28,15 @@ export default function Layout() {
     const isActive = location.pathname === to || (to !== '/' && location.pathname.startsWith(to));
     return (
       <Link to={to} onClick={() => setIsMobileMenuOpen(false)} style={{
-        display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px',
+        display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px',
         color: isActive ? 'var(--ouro)' : 'var(--texto)',
-        background: isActive ? 'rgba(248, 193, 70, 0.1)' : 'transparent',
-        borderRadius: 8, transition: '0.2s', textDecoration: 'none'
-      }}>
+        background: isActive ? 'linear-gradient(90deg, rgba(248, 193, 70, 0.15) 0%, transparent 100%)' : 'transparent',
+        borderLeft: isActive ? '3px solid var(--ouro)' : '3px solid transparent',
+        borderRadius: '0 8px 8px 0', transition: 'var(--transition)', textDecoration: 'none',
+        fontWeight: isActive ? '600' : '400'
+      }} className="nav-link"
+      onMouseEnter={(e) => { if(!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
+      onMouseLeave={(e) => { if(!isActive) e.currentTarget.style.background = 'transparent'; }}>
         <Icon size={20} color={isActive ? 'var(--ouro)' : 'var(--cinza)'} /> {children}
       </Link>
     );
@@ -73,7 +77,7 @@ export default function Layout() {
           )}
         </nav>
         
-        <div style={{ marginTop: 'auto', marginBottom: 20, background: 'rgba(255,255,255,0.03)', borderRadius: 8, padding: 15, border: '1px solid var(--linha)' }}>
+        <div className="card interactive" style={{ marginTop: 'auto', marginBottom: 20, padding: 16, background: 'rgba(0,0,0,0.2)' }}>
             <h4 style={{ color: 'var(--ouro)', margin: '0 0 10px 0', fontSize: 14 }}>Próximos Jogos (10 dias)</h4>
             {proximosJogos.length === 0 ? (
                 <p style={{ margin: 0, color: 'var(--cinza)', fontSize: 12 }}>Nenhum jogo agendado.</p>
