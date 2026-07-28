@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 import api from '../api';
-import { Activity, Plus, Edit, Trash2 } from 'lucide-react';
+import { Activity, Plus, Edit, Trash2, Search, Filter } from 'lucide-react';
 
 export default function Athletes() {
   const [atletas, setAtletas] = useState([]);
@@ -10,7 +11,24 @@ export default function Athletes() {
   const [categorias, setCategorias] = useState([]);
   const [form, setForm] = useState({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto' });
 
+  const { user } = useContext(AuthContext);
+  const isAdmin = ['Administrador', 'admin', 'Admin'].includes(user?.perfil);
   
+  const [treinadores, setTreinadores] = useState([]);
+  const [filtroCategoria, setFiltroCategoria] = useState('');
+  const [filtroTreinador, setFiltroTreinador] = useState('');
+  const [busca, setBusca] = useState('');
+
+
+  
+  const loadTreinadores = async () => {
+    if (!isAdmin) return;
+    try {
+      const res = await api.get('/api/admin/treinadores');
+      setTreinadores(res.data.treinadores || []);
+    } catch (e) { console.error(e); }
+  };
+
   const loadCategorias = async () => {
     try {
       const res = await api.get('/api/admin/categorias');
@@ -27,7 +45,7 @@ export default function Athletes() {
     }
   };
 
-  useEffect(() => { loadAtletas(); loadCategorias(); }, []);
+  useEffect(() => { loadAtletas(); loadCategorias(); loadTreinadores(); }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,7 +96,33 @@ export default function Athletes() {
   
   const tdStyle = { padding: '15px', borderBottom: '1px solid var(--linha)' };
 
-  const list = Array.isArray(atletas) ? atletas : (atletas?.atletas || []);
+  const rawList = Array.isArray(atletas) ? atletas : (atletas?.atletas || []);
+  
+  const list = rawList.filter(a => {
+    let matchCat = true;
+    let matchTreinador = true;
+    let matchBusca = true;
+
+    if (filtroCategoria) {
+      matchCat = a.categoria_id === parseInt(filtroCategoria);
+    }
+    
+    if (filtroTreinador && treinadores.length > 0) {
+      const t = treinadores.find(tr => tr.id === parseInt(filtroTreinador));
+      if (t && t.categorias) {
+        matchTreinador = t.categorias.some(c => c.id === a.categoria_id);
+      } else {
+        matchTreinador = false;
+      }
+    }
+
+    if (busca) {
+      matchBusca = a.nome.toLowerCase().includes(busca.toLowerCase());
+    }
+
+    return matchCat && matchTreinador && matchBusca;
+  });
+
 
   return (
     <div>
@@ -103,7 +147,37 @@ export default function Athletes() {
         </div>
       )}
 
-      <div className="card" style={{ padding: '0 20px 20px 20px' }}>
+
+      <div className="card" style={{ padding: 20, marginBottom: 30 }}>
+        <h4 style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 15, color: 'var(--ouro)' }}><Filter size={18} /> Filtros de Pesquisa</h4>
+        <div style={{ display: 'grid', gridTemplateColumns: isAdmin ? '1fr 1fr 1fr' : '1fr 1fr', gap: 15 }}>
+          <div>
+            <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Buscar por Nome</label>
+            <div style={{ position: 'relative' }}>
+               <Search size={16} style={{ position: 'absolute', top: 12, left: 10, color: 'var(--cinza)' }} />
+               <input type="text" placeholder="Nome do atleta..." value={busca} onChange={e => setBusca(e.target.value)} style={{ marginTop: 0, paddingLeft: 35, marginBottom: 0 }} />
+            </div>
+          </div>
+          <div>
+            <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Filtrar Categoria</label>
+            <select value={filtroCategoria} onChange={e => setFiltroCategoria(e.target.value)} style={{ marginTop: 0, marginBottom: 0 }}>
+              <option value="">Todas as Categorias</option>
+              {categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
+            </select>
+          </div>
+          {isAdmin && (
+            <div>
+              <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Filtrar Professor</label>
+              <select value={filtroTreinador} onChange={e => setFiltroTreinador(e.target.value)} style={{ marginTop: 0, marginBottom: 0 }}>
+                <option value="">Todos os Professores</option>
+                {treinadores.map(t => <option key={t.id} value={t.id}>{t.nome}</option>)}
+              </select>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="card table-container" style={{ padding: '0 20px 20px 20px' }}>
         <table >
           <thead>
             <tr><th style={{...tdStyle, color: 'var(--cinza)', textAlign: 'left'}}>Nome</th><th style={{...tdStyle, color: 'var(--cinza)', textAlign: 'left'}}>Categoria</th><th style={{...tdStyle, color: 'var(--cinza)', textAlign: 'left'}}>Posição</th><th style={{...tdStyle, color: 'var(--cinza)', textAlign: 'left'}}>Status Médico</th><th style={{...tdStyle, color: 'var(--cinza)', textAlign: 'left'}}>Ações</th></tr>
