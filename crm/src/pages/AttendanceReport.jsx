@@ -67,10 +67,11 @@ export default function AttendanceReport() {
     let matchBusca = true;
 
     if (filtroCategoria) {
-      // O backend antigo não retorna categoria_id em frequencia-geral, então vamos buscar pelo nome
       const cat = categorias.find(c => String(c.id) === String(filtroCategoria));
       if (cat) {
-        matchCat = r.categoria_nome === cat.nome;
+        const rName = String(r.categoria_nome || r.categoria || "").trim().toLowerCase();
+        const cName = String(cat.nome || "").trim().toLowerCase();
+        matchCat = (rName === cName) || (String(r.categoria_id) === String(filtroCategoria));
       } else {
         matchCat = String(r.categoria_id) === String(filtroCategoria);
       }
