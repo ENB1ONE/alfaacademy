@@ -104,13 +104,13 @@ export default function Athletes() {
     let matchBusca = true;
 
     if (filtroCategoria) {
-      matchCat = a.categoria_id === parseInt(filtroCategoria);
+      matchCat = String(a.categoria_id) === String(filtroCategoria);
     }
     
     if (filtroTreinador && treinadores.length > 0) {
-      const t = treinadores.find(tr => tr.id === parseInt(filtroTreinador));
+      const t = treinadores.find(tr => String(tr.id) === String(filtroTreinador));
       if (t && t.categorias) {
-        matchTreinador = t.categorias.some(c => c.id === a.categoria_id);
+        matchTreinador = t.categorias.some(c => String(c.id) === String(a.categoria_id));
       } else {
         matchTreinador = false;
       }

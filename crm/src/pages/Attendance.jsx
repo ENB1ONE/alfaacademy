@@ -24,7 +24,7 @@ export default function Attendance() {
     try {
       const res = await api.get('/api/admin/atletas');
       const list = Array.isArray(res.data) ? res.data : (res.data?.atletas || []);
-      const filtrados = list.filter(a => a.categoria_id === categoria);
+      const filtrados = list.filter(a => String(a.categoria_id) === String(categoria));
       setAtletas(filtrados);
       
       const obj = {};
@@ -61,8 +61,14 @@ export default function Attendance() {
       <h1 style={{ color: 'var(--ouro)', marginBottom: 10 }}>Lista de Chamada Oficial</h1>
       <p style={{ color: 'var(--cinza)', marginBottom: 20 }}>Selecione a categoria para realizar a chamada do dia.</p>
       
-      <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
-        {categorias.map(cat => (<button key={cat.id} onClick={() => setCategoria(cat.id)} style={btnStyle(cat.id)}>{cat.nome}</button>))}
+      <div className="card" style={{ padding: 20, marginBottom: 20 }}>
+        <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)', fontSize: 14 }}>Filtrar Categoria</label>
+        <select value={categoria} onChange={e => setCategoria(e.target.value)} style={{ margin: 0 }}>
+            {categorias.length === 0 && <option value="">Carregando categorias...</option>}
+            {categorias.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.nome}</option>
+            ))}
+        </select>
       </div>
 
       <div className="card" style={{ padding: '20px', marginBottom: 20, display: 'flex', gap: 20, flexWrap: 'wrap' }}>
@@ -84,7 +90,8 @@ export default function Attendance() {
         {atletas.length === 0 ? (
           <p style={{ padding: 20, textAlign: 'center', color: 'var(--cinza)' }}>Nenhum atleta nesta categoria.</p>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 20 }}>
+          <div className="table-container">
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr><th style={{ textAlign: 'left', padding: 15, borderBottom: '1px solid var(--linha)', color: 'var(--cinza)' }}>Atleta</th><th style={{ textAlign: 'center', padding: 15, borderBottom: '1px solid var(--linha)', color: 'var(--cinza)' }}>Presente?</th></tr>
             </thead>
@@ -98,7 +105,8 @@ export default function Attendance() {
                 </tr>
               ))}
             </tbody>
-          </table>
+            </table>
+          </div>
         )}
         {atletas.length > 0 && (
           <button onClick={handleSave} className="btn" style={{ width: '100%', marginTop: 20, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
