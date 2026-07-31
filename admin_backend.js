@@ -485,14 +485,14 @@ router.get('/frequencia-geral', verificarAcesso, async (req, res) => {
     try {
         let q = `
             SELECT 
-                a.id, a.nome, c.nome as categoria_nome,
+                a.id, a.nome, a.categoria_id, c.nome as categoria_nome,
                 COUNT(p.atleta_id) as total_eventos,
-                SUM(CASE WHEN p.status = 'P' THEN 1 ELSE 0 END) as total_presencas,
-                SUM(CASE WHEN p.status = 'F' THEN 1 ELSE 0 END) as total_faltas
+                COALESCE(SUM(CASE WHEN p.status = 'P' THEN 1 ELSE 0 END), 0) as total_presencas,
+                COALESCE(SUM(CASE WHEN p.status = 'F' THEN 1 ELSE 0 END), 0) as total_faltas
             FROM atletas a
             LEFT JOIN categorias c ON a.categoria_id = c.id
             LEFT JOIN presencas p ON a.id = p.atleta_id
-            GROUP BY a.id, a.nome, c.nome
+            GROUP BY a.id, a.nome, a.categoria_id, c.nome
             ORDER BY total_faltas DESC;
         `;
         let vals = [];
@@ -500,16 +500,16 @@ router.get('/frequencia-geral', verificarAcesso, async (req, res) => {
         if (req.usuario.perfil === 'Treinador') {
             q = `
                 SELECT 
-                    a.id, a.nome, c.nome as categoria_nome,
+                    a.id, a.nome, a.categoria_id, c.nome as categoria_nome,
                     COUNT(p.atleta_id) as total_eventos,
-                    SUM(CASE WHEN p.status = 'P' THEN 1 ELSE 0 END) as total_presencas,
-                    SUM(CASE WHEN p.status = 'F' THEN 1 ELSE 0 END) as total_faltas
+                    COALESCE(SUM(CASE WHEN p.status = 'P' THEN 1 ELSE 0 END), 0) as total_presencas,
+                    COALESCE(SUM(CASE WHEN p.status = 'F' THEN 1 ELSE 0 END), 0) as total_faltas
                 FROM atletas a
                 LEFT JOIN categorias c ON a.categoria_id = c.id
                 LEFT JOIN presencas p ON a.id = p.atleta_id
                 JOIN treinador_categoria tc ON a.categoria_id = tc.categoria_id
                 WHERE tc.treinador_id = $1
-                GROUP BY a.id, a.nome, c.nome
+                GROUP BY a.id, a.nome, a.categoria_id, c.nome
                 ORDER BY total_faltas DESC;
             `;
             vals.push(req.usuario.id);
@@ -517,6 +517,30 @@ router.get('/frequencia-geral', verificarAcesso, async (req, res) => {
         
         const r = await pool.query(q, vals);
         res.json(r.rows);
+    } catch (e) {
+        console.error("ERRO FREQUENCIA-GERAL:", e);
+        res.status(500).json({ error: e.message });
+    }
+});
+
+
+// ==========================================
+// AGENDAMENTO DE EVENTOS (JOGOS / EVENTOS FUTUROS)
+// ==========================================
+router.post('/eventos', verificarAcesso, async (req, res) => {
+    const { categoria_id, data, titulo, tipo } = req.body;
+    try {
+        const eventTitle = titulo || 'Jogo Oficial';
+        const eventType = tipo || 'JOGO';
+        
+        const check = await pool.query("SELECT id FROM treinos WHERE categoria_id = $1 AND data = $2 AND titulo = $3", [categoria_id, data, eventTitle]);
+        if (check.rows.length > 0) {
+            return res.json({ success: true, message: 'Evento já existente.' });
+        }
+        
+        await pool.query("INSERT INTO treinos (categoria_id, data, titulo, tipo) VALUES ($1, $2, $3, $4)", [categoria_id, data, eventTitle, eventType]);
+        registrarLog(req.usuario.id, `Agendou evento ${eventTitle} para Categoria ID ${categoria_id}`, null);
+        res.json({ success: true });
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
