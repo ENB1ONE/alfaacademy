@@ -67,7 +67,13 @@ export default function AttendanceReport() {
     let matchBusca = true;
 
     if (filtroCategoria) {
-      matchCat = String(r.categoria_id) === String(filtroCategoria);
+      // O backend antigo não retorna categoria_id em frequencia-geral, então vamos buscar pelo nome
+      const cat = categorias.find(c => String(c.id) === String(filtroCategoria));
+      if (cat) {
+        matchCat = r.categoria_nome === cat.nome;
+      } else {
+        matchCat = String(r.categoria_id) === String(filtroCategoria);
+      }
     }
 
     if (filtroTreinador && treinadores.length > 0) {
