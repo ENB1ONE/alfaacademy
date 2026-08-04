@@ -529,15 +529,7 @@ router.get('/frequencia-geral', verificarAcesso, async (req, res) => {
 // ==========================================
 // AGENDAMENTO DE EVENTOS (JOGOS / EVENTOS FUTUROS)
 // ==========================================
-router.post('/eventos', verificarAcesso, async (req, res) => {
-    const { categoria_id, data, titulo, tipo } = req.body;
-    try {
-        const eventTitle = titulo || 'Jogo Oficial';
-        const eventType = tipo || 'JOGO';
-        
-        const check = await pool.query("SELECT id FROM treinos WHERE categoria_id = $1 AND data = $2 AND titulo = $3", [categoria_id, data, eventTitle]);
-        if (check.rows.length > 0) {
-            return res.json({ success: true, message: 'Evento já existente.' });
+
         }
         
         await pool.query("INSERT INTO treinos (categoria_id, data, titulo, tipo) VALUES ($1, $2, $3, $4)", [categoria_id, data, eventTitle, eventType]);
