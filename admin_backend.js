@@ -439,18 +439,24 @@ router.get('/treinos/:id/presencas', verificarAcesso, async (req, res) => {
 // AGENDAMENTO DE EVENTOS (JOGOS / EVENTOS FUTUROS)
 // ==========================================
 router.post('/eventos', verificarAcesso, async (req, res) => {
-    const { categoria_id, data, titulo, tipo } = req.body;
+    const { categorias_ids, data, titulo, tipo } = req.body;
     try {
         const eventTitle = titulo || 'Jogo Oficial';
         const eventType = tipo || 'JOGO';
         
-        const check = await pool.query("SELECT id FROM treinos WHERE categoria_id = $1 AND data = $2 AND titulo = $3", [categoria_id, data, eventTitle]);
-        if (check.rows.length > 0) {
-            return res.json({ success: true, message: 'Evento já existente.' });
+        if (!categorias_ids || !Array.isArray(categorias_ids) || categorias_ids.length === 0) {
+            return res.status(400).json({ error: 'Nenhuma categoria selecionada.' });
         }
         
-        await pool.query("INSERT INTO treinos (categoria_id, data, titulo, tipo) VALUES ($1, $2, $3, $4)", [categoria_id, data, eventTitle, eventType]);
-        registrarLog(req.usuario.id, `Agendou evento ${eventTitle} para Categoria ID ${categoria_id}`, null);
+        // Iterate through all selected categories and insert a game for each
+        for (let cat_id of categorias_ids) {
+            const check = await pool.query("SELECT id FROM treinos WHERE categoria_id = $1 AND data = $2 AND titulo = $3", [cat_id, data, eventTitle]);
+            if (check.rows.length === 0) {
+                await pool.query("INSERT INTO treinos (categoria_id, data, titulo, tipo) VALUES ($1, $2, $3, $4)", [cat_id, data, eventTitle, eventType]);
+            }
+        }
+        
+        registrarLog(req.usuario.id, `Agendou evento ${eventTitle} para Múltiplas Categorias`, null);
         res.json({ success: true });
     } catch (e) {
         res.status(500).json({ error: e.message });
@@ -526,24 +532,10 @@ router.get('/frequencia-geral', verificarAcesso, async (req, res) => {
 });
 
 
-// ==========================================
-// AGENDAMENTO DE EVENTOS (JOGOS / EVENTOS FUTUROS)
-// ==========================================
-
-        }
-        
-        await pool.query("INSERT INTO treinos (categoria_id, data, titulo, tipo) VALUES ($1, $2, $3, $4)", [categoria_id, data, eventTitle, eventType]);
-        registrarLog(req.usuario.id, `Agendou evento ${eventTitle} para Categoria ID ${categoria_id}`, null);
-        res.json({ success: true });
-    } catch (e) {
-        res.status(500).json({ error: e.message });
-    }
-});
 
 
-// ==========================================
+
 // SETUP DB (JOGOS)
-// ==========================================
 router.get('/setup-db', async (req, res) => {
     try {
         await pool.query(`
@@ -584,7 +576,7 @@ router.get('/jogos/:id/convocados', verificarAcesso, async (req, res) => {
     try {
         const { id } = req.params;
         const gameRes = await pool.query("SELECT categoria_id FROM treinos WHERE id = $1", [id]);
-        if (gameRes.rows.length === 0) return res.status(404).json({error: 'Jogo nAo encontrado'});
+        if (gameRes.rows.length === 0) return res.status(404).json({error: 'Jogo não encontrado'});
         const catId = gameRes.rows[0].categoria_id;
 
         const r = await pool.query(`
@@ -617,7 +609,7 @@ router.post('/jogos/:id/convocacao', verificarAcesso, async (req, res) => {
         }
         
         await pool.query("COMMIT");
-        registrarLog(req.usuario.id, `Atualizou convocaA Ao do jogo ID ${id}`, { atletas: atletas_ids });
+        registrarLog(req.usuario.id, `Atualizou convocação do jogo ID ${id}`, { atletas: atletas_ids });
         res.json({ success: true });
     } catch (e) {
         await pool.query("ROLLBACK");
@@ -625,5 +617,5 @@ router.post('/jogos/:id/convocacao', verificarAcesso, async (req, res) => {
     }
 });
 
-module.exports = router;
 
+module.exports = router;

@@ -12,7 +12,7 @@ export default function Games() {
   const [categorias, setCategorias] = useState([]);
   
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ titulo: '', data: '', categoria_id: '' });
+  const [form, setForm] = useState({ titulo: '', data: '', categorias_ids: [] });
   
   const [showConvocacao, setShowConvocacao] = useState(false);
   const [selectedJogo, setSelectedJogo] = useState(null);
@@ -50,7 +50,7 @@ export default function Games() {
     try {
       await api.post('/api/admin/eventos', { ...form, tipo: 'JOGO' });
       setShowModal(false);
-      setForm({ titulo: '', data: '', categoria_id: '' });
+      setForm({ titulo: '', data: '', categorias_ids: [] });
       loadJogos();
     } catch (e) {
       alert('Erro ao criar jogo: ' + (e.response?.data?.error || e.message));
@@ -161,11 +161,28 @@ export default function Games() {
                 <input type="date" className="input" required value={form.data} onChange={e => setForm({...form, data: e.target.value})} />
               </div>
               <div>
-                <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Categoria</label>
-                <select className="input" required value={form.categoria_id} onChange={e => setForm({...form, categoria_id: e.target.value})}>
-                  <option value="">Selecione...</option>
-                  {categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
-                </select>
+                <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Categorias (Selecione uma ou mais)</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, background: 'rgba(255,255,255,0.02)', padding: 10, borderRadius: 8, border: '1px solid var(--linha)' }}>
+                  {categorias.map(c => (
+                    <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--texto)' }}>
+                      <input 
+                        type="checkbox" 
+                        checked={form.categorias_ids.includes(c.id.toString())}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          const strId = c.id.toString();
+                          setForm(prev => {
+                            const newIds = checked 
+                              ? [...prev.categorias_ids, strId] 
+                              : prev.categorias_ids.filter(id => id !== strId);
+                            return { ...prev, categorias_ids: newIds };
+                          });
+                        }}
+                      />
+                      {c.nome}
+                    </label>
+                  ))}
+                </div>
               </div>
               <button type="submit" className="btn primary" style={{ marginTop: 10 }}>Salvar Jogo</button>
             </form>
