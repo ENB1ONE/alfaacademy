@@ -78,7 +78,7 @@ export default function Layout() {
           )}
         </nav>
         
-        <div className="card interactive" style={{ marginTop: 'auto', marginBottom: 20, padding: 16, background: 'rgba(0,0,0,0.2)' }}>
+        <div className="card interactive" onClick={() => navigate('/jogos')} style={{ marginTop: 'auto', marginBottom: 20, padding: 16, background: 'rgba(0,0,0,0.2)', cursor: 'pointer' }}>
             <h4 style={{ color: 'var(--ouro)', margin: '0 0 10px 0', fontSize: 14 }}>Próximos Jogos (10 dias)</h4>
             {proximosJogos.length === 0 ? (
                 <p style={{ margin: 0, color: 'var(--cinza)', fontSize: 12 }}>Nenhum jogo agendado.</p>

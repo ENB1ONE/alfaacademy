@@ -146,14 +146,14 @@ export default function AttendanceHistory() {
                 style={{
                   minHeight: 90,
                   padding: '10px 5px',
-                  background: day ? 'rgba(255,255,255,0.03)' : 'transparent', 
+                  background: hasJogo ? 'rgba(239, 68, 68, 0.15)' : (day ? 'rgba(255,255,255,0.03)' : 'transparent'), 
                   borderRadius: 8,
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'flex-start',
                   alignItems: 'center',
                   cursor: day ? 'pointer' : 'default',
-                  border: day ? (isToday(day) ? '2px solid var(--ouro)' : '1px solid var(--linha)') : 'none',
+                  border: day ? (isToday(day) ? '2px solid var(--ouro)' : (hasJogo ? '1px solid #EF4444' : '1px solid var(--linha)')) : 'none',
                   position: 'relative'
                 }}
               >
