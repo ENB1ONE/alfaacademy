@@ -229,26 +229,47 @@ export default function Games() {
                 <input type="date" className="input" required value={form.data} onChange={e => setForm({...form, data: e.target.value})} />
               </div>
               <div>
-                <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Categorias Participantes (Selecione uma ou mais)</label>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, background: 'rgba(255,255,255,0.02)', padding: 10, borderRadius: 8, border: '1px solid var(--linha)' }}>
-                  {categorias.map(c => (
-                    <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--texto)' }}>
-                      <input 
-                        type="checkbox" 
-                        checked={form.categorias_ids.includes(c.id.toString())}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          const strId = c.id.toString();
-                          setForm(prev => {
-                            const newIds = checked ? [...prev.categorias_ids, strId] : prev.categorias_ids.filter(id => id !== strId);
-                            return { ...prev, categorias_ids: newIds };
-                          });
-                        }}
-                      />
-                      {c.nome}
-                    </label>
+                <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Categorias Participantes</label>
+                <select 
+                  className="input" 
+                  value="" 
+                  onChange={(e) => {
+                    const strId = e.target.value;
+                    if (!strId) return;
+                    if (!form.categorias_ids.includes(strId)) {
+                        setForm(prev => ({ ...prev, categorias_ids: [...prev.categorias_ids, strId] }));
+                    }
+                  }}
+                  style={{ marginBottom: 10 }}
+                >
+                  <option value="">Selecione uma categoria para adicionar...</option>
+                  {categorias.filter(c => !form.categorias_ids.includes(c.id.toString())).map(c => (
+                    <option key={c.id} value={c.id}>{c.nome}</option>
                   ))}
-                </div>
+                </select>
+                
+                {form.categorias_ids.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '10px 0' }}>
+                    {form.categorias_ids.map(id => {
+                      const cat = categorias.find(c => c.id.toString() === id);
+                      const catName = cat ? cat.nome : 'Desconhecida';
+                      return (
+                        <div key={id} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(248, 193, 70, 0.2)', border: '1px solid var(--ouro)', color: 'var(--ouro)', padding: '6px 12px', borderRadius: 20, fontSize: 13, fontWeight: 'bold' }}>
+                          {catName}
+                          <X 
+                            size={14} 
+                            style={{ cursor: 'pointer', opacity: 0.8 }} 
+                            onClick={() => {
+                              setForm(prev => ({ ...prev, categorias_ids: prev.categorias_ids.filter(i => i !== id) }));
+                            }} 
+                            onMouseEnter={e => e.target.style.opacity = 1}
+                            onMouseLeave={e => e.target.style.opacity = 0.8}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
               <button type="submit" className="btn primary" style={{ marginTop: 10 }}>
                 {isEditing ? 'Salvar Alterações' : 'Criar Jogo'}
