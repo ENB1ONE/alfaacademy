@@ -10,9 +10,6 @@ export default function Layout() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [proximosJogos, setProximosJogos] = useState([]);
 
-  useEffect(() => {
-    api.get('/api/admin/eventos/proximos').then(res => setProximosJogos(res.data)).catch(console.error);
-  }, []);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -78,22 +75,6 @@ export default function Layout() {
           )}
         </nav>
         
-        <div className="card interactive" onClick={() => navigate('/jogos')} style={{ marginTop: 'auto', marginBottom: 20, padding: 16, background: 'rgba(0,0,0,0.2)', cursor: 'pointer' }}>
-            <h4 style={{ color: 'var(--ouro)', margin: '0 0 10px 0', fontSize: 14 }}>Próximos Jogos (10 dias)</h4>
-            {proximosJogos.length === 0 ? (
-                <p style={{ margin: 0, color: 'var(--cinza)', fontSize: 12 }}>Nenhum jogo agendado.</p>
-            ) : (
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {proximosJogos.map(j => (
-                        <li key={j.id} style={{ fontSize: 12, borderBottom: '1px solid var(--linha)', paddingBottom: 5 }}>
-                            <strong style={{ color: '#EF4444' }}>{j.data_br}</strong>
-                            <div style={{ color: 'var(--texto)' }}>{j.titulo}</div>
-                            <div style={{ color: 'var(--cinza)', fontSize: 10 }}>{j.categoria_nome}</div>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
         <button onClick={handleLogout} className="btn outline" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
           <LogOut size={18} /> Sair
         </button>

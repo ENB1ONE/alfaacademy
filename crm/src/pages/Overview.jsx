@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTo
 import { useNavigate } from 'react-router-dom';
 
 export default function Overview() {
+  const [proximosJogos, setProximosJogos] = useState([]);
   const [metrics, setMetrics] = useState({ total_atletas: 0, lesionados: 0, total_treinadores: 0, top_faltosos: [] });
   const [dist, setDist] = useState([]);
   const navigate = useNavigate();
@@ -12,6 +13,9 @@ export default function Overview() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        
+        const resProximos = await api.get('/api/admin/eventos/proximos');
+        setProximosJogos(resProximos.data);
         const res = await api.get('/api/admin/metricas');
         setMetrics({
           total_atletas: res.data.total_atletas || 0,
@@ -59,6 +63,25 @@ export default function Overview() {
         <Card title="Comissão Técnica" value={metrics.total_treinadores} icon={UserCog} color="#eab308" link="/equipe" />
       </div>
 
+      <div className="card" style={{ marginBottom: 30, padding: 20 }}>
+        <h3 style={{ color: 'var(--ouro)', margin: '0 0 15px 0', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Trophy size={20} /> Próximos Jogos (10 dias)
+        </h3>
+        {proximosJogos.length === 0 ? (
+            <p style={{ margin: 0, color: 'var(--cinza)' }}>Nenhum jogo agendado para os próximos dias.</p>
+        ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 15 }}>
+                {proximosJogos.map(j => (
+                    <div key={j.id} className="card interactive" onClick={() => navigate('/jogos')} style={{ padding: 15, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--linha)', cursor: 'pointer' }}>
+                        <div style={{ color: '#EF4444', fontWeight: 'bold', marginBottom: 5 }}>{j.data_br}</div>
+                        <div style={{ color: 'var(--texto)', fontSize: 16 }}>{j.titulo}</div>
+                        <div style={{ color: 'var(--cinza)', fontSize: 13, marginTop: 5 }}>{j.categoria_nome}</div>
+                    </div>
+                ))}
+            </div>
+        )}
+      </div>
+      
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
         <div className="card">
           <h3 style={{ marginBottom: 20 }}>Distribuição por Categoria</h3>
