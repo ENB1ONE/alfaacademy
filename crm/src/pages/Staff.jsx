@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../api';
 import { AuthContext } from '../context/AuthContext';
-import { Edit2, Trash2 } from 'lucide-react';
+import { Edit2, Trash2, X } from 'lucide-react';
 
 export default function Staff() {
   const { user } = useContext(AuthContext);
@@ -105,17 +105,47 @@ export default function Staff() {
           </div>
           
           {form.perfil === 'Treinador' && (
-            <div style={{ gridColumn: '1 / -1', background: 'rgba(255,255,255,0.05)', padding: 15, borderRadius: 8 }}>
-              <label style={{ display: 'block', marginBottom: 10 }}>Categorias Responsáveis</label>
-              <div style={{ display: 'flex', gap: 15, flexWrap: 'wrap' }}>
-                {allCategorias.map(c => (
-                  <label key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 5, cursor: 'pointer' }}>
-                    <input type="checkbox" checked={form.categorias.includes(c.id)} onChange={() => handleCheckbox(c.id)} />
-                    {c.nome}
-                  </label>
-                ))}
+                          <div style={{ gridColumn: '1 / -1', background: 'rgba(255,255,255,0.05)', padding: 15, borderRadius: 8 }}>
+                <label style={{ display: 'block', marginBottom: 10, color: 'var(--cinza)' }}>Categorias Responsáveis</label>
+                <select 
+                  className="input" 
+                  value="" 
+                  onChange={(e) => {
+                    const id = parseInt(e.target.value, 10);
+                    if (!id) return;
+                    if (!form.categorias.includes(id)) {
+                        handleCheckbox(id);
+                    }
+                  }}
+                  style={{ marginBottom: 10, width: '100%', padding: '10px', background: 'rgba(0,0,0,0.5)', color: '#fff', border: '1px solid var(--linha)', borderRadius: '6px' }}
+                >
+                  <option value="">Selecione uma categoria para adicionar...</option>
+                  {allCategorias.filter(c => !form.categorias.includes(c.id)).map(c => (
+                    <option key={c.id} value={c.id}>{c.nome}</option>
+                  ))}
+                </select>
+                
+                {form.categorias.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '10px 0' }}>
+                    {form.categorias.map(id => {
+                      const cat = allCategorias.find(c => c.id === id);
+                      const catName = cat ? cat.nome : 'Desconhecida';
+                      return (
+                        <div key={id} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(248, 193, 70, 0.2)', border: '1px solid var(--ouro)', color: 'var(--ouro)', padding: '6px 12px', borderRadius: 20, fontSize: 13, fontWeight: 'bold' }}>
+                          {catName}
+                          <X 
+                            size={14} 
+                            style={{ cursor: 'pointer', opacity: 0.8 }} 
+                            onClick={() => handleCheckbox(id)} 
+                            onMouseEnter={e => e.target.style.opacity = 1}
+                            onMouseLeave={e => e.target.style.opacity = 0.8}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-            </div>
           )}
 
           <div style={{ gridColumn: '1 / -1' }}>
