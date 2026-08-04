@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
 import api from '../api';
-import { LayoutDashboard, Menu, X, Users, UserCog, ClipboardCheck, BookOpen, LogOut, Folders, Activity } from 'lucide-react';
+import { LayoutDashboard, Menu, X, Users, UserCog, ClipboardCheck, BookOpen, LogOut, Folders, Activity, Trophy } from 'lucide-react';
 
 export default function Layout() {
   const { user, logout } = useContext(AuthContext);
@@ -62,6 +62,7 @@ export default function Layout() {
           <NavLink to="/chamada" icon={ClipboardCheck}>Lista de Chamada</NavLink>
           <NavLink to="/historico-chamadas" icon={BookOpen}>Histórico de Presenças</NavLink>
           <NavLink to="/frequencia" icon={Activity}>Frequência Geral</NavLink>
+          <NavLink to="/jogos" icon={Trophy}>Jogos / Convocações</NavLink>
           {isAdmin && (
             <>
               <NavLink to="/atletas" icon={Users}>Atletas</NavLink>

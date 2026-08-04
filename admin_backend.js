@@ -488,7 +488,8 @@ router.get('/frequencia-geral', verificarAcesso, async (req, res) => {
                 a.id, a.nome, a.categoria_id, c.nome as categoria_nome,
                 COUNT(p.atleta_id) as total_eventos,
                 COALESCE(SUM(CASE WHEN p.status = 'P' THEN 1 ELSE 0 END), 0) as total_presencas,
-                COALESCE(SUM(CASE WHEN p.status = 'F' THEN 1 ELSE 0 END), 0) as total_faltas
+                COALESCE(SUM(CASE WHEN p.status = 'F' THEN 1 ELSE 0 END), 0) as total_faltas,
+                (SELECT COUNT(*) FROM convocacoes conv WHERE conv.atleta_id = a.id) as total_convocacoes
             FROM atletas a
             LEFT JOIN categorias c ON a.categoria_id = c.id
             LEFT JOIN presencas p ON a.id = p.atleta_id
@@ -503,7 +504,8 @@ router.get('/frequencia-geral', verificarAcesso, async (req, res) => {
                     a.id, a.nome, a.categoria_id, c.nome as categoria_nome,
                     COUNT(p.atleta_id) as total_eventos,
                     COALESCE(SUM(CASE WHEN p.status = 'P' THEN 1 ELSE 0 END), 0) as total_presencas,
-                    COALESCE(SUM(CASE WHEN p.status = 'F' THEN 1 ELSE 0 END), 0) as total_faltas
+                    COALESCE(SUM(CASE WHEN p.status = 'F' THEN 1 ELSE 0 END), 0) as total_faltas,
+                (SELECT COUNT(*) FROM convocacoes conv WHERE conv.atleta_id = a.id) as total_convocacoes
                 FROM atletas a
                 LEFT JOIN categorias c ON a.categoria_id = c.id
                 LEFT JOIN presencas p ON a.id = p.atleta_id
@@ -542,6 +544,91 @@ router.post('/eventos', verificarAcesso, async (req, res) => {
         registrarLog(req.usuario.id, `Agendou evento ${eventTitle} para Categoria ID ${categoria_id}`, null);
         res.json({ success: true });
     } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+
+// ==========================================
+// SETUP DB (JOGOS)
+// ==========================================
+router.get('/setup-db', async (req, res) => {
+    try {
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS convocacoes (
+                treino_id INT NOT NULL REFERENCES treinos(id) ON DELETE CASCADE,
+                atleta_id INT NOT NULL REFERENCES atletas(id) ON DELETE CASCADE,
+                PRIMARY KEY (treino_id, atleta_id)
+            );
+        `);
+        res.send("OK");
+    } catch (e) {
+        res.status(500).send(e.toString());
+    }
+});
+
+
+// ==========================================
+// JOGOS E CONVOCACOES
+// ==========================================
+router.get('/jogos', verificarAcesso, async (req, res) => {
+    try {
+        let q = "SELECT t.id, TO_CHAR(t.data, 'YYYY-MM-DD') as data_raw, TO_CHAR(t.data, 'DD/MM/YYYY') as data_br, t.titulo as adversario, c.nome as categoria_nome, t.categoria_id FROM treinos t LEFT JOIN categorias c ON t.categoria_id = c.id WHERE t.tipo = 'JOGO' ORDER BY t.data DESC";
+        let vals = [];
+        
+        if (req.usuario.perfil === 'Treinador') {
+            q = "SELECT t.id, TO_CHAR(t.data, 'YYYY-MM-DD') as data_raw, TO_CHAR(t.data, 'DD/MM/YYYY') as data_br, t.titulo as adversario, c.nome as categoria_nome, t.categoria_id FROM treinos t LEFT JOIN categorias c ON t.categoria_id = c.id JOIN treinador_categoria tc ON t.categoria_id = tc.categoria_id WHERE tc.treinador_id = $1 AND t.tipo = 'JOGO' ORDER BY t.data DESC";
+            vals.push(req.usuario.id);
+        }
+        
+        const r = await pool.query(q, vals);
+        res.json(r.rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.get('/jogos/:id/convocados', verificarAcesso, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const gameRes = await pool.query("SELECT categoria_id FROM treinos WHERE id = $1", [id]);
+        if (gameRes.rows.length === 0) return res.status(404).json({error: 'Jogo nAo encontrado'});
+        const catId = gameRes.rows[0].categoria_id;
+
+        const r = await pool.query(`
+            SELECT a.id, a.nome, a.posicao, 
+                   CASE WHEN c.atleta_id IS NOT NULL THEN true ELSE false END as convocado
+            FROM atletas a
+            LEFT JOIN convocacoes c ON a.id = c.atleta_id AND c.treino_id = $1
+            WHERE a.categoria_id = $2
+            ORDER BY a.nome ASC
+        `, [id, catId]);
+        
+        res.json(r.rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.post('/jogos/:id/convocacao', verificarAcesso, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { atletas_ids } = req.body;
+        
+        await pool.query("BEGIN");
+        await pool.query("DELETE FROM convocacoes WHERE treino_id = $1", [id]);
+        
+        if (atletas_ids && atletas_ids.length > 0) {
+            for (let atleta_id of atletas_ids) {
+                await pool.query("INSERT INTO convocacoes (treino_id, atleta_id) VALUES ($1, $2)", [id, atleta_id]);
+            }
+        }
+        
+        await pool.query("COMMIT");
+        registrarLog(req.usuario.id, `Atualizou convocaA Ao do jogo ID ${id}`, { atletas: atletas_ids });
+        res.json({ success: true });
+    } catch (e) {
+        await pool.query("ROLLBACK");
         res.status(500).json({ error: e.message });
     }
 });

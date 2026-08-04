@@ -141,6 +141,7 @@ export default function AttendanceReport() {
                 <th style={{ textAlign: 'center', padding: 15, borderBottom: '1px solid var(--linha)', color: 'var(--cinza)' }}>Chamadas</th>
                 <th style={{ textAlign: 'center', padding: 15, borderBottom: '1px solid var(--linha)', color: 'var(--cinza)' }}>Presenças</th>
                 <th style={{ textAlign: 'center', padding: 15, borderBottom: '1px solid var(--linha)', color: 'var(--cinza)' }}>Faltas</th>
+                  <th style={{ textAlign: 'center', padding: 15, borderBottom: '1px solid var(--linha)', color: 'var(--ouro)' }}>Vezes Convocado</th>
                 <th style={{ textAlign: 'center', padding: 15, borderBottom: '1px solid var(--linha)', color: 'var(--cinza)' }}>Assiduidade</th>
               </tr>
             </thead>
@@ -152,6 +153,7 @@ export default function AttendanceReport() {
                   <td style={{ padding: 15, borderBottom: '1px solid var(--linha)', textAlign: 'center' }}>{r.total_eventos}</td>
                   <td style={{ padding: 15, borderBottom: '1px solid var(--linha)', textAlign: 'center', color: '#10B981' }}>{r.total_presencas}</td>
                   <td style={{ padding: 15, borderBottom: '1px solid var(--linha)', textAlign: 'center', color: '#EF4444' }}>{r.total_faltas}</td>
+                    <td style={{ padding: 15, borderBottom: '1px solid var(--linha)', textAlign: 'center', color: 'var(--ouro)', fontWeight: 'bold' }}>{r.total_convocacoes || 0}</td>
                   <td style={{ padding: 15, borderBottom: '1px solid var(--linha)', textAlign: 'center' }}>
                       <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.05)', padding: '4px 12px', borderRadius: 20, color: getColor(r.total_presencas, r.total_eventos), fontWeight: 'bold' }}>
                           {getPercentage(r.total_presencas, r.total_eventos)}
