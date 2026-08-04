@@ -282,7 +282,7 @@ export default function Games() {
       {/* Modal Convocações Dinâmico */}
       {showConvocacao && selectedJogo && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}>
-          <div className="card" style={{ width: '100%', maxWidth: 700, padding: 30, position: 'relative', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
+          <div className="card" style={{ width: '100%', maxWidth: 700, width: '95%', padding: '20px',  position: 'relative', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
             <button onClick={() => setShowConvocacao(false)} style={{ position: 'absolute', top: 20, right: 20, background: 'none', border: 'none', color: 'var(--cinza)', cursor: 'pointer' }}>
               <X size={24} />
             </button>
@@ -290,7 +290,7 @@ export default function Games() {
             <p style={{ margin: '0 0 20px 0', color: 'var(--cinza)' }}>{selectedJogo.adversario} - {selectedJogo.data_br}</p>
 
             {/* Abas das categorias */}
-            <div style={{ display: 'flex', gap: 10, borderBottom: '1px solid var(--linha)', paddingBottom: 10, marginBottom: 20, overflowX: 'auto' }}>
+            <div style={{ display: 'flex', gap: 10, borderBottom: '1px solid var(--linha)', paddingBottom: 10, marginBottom: 20, overflowX: 'auto', flexWrap: 'nowrap', WebkitOverflowScrolling: 'touch' }}>
                 {Object.keys(athletesByCategory).map(catName => {
                     const totalAtletas = athletesByCategory[catName].length;
                     const convocadosCount = athletesByCategory[catName].filter(a => convocadosSet.has(a.id)).length;
@@ -303,7 +303,7 @@ export default function Games() {
                                 background: isActive ? 'var(--ouro)' : 'rgba(255,255,255,0.05)', 
                                 color: isActive ? '#000' : 'var(--cinza)',
                                 border: 'none', padding: '8px 16px', borderRadius: 20, cursor: 'pointer', fontWeight: isActive ? 'bold' : 'normal',
-                                whiteSpace: 'nowrap'
+                                whiteSpace: 'nowrap', flexShrink: 0
                             }}
                         >
                             {catName} ({convocadosCount}/{totalAtletas})
@@ -314,16 +314,16 @@ export default function Games() {
 
             <div style={{ overflowY: 'auto', flex: 1, paddingRight: 5 }}>
                 {activeCategoryTab && athletesByCategory[activeCategoryTab] && athletesByCategory[activeCategoryTab].length > 0 ? (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 10 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 15, paddingRight: 5 }}>
                         {athletesByCategory[activeCategoryTab].map(a => {
                             const isConvocated = convocadosSet.has(a.id);
                             return (
-                                <div key={a.id} onClick={() => toggleConvocacao(a)} className="interactive" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 15, background: isConvocated ? 'rgba(248, 193, 70, 0.1)' : 'rgba(255,255,255,0.02)', border: isConvocated ? '1px solid var(--ouro)' : '1px solid var(--linha)', borderRadius: 8, cursor: 'pointer', transition: 'all 0.2s' }}>
-                                    <div style={{ width: 24, height: 24, borderRadius: 6, border: '2px solid', borderColor: isConvocated ? 'var(--ouro)' : 'var(--cinza)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: isConvocated ? 'var(--ouro)' : 'transparent' }}>
+                                <div key={a.id} onClick={() => toggleConvocacao(a)} className="interactive" style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: 15, background: isConvocated ? 'rgba(248, 193, 70, 0.1)' : 'rgba(255,255,255,0.02)', border: isConvocated ? '1px solid var(--ouro)' : '1px solid var(--linha)', borderRadius: 8, cursor: 'pointer', transition: 'all 0.2s' }}>
+                                    <div style={{ width: 24, height: 24, borderRadius: 6, border: '2px solid', borderColor: isConvocated ? 'var(--ouro)' : 'var(--cinza)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2, background: isConvocated ? 'var(--ouro)' : 'transparent' }}>
                                         {isConvocated && <CheckSquare size={16} color="#000" />}
                                     </div>
                                     <div>
-                                        <div style={{ color: 'var(--texto)', fontSize: 14, fontWeight: isConvocated ? 'bold' : 'normal' }}>{a.nome}</div>
+                                        <div style={{ color: 'var(--texto)', fontSize: 14, fontWeight: isConvocated ? 'bold' : 'normal', lineHeight: '1.3', marginBottom: 2 }}>{a.nome}</div>
                                         <div style={{ color: 'var(--cinza)', fontSize: 12 }}>{a.posicao || 'Não informada'}</div>
                                     </div>
                                 </div>
