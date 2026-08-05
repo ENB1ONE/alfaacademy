@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect, useContext } from 'react';
 import api from '../api';
 import { AuthContext } from '../context/AuthContext';
 import { ChevronLeft, ChevronRight, Calendar as CalIcon, Plus, X, Users } from 'lucide-react';
