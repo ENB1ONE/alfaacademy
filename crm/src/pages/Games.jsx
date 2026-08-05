@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import api from '../api';
 import { AuthContext } from '../context/AuthContext';
-import { Plus, Trophy, Save, X, CheckSquare, Edit2 } from 'lucide-react';
+import { Plus, Trophy, Save, X, CheckSquare, Edit2, Trash2 } from 'lucide-react';
 
 export default function Games() {
   const { user } = useContext(AuthContext);
