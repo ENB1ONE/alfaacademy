@@ -319,11 +319,11 @@ export default function Games() {
             <button onClick={() => setShowConvocacao(false)} style={{ position: 'absolute', top: 20, right: 20, background: 'none', border: 'none', color: 'var(--cinza)', cursor: 'pointer' }}>
               <X size={24} />
             </button>
-            <h3 style={{ margin: '0 0 5px 0' }}>Convocação Oficial</h3>
-            <p style={{ margin: '0 0 20px 0', color: 'var(--cinza)' }}>{selectedJogo.adversario} - {selectedJogo.data_br}</p>
+            <h3 style={{ margin: '0 0 5px 0', flexShrink: 0 }}>Convocação Oficial</h3>
+            <p style={{ margin: '0 0 20px 0', color: 'var(--cinza)', flexShrink: 0 }}>{selectedJogo.adversario} - {selectedJogo.data_br}</p>
 
             {/* Abas das categorias */}
-            <div style={{ display: 'flex', gap: 10, borderBottom: '1px solid var(--linha)', paddingBottom: 10, marginBottom: 20, overflowX: 'auto', flexWrap: 'nowrap', WebkitOverflowScrolling: 'touch' }}>
+            <div style={{ display: 'flex', gap: 10, borderBottom: '1px solid var(--linha)', paddingBottom: 10, marginBottom: 20, overflowX: 'auto', flexWrap: 'nowrap', WebkitOverflowScrolling: 'touch', flexShrink: 0 }}>
                 {Object.keys(athletesByCategory).map(catName => {
                     const totalAtletas = athletesByCategory[catName].length;
                     const convocadosCount = athletesByCategory[catName].filter(a => convocadosSet.has(a.id)).length;
