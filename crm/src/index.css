@@ -75,7 +75,15 @@ button { cursor: pointer; border: none; font-family: 'Inter', sans-serif; outlin
   border-color: var(--ouro);
 }
 
+
+/* Fix Dropdown Options */
+option {
+  background-color: var(--painel-solid);
+  color: var(--texto);
+}
+
 /* Inputs Premium */
+
 input, select, textarea {
   width: 100%; 
   padding: 14px 16px; 
