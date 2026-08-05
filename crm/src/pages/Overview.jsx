@@ -71,13 +71,29 @@ export default function Overview() {
             <p style={{ margin: 0, color: 'var(--cinza)' }}>Nenhum jogo agendado para os próximos dias.</p>
         ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 15 }}>
-                {proximosJogos.map(j => (
-                    <div key={j.id} className="card interactive" onClick={() => navigate('/jogos')} style={{ padding: 15, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--linha)', cursor: 'pointer' }}>
-                        <div style={{ color: '#EF4444', fontWeight: 'bold', marginBottom: 5 }}>{j.data_br}</div>
-                        <div style={{ color: 'var(--texto)', fontSize: 16 }}>{j.titulo}</div>
-                        <div style={{ color: 'var(--cinza)', fontSize: 13, marginTop: 5 }}>{j.categoria_nome}</div>
-                    </div>
-                ))}
+                {Object.values(proximosJogos.reduce((acc, j) => {
+    const key = j.data_br + '_' + j.titulo;
+    if (!acc[key]) {
+        acc[key] = { ...j, categorias_nomes: [j.categoria_nome].filter(Boolean) };
+    } else {
+        if (j.categoria_nome && !acc[key].categorias_nomes.includes(j.categoria_nome)) {
+            acc[key].categorias_nomes.push(j.categoria_nome);
+        }
+    }
+    return acc;
+}, {})).map((j, i) => (
+    <div key={i} className="card interactive" onClick={() => navigate('/jogos')} style={{ padding: 15, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--linha)', cursor: 'pointer' }}>
+        <div style={{ color: '#EF4444', fontWeight: 'bold', marginBottom: 5 }}>{j.data_br}</div>
+        <div style={{ color: 'var(--texto)', fontSize: 16 }}>{j.titulo}</div>
+        <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginTop: 10 }}>
+          {j.categorias_nomes.map((cat, idx) => (
+              <span key={idx} style={{ background: 'rgba(248,193,70,0.2)', border: '1px solid var(--ouro)', color: 'var(--ouro)', padding: '2px 8px', borderRadius: 12, fontSize: 11, fontWeight: 'bold' }}>
+                  {cat}
+              </span>
+          ))}
+        </div>
+    </div>
+))}
             </div>
         )}
       </div>
@@ -118,3 +134,4 @@ export default function Overview() {
     </div>
   );
 }
+
