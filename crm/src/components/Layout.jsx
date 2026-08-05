@@ -75,7 +75,7 @@ export default function Layout() {
           )}
         </nav>
         
-        <button onClick={handleLogout} className="btn outline" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+        <button onClick={handleLogout} className="btn outline" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 'auto' }}>
           <LogOut size={18} /> Sair
         </button>
       </aside>
@@ -86,3 +86,4 @@ export default function Layout() {
     </div>
   );
 }
+
