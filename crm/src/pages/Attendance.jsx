@@ -3,7 +3,7 @@ import api from '../api';
 import { Save } from 'lucide-react';
 
 export default function Attendance() {
-  const [categoria, setCategoria] = useState('');
+  const [categoriasSelecionadas, setCategoriasSelecionadas] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [atletas, setAtletas] = useState([]);
   const [presencas, setPresencas] = useState({});
@@ -16,7 +16,7 @@ export default function Attendance() {
       const res = await api.get('/api/admin/categorias');
       const cats = res.data.categorias || res.data;
       setCategorias(cats);
-      if (cats.length > 0 && !categoria) setCategoria(cats[0].id);
+      if (cats.length > 0 && categoriasSelecionadas.length === 0) setCategoriasSelecionadas([String(cats[0].id)]);
     } catch (e) { console.error(e); }
   };
 
@@ -36,7 +36,7 @@ export default function Attendance() {
   };
 
   useEffect(() => { loadCategorias(); }, []);
-  useEffect(() => { if(categoria) loadAtletas(); }, [categoria]);
+  useEffect(() => { loadAtletas(); }, [categoriasSelecionadas, categorias]);
 
   const handleSave = async () => {
     try {
@@ -98,7 +98,14 @@ export default function Attendance() {
             <tbody>
               {atletas.map(a => (
                 <tr key={a.id}>
-                  <td style={{ padding: 15, borderBottom: '1px solid var(--linha)' }}><strong>{a.nome}</strong></td>
+                  <td style={{ padding: 15, borderBottom: '1px solid var(--linha)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <strong>{a.nome}</strong>
+            <span style={{ fontSize: 11, background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: 10, color: 'var(--cinza)' }}>
+                {a.categoria_nome || 'Categoria'}
+            </span>
+        </div>
+    </td>
                   <td style={{ padding: 15, borderBottom: '1px solid var(--linha)', textAlign: 'center' }}>
                     <input type="checkbox" checked={presencas[a.id]} onChange={e => setPresencas({...presencas, [a.id]: e.target.checked})} style={{ width: 24, height: 24, accentColor: 'var(--ouro)' }} />
                   </td>
