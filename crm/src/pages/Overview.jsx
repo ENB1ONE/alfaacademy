@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api';
-import { Users, Activity, UserCog, Trophy } from 'lucide-react';
+import { Users, Activity, UserCog, Trophy, X } from 'lucide-react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,6 +8,27 @@ export default function Overview() {
   const [proximosJogos, setProximosJogos] = useState([]);
   const [metrics, setMetrics] = useState({ total_atletas: 0, lesionados: 0, total_treinadores: 0, top_faltosos: [] });
   const [dist, setDist] = useState([]);
+  const [selectedJogo, setSelectedJogo] = useState(null);
+  const [convocados, setConvocados] = useState([]);
+  const [loadingConvocados, setLoadingConvocados] = useState(false);
+  const [showConvocacaoModal, setShowConvocacaoModal] = useState(false);
+
+  const openJogoModal = async (j) => {
+    setSelectedJogo(j);
+    setShowConvocacaoModal(true);
+    setLoadingConvocados(true);
+    setConvocados([]);
+    try {
+        const res = await api.post('/api/admin/jogos/multi-convocados', { treino_ids: j.treino_ids });
+        const list = res.data.filter(a => a.convocado);
+        setConvocados(list);
+    } catch(e) {
+        console.error(e);
+    } finally {
+        setLoadingConvocados(false);
+    }
+  };
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -74,15 +95,19 @@ export default function Overview() {
                 {Object.values(proximosJogos.reduce((acc, j) => {
     const key = j.data_br + '_' + j.titulo;
     if (!acc[key]) {
-        acc[key] = { ...j, categorias_nomes: [j.categoria_nome].filter(Boolean) };
+        acc[key] = { ...j, categorias_nomes: [j.categoria_nome].filter(Boolean), treino_ids: [j.id] };
     } else {
         if (j.categoria_nome && !acc[key].categorias_nomes.includes(j.categoria_nome)) {
             acc[key].categorias_nomes.push(j.categoria_nome);
         }
+        if (!acc[key].treino_ids) acc[key].treino_ids = [acc[key].id];
+        if (!acc[key].treino_ids.includes(j.id)) {
+            acc[key].treino_ids.push(j.id);
+        }
     }
     return acc;
 }, {})).map((j, i) => (
-    <div key={i} className="card interactive" onClick={() => navigate('/jogos')} style={{ padding: 15, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--linha)', cursor: 'pointer' }}>
+    <div key={i} className="card interactive" onClick={() => openJogoModal(j)} style={{ padding: 15, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--linha)', cursor: 'pointer' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
             <span style={{ color: '#EF4444', fontWeight: 'bold' }}>{j.data_br}</span>
             {j.horario && <span style={{ color: 'var(--cinza)', fontSize: 12 }}>{j.horario}</span>}
