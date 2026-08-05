@@ -24,11 +24,20 @@ export default function Attendance() {
     try {
       const res = await api.get('/api/admin/atletas');
       const list = Array.isArray(res.data) ? res.data : (res.data?.atletas || []);
-      const filtrados = list.filter(a => String(a.categoria_id) === String(categoria));
-      setAtletas(filtrados);
+      
+      const filtrados = list.filter(a => categoriasSelecionadas.includes(String(a.categoria_id)));
+      
+      const athletesWithCat = filtrados.map(a => {
+         const c = categorias.find(cat => String(cat.id) === String(a.categoria_id));
+         return { ...a, categoria_nome: c ? c.nome : '' };
+      });
+      // Sort athletes by name
+      athletesWithCat.sort((a,b) => (a.nome||'').localeCompare(b.nome||''));
+      
+      setAtletas(athletesWithCat);
       
       const obj = {};
-      filtrados.forEach(a => { obj[a.id] = true; });
+      athletesWithCat.forEach(a => { obj[a.id] = true; });
       setPresencas(obj);
     } catch (e) {
       console.error(e);
@@ -40,41 +49,59 @@ export default function Attendance() {
 
   const handleSave = async () => {
     try {
-      const payload = atletas.map(a => ({
-        atleta_id: a.id,
-        presente: presencas[a.id]
-      }));
-      await api.post('/api/admin/chamadas', { categoria_id: categoria, presencas: payload, titulo, tipo });
-      alert('Lista de chamada salva com sucesso!');
+      const promises = categoriasSelecionadas.map(catId => {
+          const payload = atletas.filter(a => String(a.categoria_id) === String(catId)).map(a => ({
+            atleta_id: a.id,
+            presente: presencas[a.id]
+          }));
+          if (payload.length > 0) {
+              return api.post('/api/admin/chamadas', { categoria_id: catId, presencas: payload, titulo, tipo });
+          }
+          return Promise.resolve();
+      });
+      await Promise.all(promises);
+      alert('Listas de chamada salvas com sucesso!');
     } catch (e) {
-      alert('Erro ao salvar lista de chamada. Verifique se o servidor suporta esta função.');
+      alert('Erro ao salvar listas de chamada. Verifique se o servidor suporta esta função.');
     }
   };
-
-  const btnStyle = (cat) => ({
-    padding: '8px 16px', borderRadius: 8, background: categoria === cat ? 'var(--ouro)' : 'transparent',
-    color: categoria === cat ? '#000' : 'var(--ouro)', border: '1px solid var(--ouro)', cursor: 'pointer'
-  });
 
   return (
     <div>
       <h1 style={{ color: 'var(--ouro)', marginBottom: 10 }}>Lista de Chamada Oficial</h1>
-      <p style={{ color: 'var(--cinza)', marginBottom: 20 }}>Selecione a categoria para realizar a chamada do dia.</p>
+      <p style={{ color: 'var(--cinza)', marginBottom: 20 }}>Selecione as categorias para realizar a chamada em lote.</p>
       
       <div className="card" style={{ padding: 20, marginBottom: 20 }}>
-        <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)', fontSize: 14 }}>Filtrar Categoria</label>
-        <select value={categoria} onChange={e => setCategoria(e.target.value)} style={{ margin: 0 }}>
-            {categorias.length === 0 && <option value="">Carregando categorias...</option>}
-            {categorias.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.nome}</option>
-            ))}
-        </select>
+        <label style={{ display: 'block', marginBottom: 15, color: 'var(--cinza)', fontSize: 14 }}>Categorias Envolvidas (Múltipla Seleção)</label>
+        {categorias.length === 0 && <span style={{ color: 'var(--cinza)' }}>Carregando...</span>}
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            {categorias.map(cat => {
+                const isSel = categoriasSelecionadas.includes(String(cat.id));
+                return (
+                    <span 
+                        key={cat.id} 
+                        onClick={() => {
+                            if(isSel) setCategoriasSelecionadas(categoriasSelecionadas.filter(id => id !== String(cat.id)));
+                            else setCategoriasSelecionadas([...categoriasSelecionadas, String(cat.id)]);
+                        }}
+                        style={{ 
+                            padding: '8px 16px', borderRadius: 20, 
+                            border: '1px solid var(--ouro)', 
+                            background: isSel ? 'var(--ouro)' : 'transparent', 
+                            color: isSel ? '#000' : 'var(--ouro)', 
+                            cursor: 'pointer', fontWeight: 'bold', fontSize: 14 
+                        }}>
+                        {cat.nome}
+                    </span>
+                );
+            })}
+        </div>
       </div>
 
       <div className="card" style={{ padding: '20px', marginBottom: 20, display: 'flex', gap: 20, flexWrap: 'wrap' }}>
           <div style={{ flex: '1 1 200px' }}>
               <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)', fontSize: 14 }}>Título do Evento</label>
-              <input type="text" value={titulo} onChange={e => setTitulo(e.target.value)} placeholder="Ex: Treino Tático" style={{ margin: 0 }} />
+              <input type="text" value={titulo} onChange={e => setTitulo(e.target.value)} placeholder="Ex: Amistoso" style={{ margin: 0 }} />
           </div>
           <div style={{ flex: '1 1 200px' }}>
               <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)', fontSize: 14 }}>Tipo</label>
@@ -88,7 +115,7 @@ export default function Attendance() {
 
       <div className="card" style={{ padding: '0 20px 20px 20px' }}>
         {atletas.length === 0 ? (
-          <p style={{ padding: 20, textAlign: 'center', color: 'var(--cinza)' }}>Nenhum atleta nesta categoria.</p>
+          <p style={{ padding: 20, textAlign: 'center', color: 'var(--cinza)' }}>Nenhum atleta nestas categorias.</p>
         ) : (
           <div className="table-container">
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -99,13 +126,13 @@ export default function Attendance() {
               {atletas.map(a => (
                 <tr key={a.id}>
                   <td style={{ padding: 15, borderBottom: '1px solid var(--linha)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <strong>{a.nome}</strong>
-            <span style={{ fontSize: 11, background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: 10, color: 'var(--cinza)' }}>
-                {a.categoria_nome || 'Categoria'}
-            </span>
-        </div>
-    </td>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <strong>{a.nome}</strong>
+                        <span style={{ fontSize: 11, background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: 10, color: 'var(--cinza)' }}>
+                            {a.categoria_nome || 'Categoria'}
+                        </span>
+                    </div>
+                  </td>
                   <td style={{ padding: 15, borderBottom: '1px solid var(--linha)', textAlign: 'center' }}>
                     <input type="checkbox" checked={presencas[a.id]} onChange={e => setPresencas({...presencas, [a.id]: e.target.checked})} style={{ width: 24, height: 24, accentColor: 'var(--ouro)' }} />
                   </td>
