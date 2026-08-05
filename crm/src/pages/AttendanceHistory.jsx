@@ -44,11 +44,28 @@ export default function AttendanceHistory() {
     } catch (e) { console.error(e); }
   };
 
-  const loadPresencas = async (id) => {
+  const loadPresencas = async (viewId, subEventsArray) => {
     try {
-      const res = await api.get(`/api/admin/treinos/${id}/presencas`);
-      setPresencasDetail(res.data.presencas || res.data || []);
-      setViewingTreinoId(id);
+      if (Array.isArray(subEventsArray)) {
+          const promises = subEventsArray.map(subEvt => api.get(`/api/admin/treinos/${subEvt.id}/presencas`));
+          const results = await Promise.all(promises);
+          
+          let combined = [];
+          results.forEach((res, idx) => {
+              const list = res.data.presencas || res.data || [];
+              const subEvt = subEventsArray[idx];
+              list.forEach(p => p.categoria_nome = subEvt.categoria_nome);
+              combined = combined.concat(list);
+          });
+          
+          combined.sort((a, b) => (a.atleta_nome || '').localeCompare(b.atleta_nome || ''));
+          setPresencasDetail(combined);
+          setViewingTreinoId(viewId);
+      } else {
+          const res = await api.get(`/api/admin/treinos/${viewId}/presencas`);
+          setPresencasDetail(res.data.presencas || res.data || []);
+          setViewingTreinoId(viewId);
+      }
     } catch (e) { console.error(e); }
   };
 
@@ -88,7 +105,17 @@ export default function AttendanceHistory() {
   const getEventsForDay = (day) => {
     if (!day) return [];
     const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    return treinos.filter(t => t.data.startsWith(dateStr));
+    const evts = treinos.filter(t => t.data.startsWith(dateStr));
+    
+    const grouped = evts.reduce((acc, evt) => {
+        const isCustomEvent = evt.titulo && evt.titulo.trim() !== '' && evt.titulo !== 'Treino Regular';
+        const key = isCustomEvent ? 'EVENTO_' + evt.titulo.trim().toLowerCase() : 'TREINO_' + evt.id;
+        if (!acc[key]) acc[key] = { ...evt, sub_events: [evt] };
+        else acc[key].sub_events.push(evt);
+        return acc;
+    }, {});
+    
+    return Object.values(grouped);
   };
 
   const openDay = (day) => {
@@ -198,51 +225,51 @@ export default function AttendanceHistory() {
                         <p style={{ textAlign: 'center', padding: 40, color: 'var(--cinza)' }}>Nenhum evento registrado.</p>
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-{Object.values(selectedDayEvents.events.reduce((acc, evt) => {
-    const key = evt.tipo === 'JOGO' ? 'JOGO_' + evt.titulo : 'TREINO_' + evt.id;
-    if (!acc[key]) acc[key] = { ...evt, sub_events: [evt] };
-    else acc[key].sub_events.push(evt);
-    return acc;
-}, {})).map(gEvt => (
+{selectedDayEvents.events.map(gEvt => (
     <div key={gEvt.id} style={{ border: '1px solid var(--linha)', borderRadius: 8, padding: 15 }}>
-        <div style={{ marginBottom: 15 }}>
-            <h3 style={{ margin: 0, color: gEvt.tipo === 'JOGO' ? '#EF4444' : 'var(--texto)' }}>{gEvt.titulo || 'Treino'}</h3>
-            {gEvt.tipo !== 'JOGO' && <p style={{ margin: 0, color: 'var(--cinza)', fontSize: 14 }}>Categoria: {gEvt.categoria_nome}</p>}
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {gEvt.sub_events.map(subEvt => (
-                <div key={subEvt.id} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)', padding: '8px 12px', borderRadius: 6 }}>
-                        {gEvt.tipo === 'JOGO' ? (
-                            <span style={{ background: 'rgba(248,193,70,0.2)', border: '1px solid var(--ouro)', color: 'var(--ouro)', padding: '4px 10px', borderRadius: 12, fontSize: 12, fontWeight: 'bold' }}>
-                                {subEvt.categoria_nome}
-                            </span>
-                        ) : (
-                            <span style={{ fontSize: 13, color: 'var(--cinza)' }}>Presenças da Turma</span>
-                        )}
-                        {viewingTreinoId !== subEvt.id ? (
-                            <button onClick={() => loadPresencas(subEvt.id)} className="btn outline" style={{ padding: '6px 12px', fontSize: 12 }}>Ver Presenças</button>
-                        ) : (
-                            <button onClick={() => setViewingTreinoId(null)} className="btn outline" style={{ padding: '6px 12px', fontSize: 12, border: 'none' }}>Ocultar</button>
-                        )}
-                    </div>
-                    {viewingTreinoId === subEvt.id && (
-                        <div style={{ background: 'rgba(0,0,0,0.2)', padding: 10, borderRadius: 8 }}>
-                            {presencasDetail.length === 0 ? <p style={{ margin:0, color:'var(--cinza)' }}>Nenhum atleta na lista.</p> : (
-                                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 5 }}>
-                                    {presencasDetail.map(p => (
-                                        <li key={p.atleta_id} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: 4, fontSize: 14 }}>
-                                            <span>{p.atleta_nome}</span>
-                                            <span style={{ color: p.status === 'P' ? '#10B981' : '#EF4444', fontWeight: 'bold' }}>{p.status}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
-                    )}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div>
+                <h3 style={{ margin: 0, color: (gEvt.tipo === 'JOGO' || (gEvt.titulo && gEvt.titulo !== 'Treino Regular')) ? '#EF4444' : 'var(--texto)' }}>{gEvt.titulo || 'Treino'}</h3>
+                <div style={{ display: 'flex', gap: 5, marginTop: 8, flexWrap: 'wrap' }}>
+                    {gEvt.sub_events.map(subEvt => (
+                        <span key={subEvt.id} style={{ background: 'rgba(248,193,70,0.2)', border: '1px solid var(--ouro)', color: 'var(--ouro)', padding: '2px 8px', borderRadius: 12, fontSize: 11, fontWeight: 'bold' }}>
+                            {subEvt.categoria_nome}
+                        </span>
+                    ))}
                 </div>
-            ))}
+            </div>
+            {viewingTreinoId !== gEvt.id ? (
+                <button onClick={() => loadPresencas(gEvt.id, gEvt.sub_events)} className="btn outline" style={{ padding: '6px 12px', fontSize: 12, whiteSpace: 'nowrap', marginLeft: 10 }}>
+                    Ver Presenças
+                </button>
+            ) : (
+                <button onClick={() => setViewingTreinoId(null)} className="btn outline" style={{ padding: '6px 12px', fontSize: 12, border: 'none', whiteSpace: 'nowrap', marginLeft: 10 }}>
+                    Ocultar
+                </button>
+            )}
         </div>
+        
+        {viewingTreinoId === gEvt.id && (
+            <div style={{ background: 'rgba(0,0,0,0.2)', padding: 10, borderRadius: 8, marginTop: 15 }}>
+                {presencasDetail.length === 0 ? <p style={{ margin:0, color:'var(--cinza)' }}>Nenhum atleta na lista.</p> : (
+                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gridTemplateColumns: '1fr', gap: 5 }}>
+                        {presencasDetail.map(p => (
+                            <li key={p.atleta_id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: 'rgba(255,255,255,0.05)', borderRadius: 4, fontSize: 14 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                    <span style={{ fontWeight: 'bold' }}>{p.atleta_nome}</span>
+                                    {p.categoria_nome && (
+                                        <span style={{ fontSize: 11, background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: 10, color: 'var(--cinza)' }}>
+                                            {p.categoria_nome}
+                                        </span>
+                                    )}
+                                </div>
+                                <span style={{ color: p.status === 'P' ? '#10B981' : '#EF4444', fontWeight: 'bold' }}>{p.status}</span>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+        )}
     </div>
 ))}
                         </div>
