@@ -156,15 +156,19 @@ tbody tr:last-child td { border-bottom: none; }
 }
 
 .sidebar {
-  width: 280px;
-  flex-shrink: 0;
-  background: var(--painel-solid);
-  border-right: 1px solid var(--linha);
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  z-index: 999;
-}
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    width: 280px;
+    flex-shrink: 0;
+    background: var(--painel-solid);
+    border-right: 1px solid var(--linha);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+  }
 
 .main-content {
   flex-grow: 1;
@@ -244,3 +248,4 @@ tbody tr:last-child td { border-bottom: none; }
     padding: 5px;
   }
 }
+
