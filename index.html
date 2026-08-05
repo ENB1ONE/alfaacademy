@@ -92,7 +92,7 @@
   
   /* SEÇÃO SOBRE NÓS */
   section.sobre-sec{padding:80px 0;background:var(--preto-2) background:rgba(20,20,22,0.4); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
-  .sobre-grid{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center}
+  .sobre-grid{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:0.9fr 1.1fr;gap:48px;align-items:center}
   .sec-title-area{margin-bottom:48px; position:relative;}
   .sec-eyebrow{font-family:'Space Mono',monospace;font-size:13px;color:var(--ouro);text-transform:uppercase;letter-spacing:3px;font-weight:700;display:inline-flex;align-items:center;gap:12px;margin-bottom:12px}
   .sec-eyebrow::before {content: ''; display: inline-block; width: 30px; height: 2px; background: var(--ouro); border-radius: 2px;}
@@ -104,10 +104,10 @@
   .pillar-icon{font-size:24px;color:var(--ouro);flex:none}
   .pillar-info h3{font-size:16px;font-weight:700;color:var(--texto);margin-bottom:6px}
   .pillar-info p{color:var(--cinza);font-size:13px;line-height:1.5;margin-bottom:0}
-  .sobre-media{position:relative;display:flex;justify-content:center}
-  .sobre-img-frame{border:2px solid var(--ouro);border-radius:var(--radius);padding:10px;background:var(--painel);box-shadow:var(--sombra);max-width:100%}
-  .sobre-img-frame img{width:100%;height:auto;border-radius:8px;display:block;filter:grayscale(10%);transition:filter .3s}
-  .sobre-img-frame:hover img{filter:grayscale(0%)}
+  .sobre-media{position:relative;display:flex;justify-content:center;order:-1}
+  .sobre-img-frame{border:2px solid var(--ouro);border-radius:var(--radius);padding:10px;background:var(--painel);box-shadow:var(--sombra);width:100%}
+  .sobre-img-frame video, .sobre-img-frame img{width:100%;height:auto;max-height:75vh;object-fit:cover;aspect-ratio:4/6;border-radius:8px;display:block;filter:grayscale(10%);transition:filter .3s}
+  .sobre-img-frame:hover video, .sobre-img-frame:hover img{filter:grayscale(0%)}
   
   /* SEÇÃO CATEGORIAS */
   section.categorias-sec{padding:80px 0;background:var(--preto) background:rgba(20,20,22,0.4); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
