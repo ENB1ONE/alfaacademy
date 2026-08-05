@@ -12,6 +12,30 @@ const pool = new Pool({
     port: 5432,
 });
 
+
+// Auto-migrate new columns for games
+pool.query(`
+    DO $$
+    BEGIN
+        BEGIN
+            ALTER TABLE treinos ADD COLUMN campeonato VARCHAR(255);
+        EXCEPTION
+            WHEN duplicate_column THEN RAISE NOTICE 'column campeonato already exists';
+        END;
+        BEGIN
+            ALTER TABLE treinos ADD COLUMN horario VARCHAR(50);
+        EXCEPTION
+            WHEN duplicate_column THEN RAISE NOTICE 'column horario already exists';
+        END;
+        BEGIN
+            ALTER TABLE treinos ADD COLUMN observacao TEXT;
+        EXCEPTION
+            WHEN duplicate_column THEN RAISE NOTICE 'column observacao already exists';
+        END;
+    END $$;
+`).catch(console.error);
+
+
 const SECRET_KEY = 'alfa_academy_secreto_seguro';
 
 const verificarAcesso = (req, res, next) => {
@@ -254,7 +278,7 @@ router.post('/chamadas', verificarAcesso, async (req, res) => {
             // Optionally update tipo if changed, though rare
             await client.query("UPDATE treinos SET tipo = $1 WHERE id = $2", [eventType, treinoId]);
         } else {
-            const insertTreino = await client.query("INSERT INTO treinos (categoria_id, data, titulo, tipo) VALUES ($1, $2, $3, $4) RETURNING id", [categoria_id, data_chamada, eventTitle, eventType]);
+            const insertTreino = await client.query("INSERT INTO treinos (categoria_id, data, titulo, tipo, campeonato, horario, observacao) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id", [categoria_id, data_chamada, eventTitle, eventType, campeonato || '', horario || '', observacao || '']);
             treinoId = insertTreino.rows[0].id;
         }
         
@@ -452,7 +476,7 @@ router.post('/eventos', verificarAcesso, async (req, res) => {
         for (let cat_id of categorias_ids) {
             const check = await pool.query("SELECT id FROM treinos WHERE categoria_id = $1 AND data = $2 AND titulo = $3", [cat_id, data, eventTitle]);
             if (check.rows.length === 0) {
-                await pool.query("INSERT INTO treinos (categoria_id, data, titulo, tipo) VALUES ($1, $2, $3, $4)", [cat_id, data, eventTitle, eventType]);
+                await pool.query("INSERT INTO treinos (categoria_id, data, titulo, tipo, campeonato, horario, observacao) VALUES ($1, $2, $3, $4, $5, $6, $7)", [cat_id, data, eventTitle, eventType]);
             }
         }
         
@@ -468,11 +492,11 @@ router.post('/eventos', verificarAcesso, async (req, res) => {
 // ==========================================
 router.get('/eventos/proximos', verificarAcesso, async (req, res) => {
     try {
-        let q = "SELECT t.id, TO_CHAR(t.data, 'DD/MM/YYYY') as data_br, t.titulo, c.nome as categoria_nome FROM treinos t LEFT JOIN categorias c ON t.categoria_id = c.id WHERE t.tipo = 'JOGO' AND t.data >= CURRENT_DATE AND t.data <= CURRENT_DATE + INTERVAL '10 days' ORDER BY t.data ASC";
+        let q = "SELECT t.id, TO_CHAR(t.data, 'DD/MM/YYYY') as data_br, t.titulo, t.campeonato, t.horario, t.observacao, c.nome as categoria_nome FROM treinos t LEFT JOIN categorias c ON t.categoria_id = c.id WHERE t.tipo = 'JOGO' AND t.data >= CURRENT_DATE AND t.data <= CURRENT_DATE + INTERVAL '10 days' ORDER BY t.data ASC";
         let vals = [];
         
         if (req.usuario.perfil === 'Treinador') {
-            q = "SELECT t.id, TO_CHAR(t.data, 'DD/MM/YYYY') as data_br, t.titulo, c.nome as categoria_nome FROM treinos t LEFT JOIN categorias c ON t.categoria_id = c.id JOIN treinador_categoria tc ON t.categoria_id = tc.categoria_id WHERE tc.treinador_id = $1 AND t.tipo = 'JOGO' AND t.data >= CURRENT_DATE AND t.data <= CURRENT_DATE + INTERVAL '10 days' ORDER BY t.data ASC";
+            q = "SELECT t.id, TO_CHAR(t.data, 'DD/MM/YYYY') as data_br, t.titulo, t.campeonato, t.horario, t.observacao, c.nome as categoria_nome FROM treinos t LEFT JOIN categorias c ON t.categoria_id = c.id JOIN treinador_categoria tc ON t.categoria_id = tc.categoria_id WHERE tc.treinador_id = $1 AND t.tipo = 'JOGO' AND t.data >= CURRENT_DATE AND t.data <= CURRENT_DATE + INTERVAL '10 days' ORDER BY t.data ASC";
             vals.push(req.usuario.id);
         }
         
@@ -557,16 +581,46 @@ router.get('/setup-db', async (req, res) => {
 // ==========================================
 router.get('/jogos', verificarAcesso, async (req, res) => {
     try {
-        let q = "SELECT t.id, TO_CHAR(t.data, 'YYYY-MM-DD') as data_raw, TO_CHAR(t.data, 'DD/MM/YYYY') as data_br, t.titulo as adversario, c.nome as categoria_nome, t.categoria_id FROM treinos t LEFT JOIN categorias c ON t.categoria_id = c.id WHERE t.tipo = 'JOGO' ORDER BY t.data DESC";
+        // Group games by date and title so frontend displays a single row per game
+        let q = `
+            SELECT 
+                TO_CHAR(t.data, 'YYYY-MM-DD') as data_raw, 
+                TO_CHAR(t.data, 'DD/MM/YYYY') as data_br, 
+                t.titulo as adversario,
+                t.campeonato,
+                t.horario,
+                t.observacao,
+                ARRAY_AGG(t.id) as treino_ids, 
+                ARRAY_AGG(c.nome) as categorias_nomes,
+                ARRAY_AGG(t.categoria_id) as categorias_ids
+            FROM treinos t 
+            LEFT JOIN categorias c ON t.categoria_id = c.id
+            WHERE t.tipo = 'JOGO'
+        `;
         let vals = [];
         
         if (req.usuario.perfil === 'Treinador') {
-            q = "SELECT t.id, TO_CHAR(t.data, 'YYYY-MM-DD') as data_raw, TO_CHAR(t.data, 'DD/MM/YYYY') as data_br, t.titulo as adversario, c.nome as categoria_nome, t.categoria_id FROM treinos t LEFT JOIN categorias c ON t.categoria_id = c.id JOIN treinador_categoria tc ON t.categoria_id = tc.categoria_id WHERE tc.treinador_id = $1 AND t.tipo = 'JOGO' ORDER BY t.data DESC";
+            q += ` JOIN treinador_categoria tc ON t.categoria_id = tc.categoria_id WHERE tc.treinador_id = $1 AND t.tipo = 'JOGO' `;
             vals.push(req.usuario.id);
         }
         
+        q += " GROUP BY t.data, t.titulo, t.campeonato, t.horario, t.observacao ORDER BY data_raw DESC ";
+        
         const r = await pool.query(q, vals);
-        res.json(r.rows);
+        // Map to format that is easy to consume (e.g. generate a pseudo-id for React keys)
+        const formatted = r.rows.map((row, index) => ({
+            id: 'jogo_' + index,
+            data_raw: row.data_raw,
+            data_br: row.data_br,
+            adversario: row.adversario,
+            campeonato: row.campeonato,
+            horario: row.horario,
+            observacao: row.observacao,
+            treino_ids: row.treino_ids,
+            categorias_nomes: row.categorias_nomes,
+            categorias_ids: row.categorias_ids
+        }));
+        res.json(formatted);
     } catch (e) {
         res.status(500).json({ error: e.message });
     }
@@ -617,5 +671,106 @@ router.post('/jogos/:id/convocacao', verificarAcesso, async (req, res) => {
     }
 });
 
+
+
+
+router.delete('/eventos/deletar', verificarAcesso, async (req, res) => {
+    const { titulo, data } = req.body;
+    try {
+        await pool.query("BEGIN");
+        // deleting from treinos will cascade to convocacoes
+        await pool.query("DELETE FROM treinos WHERE titulo = $1 AND data = $2 AND tipo = 'JOGO'", [titulo, data]);
+        await pool.query("COMMIT");
+        registrarLog(req.usuario.id, `Excluiu o jogo ${titulo}`, null);
+        res.json({ success: true });
+    } catch (e) {
+        await pool.query("ROLLBACK");
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.put('/eventos/editar', verificarAcesso, async (req, res) => {
+    const { old_titulo, old_data, new_titulo, new_data, new_categorias_ids, campeonato, horario, observacao } = req.body;
+    try {
+        if (!new_categorias_ids || !Array.isArray(new_categorias_ids) || new_categorias_ids.length === 0) {
+            return res.status(400).json({ error: 'Selecione ao menos uma categoria.' });
+        }
+        
+        await pool.query("BEGIN");
+        
+        // Find existing treinos for this game
+        const existing = await pool.query("SELECT id, categoria_id FROM treinos WHERE titulo = $1 AND data = $2 AND tipo = 'JOGO'", [old_titulo, old_data]);
+        const existingCatIds = existing.rows.map(r => r.categoria_id.toString());
+        
+        // Update basic info for all existing ones we are keeping
+        for (let row of existing.rows) {
+            const catStr = row.categoria_id.toString();
+            if (new_categorias_ids.includes(catStr)) {
+                await pool.query("UPDATE treinos SET titulo = $1, data = $2, campeonato = $4, horario = $5, observacao = $6 WHERE id = $3", [new_titulo, new_data, row.id, campeonato || '', horario || '', observacao || '']);
+            } else {
+                await pool.query("DELETE FROM treinos WHERE id = $1", [row.id]); // deletes convocacoes cascade
+            }
+        }
+        
+        // Insert new ones
+        for (let catStr of new_categorias_ids) {
+            if (!existingCatIds.includes(catStr)) {
+                await pool.query("INSERT INTO treinos (categoria_id, data, titulo, tipo, campeonato, horario, observacao) VALUES ($1, $2, $3, 'JOGO', $4, $5, $6)", [parseInt(catStr), new_data, new_titulo, campeonato || '', horario || '', observacao || '']);
+            }
+        }
+        
+        await pool.query("COMMIT");
+        registrarLog(req.usuario.id, `Editou o jogo ${old_titulo}`, null);
+        res.json({ success: true });
+    } catch (e) {
+        await pool.query("ROLLBACK");
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.post('/jogos/multi-convocados', verificarAcesso, async (req, res) => {
+    try {
+        const { treino_ids } = req.body;
+        if (!treino_ids || treino_ids.length === 0) return res.json([]);
+        
+        const gameRes = await pool.query("SELECT id as treino_id, categoria_id FROM treinos WHERE id = ANY($1::int[])", [treino_ids]);
+        if (gameRes.rows.length === 0) return res.status(404).json({error: 'Jogo não encontrado'});
+        
+        // Fetch athletes for all involved categories
+        const catIds = gameRes.rows.map(r => r.categoria_id);
+        
+        const r = await pool.query(`
+            SELECT a.id, a.nome, a.posicao, c.nome as categoria_nome, a.categoria_id,
+                   t.id as treino_id,
+                   CASE WHEN conv.atleta_id IS NOT NULL THEN true ELSE false END as convocado
+            FROM atletas a
+            JOIN categorias c ON a.categoria_id = c.id
+            JOIN treinos t ON t.categoria_id = a.categoria_id AND t.id = ANY($1::int[])
+            LEFT JOIN convocacoes conv ON a.id = conv.atleta_id AND conv.treino_id = t.id
+            WHERE a.categoria_id = ANY($2::int[])
+            ORDER BY c.nome ASC, a.nome ASC
+        `, [treino_ids, catIds]);
+        
+        res.json(r.rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+router.post('/jogos/toggle-convocacao', verificarAcesso, async (req, res) => {
+    try {
+        const { atleta_id, treino_id, state } = req.body;
+        
+        if (state) {
+            await pool.query("INSERT INTO convocacoes (treino_id, atleta_id) VALUES ($1, $2) ON CONFLICT DO NOTHING", [treino_id, atleta_id]);
+        } else {
+            await pool.query("DELETE FROM convocacoes WHERE treino_id = $1 AND atleta_id = $2", [treino_id, atleta_id]);
+        }
+        
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
 
 module.exports = router;

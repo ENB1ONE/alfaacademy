@@ -83,8 +83,12 @@ export default function Overview() {
     return acc;
 }, {})).map((j, i) => (
     <div key={i} className="card interactive" onClick={() => navigate('/jogos')} style={{ padding: 15, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--linha)', cursor: 'pointer' }}>
-        <div style={{ color: '#EF4444', fontWeight: 'bold', marginBottom: 5 }}>{j.data_br}</div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+            <span style={{ color: '#EF4444', fontWeight: 'bold' }}>{j.data_br}</span>
+            {j.horario && <span style={{ color: 'var(--cinza)', fontSize: 12 }}>{j.horario}</span>}
+        </div>
         <div style={{ color: 'var(--texto)', fontSize: 16 }}>{j.titulo}</div>
+        {j.campeonato && <div style={{ color: 'var(--ouro)', fontSize: 13, marginTop: 4, fontWeight: 500 }}>{j.campeonato}</div>}
         <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginTop: 10 }}>
           {j.categorias_nomes.map((cat, idx) => (
               <span key={idx} style={{ background: 'rgba(248,193,70,0.2)', border: '1px solid var(--ouro)', color: 'var(--ouro)', padding: '2px 8px', borderRadius: 12, fontSize: 11, fontWeight: 'bold' }}>

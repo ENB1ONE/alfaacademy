@@ -68,6 +68,19 @@ export default function Games() {
     setShowModal(true);
   };
 
+  
+  const handleDelete = async (jogo) => {
+    if (!window.confirm(`Tem certeza que deseja excluir o jogo "${jogo.adversario}" do dia ${jogo.data_br}? Todas as convocações serão apagadas.`)) return;
+    try {
+      const res = await api.delete('/admin/eventos/deletar', { data: { titulo: jogo.adversario, data: jogo.data_raw } });
+      if (res.data.success) {
+        setJogos(jogos.filter(j => j.adversario !== jogo.adversario || j.data_raw !== jogo.data_raw));
+      }
+    } catch (e) {
+      alert("Erro ao excluir jogo");
+    }
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     try {
@@ -199,6 +212,9 @@ export default function Games() {
                         <button className="btn outline" onClick={() => openEditModal(j)} style={{ padding: '6px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 5 }}>
                             <Edit2 size={14} /> Editar
                         </button>
+                        <button className="btn outline" onClick={() => handleDelete(j)} style={{ padding: '6px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 5, borderColor: '#ff4444', color: '#ff4444' }}>
+                            <Trash2 size={14} /> Excluir
+                        </button>
                     )}
                     <button className="btn outline" onClick={() => openConvocacao(j)} style={{ padding: '6px 12px', fontSize: 13 }}>
                       Gerir Convocação
@@ -227,6 +243,20 @@ export default function Games() {
               <div>
                 <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Data</label>
                 <input type="date" className="input" required value={form.data} onChange={e => setForm({...form, data: e.target.value})} />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Campeonato / Liga (Opcional)</label>
+                <input className="input" value={form.campeonato} onChange={e => setForm({...form, campeonato: e.target.value})} placeholder="Ex: Paulistão Sub-20" />
+              </div>
+              <div style={{ display: 'flex', gap: 15 }}>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Horário (Opcional)</label>
+                    <input type="time" className="input" value={form.horario} onChange={e => setForm({...form, horario: e.target.value})} />
+                  </div>
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Observações (Opcional)</label>
+                <textarea className="input" value={form.observacao} onChange={e => setForm({...form, observacao: e.target.value})} placeholder="Instruções, local da partida, etc..." rows={3} />
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Categorias Participantes</label>
