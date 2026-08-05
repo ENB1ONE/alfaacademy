@@ -141,7 +141,7 @@ export default function AttendanceHistory() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 10 }}>
           {days.map((day, idx) => {
             const evts = getEventsForDay(day);
-            const hasJogo = evts.some(e => e.tipo === 'JOGO');
+            const hasJogo = evts.some(e => e.tipo === 'JOGO' || (e.titulo && e.titulo !== 'Treino Regular'));
             
             return (
               <div 
@@ -166,7 +166,7 @@ export default function AttendanceHistory() {
                     <span style={{ fontSize: 18, color: isToday(day) ? 'var(--ouro)' : 'var(--texto)', fontWeight: isToday(day) ? 'bold' : 'normal' }}>{day}</span>
                     <div style={{ display: 'flex', gap: 3, marginTop: 5, flexWrap: 'wrap', justifyContent: 'center' }}>
                       {evts.map(e => (
-                         <div key={e.id} style={{ width: 6, height: 6, borderRadius: '50%', background: e.tipo === 'JOGO' ? '#EF4444' : 'var(--ouro)' }} title={e.titulo} />
+                         <div key={e.id} style={{ width: 6, height: 6, borderRadius: '50%', background: (e.tipo === 'JOGO' || (e.titulo && e.titulo !== 'Treino Regular')) ? '#EF4444' : 'var(--ouro)' }} title={e.titulo} />
                       ))}
                     </div>
                   </>
