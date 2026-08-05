@@ -61,6 +61,9 @@ export default function Attendance() {
       });
       await Promise.all(promises);
       alert('Listas de chamada salvas com sucesso!');
+      setCategoriasSelecionadas([]);
+      setTitulo('Treino Regular');
+      setTipo('TREINO');
     } catch (e) {
       alert('Erro ao salvar listas de chamada. Verifique se o servidor suporta esta função.');
     }
