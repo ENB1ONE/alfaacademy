@@ -1,8 +1,12 @@
 ﻿import React, { useState, useEffect } from 'react';
 import api from '../api';
+import { AuthContext } from '../context/AuthContext';
 import { ChevronLeft, ChevronRight, Calendar as CalIcon, Plus, X, Users } from 'lucide-react';
 
 export default function AttendanceHistory() {
+  const { user } = useContext(AuthContext);
+  const isAdmin = ['Administrador', 'admin', 'Admin'].includes(user?.perfil);
+
   const [currentDate, setCurrentDate] = useState(new Date());
   const [treinos, setTreinos] = useState([]);
   const [categorias, setCategorias] = useState([]);
@@ -185,7 +189,9 @@ export default function AttendanceHistory() {
                 <>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                         <span style={{ color: 'var(--cinza)' }}>{selectedDayEvents.events.length} evento(s) neste dia</span>
-                        <button onClick={() => setIsScheduleOpen(true)} className="btn" style={{ padding: '6px 12px', fontSize: 12, display: 'flex', gap: 5, alignItems: 'center' }}><Plus size={16} /> Agendar Jogo Oficial</button>
+                        {isAdmin && (
+                            <button onClick={() => setIsScheduleOpen(true)} className="btn" style={{ padding: '6px 12px', fontSize: 12, display: 'flex', gap: 5, alignItems: 'center' }}><Plus size={16} /> Agendar Jogo Oficial</button>
+                        )}
                     </div>
 
                     {selectedDayEvents.events.length === 0 ? (
