@@ -134,6 +134,48 @@ export default function Overview() {
             ) : <p style={{ textAlign: 'center', color: 'var(--cinza)', marginTop: 100 }}>Nenhum dado de faltas encontrado.</p>}
           </div>
         </div>
+
+      {/* Modal Detalhes do Jogo */}
+      {showConvocacaoModal && selectedJogo && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}>
+          <div className="card" style={{ width: '100%', maxWidth: 700, padding: '20px', position: 'relative', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
+            <button onClick={() => setShowConvocacaoModal(false)} style={{ position: 'absolute', top: 20, right: 20, background: 'none', border: 'none', color: 'var(--cinza)', cursor: 'pointer' }}>
+              <X size={24} />
+            </button>
+            <h2 style={{ margin: '0 0 10px 0', color: 'var(--ouro)' }}>{selectedJogo.titulo}</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20, fontSize: 14 }}>
+              <div><strong style={{ color: 'var(--cinza)' }}>Data:</strong> <span style={{ color: '#EF4444', fontWeight: 'bold' }}>{selectedJogo.data_br}</span></div>
+              <div><strong style={{ color: 'var(--cinza)' }}>Hor&aacute;rio:</strong> {selectedJogo.horario || '--:--'}</div>
+              <div><strong style={{ color: 'var(--cinza)' }}>Campeonato/Liga:</strong> {selectedJogo.campeonato || 'N/A'}</div>
+              <div style={{ gridColumn: 'span 2' }}><strong style={{ color: 'var(--cinza)' }}>Observa&ccedil;&otilde;es:</strong> {selectedJogo.observacao || 'Nenhuma'}</div>
+            </div>
+
+            <h3 style={{ borderBottom: '1px solid var(--linha)', paddingBottom: 10, marginBottom: 15 }}>Lista de Convocados</h3>
+            
+            {loadingConvocados ? (
+                <p style={{ color: 'var(--cinza)', textAlign: 'center' }}>Carregando convocados...</p>
+            ) : convocados.length === 0 ? (
+                <p style={{ color: 'var(--cinza)', textAlign: 'center' }}>Nenhum atleta convocado para este jogo ainda.</p>
+            ) : (
+                <div style={{ overflowY: 'auto', flex: 1, paddingRight: 5 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 10 }}>
+                        {convocados.map(a => (
+                            <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 10, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--linha)', borderRadius: 8 }}>
+                                <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--ouro)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>
+                                    {a.nome.charAt(0)}
+                                </div>
+                                <div style={{ overflow: 'hidden' }}>
+                                    <div style={{ fontSize: 14, fontWeight: 'bold', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{a.nome}</div>
+                                    <div style={{ fontSize: 12, color: 'var(--cinza)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{a.categoria_nome || 'Categoria'} - {a.posicao || 'Posi&ccedil;&atilde;o'}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );
