@@ -209,12 +209,14 @@ export default function Games() {
                   </td>
                   <td style={{ padding: 15, borderBottom: '1px solid var(--linha)', textAlign: 'right', display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
                     {isAdmin && (
-                        <button className="btn outline" onClick={() => openEditModal(j)} style={{ padding: '6px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 5 }}>
-                            <Edit2 size={14} /> Editar
-                        </button>
-                        <button className="btn outline" onClick={() => handleDelete(j)} style={{ padding: '6px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 5, borderColor: '#ff4444', color: '#ff4444' }}>
-                            <Trash2 size={14} /> Excluir
-                        </button>
+                        <>
+                            <button className="btn outline" onClick={() => openEditModal(j)} style={{ padding: '6px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 5 }}>
+                                <Edit2 size={14} /> Editar
+                            </button>
+                            <button className="btn outline" onClick={() => handleDelete(j)} style={{ padding: '6px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 5, borderColor: '#ff4444', color: '#ff4444' }}>
+                                <Trash2 size={14} /> Excluir
+                            </button>
+                        </>
                     )}
                     <button className="btn outline" onClick={() => openConvocacao(j)} style={{ padding: '6px 12px', fontSize: 13 }}>
                       Gerir Convocação
