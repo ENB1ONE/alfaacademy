@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import api from '../api';
 import { AuthContext } from '../context/AuthContext';
-import { Plus, Trophy, Save, X, CheckSquare, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Trophy, Save, X, CheckSquare, Edit2, Trash2, Search } from 'lucide-react';
 
 export default function Games() {
   const { user } = useContext(AuthContext);
@@ -10,6 +10,7 @@ export default function Games() {
   const [jogos, setJogos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categorias, setCategorias] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -72,7 +73,7 @@ export default function Games() {
   const handleDelete = async (jogo) => {
     if (!window.confirm(`Tem certeza que deseja excluir o jogo "${jogo.adversario}" do dia ${jogo.data_br}? Todas as convocações serão apagadas.`)) return;
     try {
-      const res = await api.delete('/admin/eventos/deletar', { data: { titulo: jogo.adversario, data: jogo.data_raw } });
+      const res = await api.delete('/api/admin/eventos/deletar', { data: { titulo: jogo.adversario, data: jogo.data_raw } });
       if (res.data.success) {
         setJogos(jogos.filter(j => j.adversario !== jogo.adversario || j.data_raw !== jogo.data_raw));
       }
