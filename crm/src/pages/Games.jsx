@@ -177,56 +177,51 @@ export default function Games() {
         )}
       </div>
 
-      <div className="card">
+      <div className="card" style={{ padding: 20 }}>
         {loading ? (
           <div style={{ padding: 40, textAlign: 'center', color: 'var(--cinza)' }}>Carregando...</div>
         ) : jogos.length === 0 ? (
           <div style={{ padding: 40, textAlign: 'center', color: 'var(--cinza)' }}>Nenhum jogo encontrado.</div>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ background: 'rgba(255,255,255,0.02)' }}>
-                <th style={{ padding: 15, textAlign: 'left', borderBottom: '1px solid var(--linha)', color: 'var(--cinza)', fontWeight: 500 }}>Data</th>
-                <th style={{ padding: 15, textAlign: 'left', borderBottom: '1px solid var(--linha)', color: 'var(--cinza)', fontWeight: 500 }}>Adversário</th>
-                <th style={{ padding: 15, textAlign: 'left', borderBottom: '1px solid var(--linha)', color: 'var(--cinza)', fontWeight: 500 }}>Categorias Envolvidas</th>
-                <th style={{ padding: 15, textAlign: 'right', borderBottom: '1px solid var(--linha)', color: 'var(--cinza)', fontWeight: 500 }}>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {jogos.map(j => (
-                <tr key={j.id} className="interactive">
-                  <td style={{ padding: 15, borderBottom: '1px solid var(--linha)' }}>
-                    <span style={{ color: '#EF4444', fontWeight: 'bold' }}>{j.data_br}</span>
-                  </td>
-                  <td style={{ padding: 15, borderBottom: '1px solid var(--linha)', color: 'var(--texto)' }}>{j.adversario}</td>
-                  <td style={{ padding: 15, borderBottom: '1px solid var(--linha)' }}>
-                    <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
-                        {j.categorias_nomes && j.categorias_nomes.map((cnome, idx) => (
-                            <span key={idx} style={{ background: 'rgba(248, 193, 70, 0.2)', color: 'var(--ouro)', padding: '4px 10px', borderRadius: 12, fontSize: 12 }}>
-                                {cnome}
-                            </span>
-                        ))}
-                    </div>
-                  </td>
-                  <td style={{ padding: 15, borderBottom: '1px solid var(--linha)', textAlign: 'right', display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
-                    {isAdmin && (
-                        <>
-                            <button className="btn outline" onClick={() => openEditModal(j)} style={{ padding: '6px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 5 }}>
-                                <Edit2 size={14} /> Editar
-                            </button>
-                            <button className="btn outline" onClick={() => handleDelete(j)} style={{ padding: '6px 12px', fontSize: 13, display: 'flex', alignItems: 'center', gap: 5, borderColor: '#ff4444', color: '#ff4444' }}>
-                                <Trash2 size={14} /> Excluir
-                            </button>
-                        </>
-                    )}
-                    <button className="btn outline" onClick={() => openConvocacao(j)} style={{ padding: '6px 12px', fontSize: 13 }}>
-                      Gerir Convocação
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px', width: '100%' }}>
+            {jogos.map(j => (
+              <div key={j.id} className="interactive" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--linha)', borderRadius: 'var(--radius-sm)', padding: 20, display: 'flex', flexDirection: 'column', gap: 15 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <span style={{ color: '#EF4444', fontWeight: 'bold', fontSize: 13, display: 'block', marginBottom: 5 }}>{j.data_br}</span>
+                    <h3 style={{ color: 'var(--texto)', margin: 0, fontSize: 18 }}>{j.adversario}</h3>
+                  </div>
+                </div>
+                
+                <div>
+                  <span style={{ color: 'var(--cinza)', fontSize: 12, display: 'block', marginBottom: 8 }}>Categorias Envolvidas:</span>
+                  <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                      {j.categorias_nomes && j.categorias_nomes.map((cnome, idx) => (
+                          <span key={idx} style={{ background: 'rgba(248, 193, 70, 0.2)', color: 'var(--ouro)', padding: '4px 10px', borderRadius: 12, fontSize: 12 }}>
+                              {cnome}
+                          </span>
+                      ))}
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', borderTop: '1px solid var(--linha)', paddingTop: 15, marginTop: 'auto' }}>
+                  {isAdmin && (
+                      <>
+                          <button className="btn outline" onClick={() => openEditModal(j)} style={{ padding: '8px 12px', fontSize: 13, flex: '1 1 auto', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 5 }}>
+                              <Edit2 size={16} /> Editar
+                          </button>
+                          <button className="btn outline" onClick={() => handleDelete(j)} style={{ padding: '8px 12px', fontSize: 13, flex: '1 1 auto', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 5, borderColor: '#ff4444', color: '#ff4444' }}>
+                              <Trash2 size={16} /> Excluir
+                          </button>
+                      </>
+                  )}
+                  <button className="btn outline" onClick={() => openConvocacao(j)} style={{ padding: '8px 12px', fontSize: 13, flex: '1 1 100%', display: 'flex', justifyContent: 'center' }}>
+                    Gerir ConvocaÃ§Ã£o
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
 
