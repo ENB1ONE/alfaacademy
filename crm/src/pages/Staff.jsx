@@ -155,28 +155,46 @@ export default function Staff() {
         </form>
       </div>
 
-      <div className="card">
-        <table>
-          <thead><tr><th>Nome</th><th>Usuário</th><th>Perfil</th><th>Categorias</th><th>Ações</th></tr></thead>
-          <tbody>
-            {treinadores.length === 0 ? (
-              <tr><td colSpan="5" style={{ textAlign: 'center' }}>Nenhum treinador cadastrado.</td></tr>
-            ) : (
-              treinadores.map(t => (
-                <tr key={t.id}>
-                  <td>{t.nome}</td>
-                  <td>{t.usuario_lc}</td>
-                  <td>{t.perfil}</td>
-                  <td>{t.categorias ? t.categorias.map(c => c.nome).join(', ') : '-'}</td>
-                  <td>
-                    <button className="btn btn-primary" style={{ marginRight: 10 }} onClick={() => handleEditar(t)}><Edit2 size={16} /></button>
-                    <button className="btn btn-danger" onClick={() => handleExcluir(t.id)}><Trash2 size={16} /></button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
+        {treinadores.length === 0 ? (
+          <div className="card" style={{ textAlign: 'center', gridColumn: '1 / -1' }}>Nenhum treinador cadastrado.</div>
+        ) : (
+          treinadores.map(t => (
+            <div className="card" key={t.id} style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <h3 style={{ margin: 0, color: 'var(--ouro)', fontSize: '1.2rem' }}>{t.nome}</h3>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--cinza)' }}>{t.perfil}</span>
+                </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button className="btn" style={{ padding: '8px' }} onClick={() => handleEditar(t)}><Edit2 size={16} /></button>
+                  <button className="btn" style={{ padding: '8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)' }} onClick={() => handleExcluir(t.id)}><Trash2 size={16} /></button>
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.95rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--linha)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--cinza)' }}>Usuário:</span>
+                  <strong>{t.usuario_lc}</strong>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingTop: '4px' }}>
+                  <span style={{ color: 'var(--cinza)' }}>Categorias Responsáveis:</span>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '4px' }}>
+                    {t.categorias && t.categorias.length > 0 ? (
+                      t.categorias.map(c => (
+                        <span key={c.id} style={{ background: 'rgba(248, 193, 70, 0.1)', color: 'var(--ouro)', border: '1px solid rgba(248, 193, 70, 0.2)', padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: '500' }}>
+                          {c.nome}
+                        </span>
+                      ))
+                    ) : (
+                      <span style={{ color: 'var(--cinza)', fontSize: '0.85rem' }}>Nenhuma</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
