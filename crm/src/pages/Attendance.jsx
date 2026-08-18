@@ -120,29 +120,20 @@ export default function Attendance() {
         {atletas.length === 0 ? (
           <p style={{ padding: 20, textAlign: 'center', color: 'var(--cinza)' }}>Nenhum atleta nestas categorias.</p>
         ) : (
-          <div className="table-container">
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr><th style={{ textAlign: 'left', padding: 15, borderBottom: '1px solid var(--linha)', color: 'var(--cinza)' }}>Atleta</th><th style={{ textAlign: 'center', padding: 15, borderBottom: '1px solid var(--linha)', color: 'var(--cinza)' }}>Presente?</th></tr>
-            </thead>
-            <tbody>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '15px', marginTop: '20px' }}>
               {atletas.map(a => (
-                <tr key={a.id}>
-                  <td style={{ padding: 15, borderBottom: '1px solid var(--linha)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <strong>{a.nome}</strong>
-                        <span style={{ fontSize: 11, background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: 10, color: 'var(--cinza)' }}>
-                            {a.categoria_nome || 'Categoria'}
-                        </span>
-                    </div>
-                  </td>
-                  <td style={{ padding: 15, borderBottom: '1px solid var(--linha)', textAlign: 'center' }}>
-                    <input type="checkbox" checked={presencas[a.id]} onChange={e => setPresencas({...presencas, [a.id]: e.target.checked})} style={{ width: 24, height: 24, accentColor: 'var(--ouro)' }} />
-                  </td>
-                </tr>
+                <div key={a.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--linha)', borderRadius: 'var(--radius-sm)' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                      <strong style={{ fontSize: '1.1rem', color: 'var(--texto)' }}>{a.nome}</strong>
+                      <span style={{ fontSize: '0.8rem', background: 'rgba(248, 193, 70, 0.1)', color: 'var(--ouro)', padding: '2px 8px', borderRadius: '10px', width: 'fit-content' }}>
+                          {a.categoria_nome || 'Categoria'}
+                      </span>
+                  </div>
+                  <div>
+                    <input type="checkbox" checked={presencas[a.id]} onChange={e => setPresencas({...presencas, [a.id]: e.target.checked})} style={{ width: 28, height: 28, accentColor: 'var(--ouro)', cursor: 'pointer' }} />
+                  </div>
+                </div>
               ))}
-            </tbody>
-            </table>
           </div>
         )}
         {atletas.length > 0 && (

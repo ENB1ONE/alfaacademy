@@ -53,19 +53,20 @@ export default function Categories() {
         </form>
       </div>
 
-      <div className="card">
-        <table>
-          <thead><tr><th>ID</th><th>Nome da Categoria</th><th>Ações</th></tr></thead>
-          <tbody>
-            {categorias.map(c => (
-              <tr key={c.id}>
-                <td>{c.id}</td>
-                <td>{c.nome}</td>
-                <td><button className="btn btn-danger" onClick={() => handleExcluir(c.id)}><Trash2 size={16}/></button></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
+        {categorias.length === 0 ? (
+           <div className="card" style={{ textAlign: 'center', gridColumn: '1 / -1' }}>Nenhuma categoria cadastrada.</div>
+        ) : (
+          categorias.map(c => (
+            <div className="card" key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px' }}>
+              <div>
+                <span style={{ color: 'var(--cinza)', fontSize: '0.8rem' }}>ID: {c.id}</span>
+                <h3 style={{ margin: '5px 0 0 0', color: 'var(--ouro)', fontSize: '1.2rem' }}>{c.nome}</h3>
+              </div>
+              <button className="btn" style={{ padding: '8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)' }} onClick={() => handleExcluir(c.id)}><Trash2 size={16}/></button>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

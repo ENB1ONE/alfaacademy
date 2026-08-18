@@ -177,34 +177,39 @@ export default function Athletes() {
         </div>
       </div>
 
-      <div className="card table-container" style={{ padding: '0 20px 20px 20px' }}>
-        <table >
-          <thead>
-            <tr><th style={{...tdStyle, color: 'var(--cinza)', textAlign: 'left'}}>Nome</th><th style={{...tdStyle, color: 'var(--cinza)', textAlign: 'left'}}>Categoria</th><th style={{...tdStyle, color: 'var(--cinza)', textAlign: 'left'}}>Posição</th><th style={{...tdStyle, color: 'var(--cinza)', textAlign: 'left'}}>Status Médico</th><th style={{...tdStyle, color: 'var(--cinza)', textAlign: 'left'}}>Ações</th></tr>
-          </thead>
-          <tbody>
-            {list.map(a => (
-              <tr key={a.id}>
-                <td ><strong>{a.nome}</strong></td>
-                <td >{a.categoria}</td>
-                <td >{a.posicao || '-'}</td>
-                <td >
-                  <span style={{ padding: '4px 8px', borderRadius: 12, fontSize: 12, background: a.status_medico === 'Lesionado' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)', color: a.status_medico === 'Lesionado' ? '#ef4444' : '#22c55e' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
+        {list.length === 0 ? (
+          <div className="card" style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '20px', color: 'var(--cinza)' }}>Nenhum atleta encontrado.</div>
+        ) : (
+          list.map(a => (
+            <div className="card" key={a.id} style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <h3 style={{ margin: 0, color: 'var(--ouro)', fontSize: '1.2rem' }}>{a.nome}</h3>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--cinza)' }}>{a.posicao || 'Sem posição'}</span>
+                </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button onClick={() => toggleDM(a.id, a.status_medico)} title="Alternar DM" className="btn" style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}><Activity size={16} /></button>
+                  <button onClick={() => handleEdit(a)} title="Editar" className="btn" style={{ padding: '8px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.3)' }}><Edit size={16} /></button>
+                  <button onClick={() => handleDelete(a.id)} title="Excluir" className="btn" style={{ padding: '8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)' }}><Trash2 size={16} /></button>
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.95rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--linha)', paddingBottom: '8px' }}>
+                  <span style={{ color: 'var(--cinza)' }}>Categoria:</span>
+                  <strong>{a.categoria}</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '4px' }}>
+                  <span style={{ color: 'var(--cinza)' }}>Status Médico:</span>
+                  <span style={{ padding: '4px 8px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: '500', background: a.status_medico === 'Lesionado' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)', color: a.status_medico === 'Lesionado' ? '#ef4444' : '#22c55e' }}>
                     {a.status_medico || 'Apto'}
                   </span>
-                </td>
-                <td >
-                  <div style={{ display: 'flex', gap: 5 }}>
-                    <button onClick={() => toggleDM(a.id, a.status_medico)} title="Alternar DM" style={{ padding: 8, borderRadius: 8, background: 'rgba(255,255,255,0.1)', color: '#fff' }}><Activity size={18} /></button>
-                    <button onClick={() => handleEdit(a)} title="Editar" style={{ padding: 8, borderRadius: 8, background: 'rgba(59, 130, 246, 0.2)', color: '#3b82f6' }}><Edit size={18} /></button>
-                    <button onClick={() => handleDelete(a.id)} title="Excluir" style={{ padding: 8, borderRadius: 8, background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444' }}><Trash2 size={18} /></button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {list.length === 0 && <tr><td colSpan="5" style={{...tdStyle, textAlign: 'center', color: 'var(--cinza)'}}>Nenhum atleta cadastrado.</td></tr>}
-          </tbody>
-        </table>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
