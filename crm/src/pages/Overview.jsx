@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 import api from '../api';
 import { Users, Activity, UserCog, Trophy, X } from 'lucide-react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 
 export default function Overview() {
+  const { user } = useContext(AuthContext);
+  const isAdmin = ['Administrador', 'admin', 'Admin'].includes(user?.perfil);
   const [proximosJogos, setProximosJogos] = useState([]);
   const [metrics, setMetrics] = useState({ total_atletas: 0, lesionados: 0, total_treinadores: 0, top_faltosos: [] });
   const [dist, setDist] = useState([]);
@@ -81,15 +84,15 @@ export default function Overview() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 20, marginBottom: 30 }}>
         <Card title="Total de Atletas" value={metrics.total_atletas} icon={Users} color="#3b82f6" link="/atletas" />
         <Card title="Atletas no DM" value={metrics.lesionados} icon={Activity} color="#ef4444" link="/atletas" />
-        <Card title="Comissão Técnica" value={metrics.total_treinadores} icon={UserCog} color="#eab308" link="/equipe" />
+        <Card title="ComissÃ£o TÃ©cnica" value={metrics.total_treinadores} icon={UserCog} color="#eab308" link="/equipe" />
       </div>
 
       <div className="card" style={{ marginBottom: 30, padding: 20 }}>
         <h3 style={{ color: 'var(--ouro)', margin: '0 0 15px 0', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Trophy size={20} /> Próximos Jogos (10 dias)
+          <Trophy size={20} /> PrÃ³ximos Jogos (10 dias)
         </h3>
         {proximosJogos.length === 0 ? (
-            <p style={{ margin: 0, color: 'var(--cinza)' }}>Nenhum jogo agendado para os próximos dias.</p>
+            <p style={{ margin: 0, color: 'var(--cinza)' }}>Nenhum jogo agendado para os prÃ³ximos dias.</p>
         ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 15 }}>
                 {Object.values(proximosJogos.reduce((acc, j) => {
@@ -129,7 +132,7 @@ export default function Overview() {
       
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
         <div className="card">
-          <h3 style={{ marginBottom: 20 }}>Distribuição por Categoria</h3>
+          <h3 style={{ marginBottom: 20 }}>DistribuiÃ§Ã£o por Categoria</h3>
           <div style={{ height: 300 }}>
             {dist.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -144,7 +147,7 @@ export default function Overview() {
           </div>
         </div>
 
-        <div className="card" style={{ cursor: 'pointer', transition: '0.2s' }} onClick={() => navigate('/frequencia')} title="Ver Relatório Completo">
+        <div className="card" style={{ cursor: 'pointer', transition: '0.2s' }} onClick={() => navigate('/frequencia')} title="Ver RelatÃ³rio Completo">
           <h3 style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between' }}>Top Atletas Faltosos <span style={{fontSize: 12, color: 'var(--ouro)', fontWeight: 'normal'}}>Ver Todos &rarr;</span></h3>
           <div style={{ height: 300 }}>
             {metrics.top_faltosos.length > 0 ? (
@@ -179,7 +182,7 @@ export default function Overview() {
                 <h3 style={{ margin: 0 }}>Lista de Convocados</h3>
                 {isAdmin && (
                     <button onClick={() => navigate('/jogos')} className="btn outline" style={{ padding: '4px 10px', fontSize: 12 }}>
-                        Gerenciar Convocações
+                        Gerenciar ConvocaÃ§Ãµes
                     </button>
                 )}
             </div>
@@ -212,4 +215,5 @@ export default function Overview() {
     </div>
   );
 }
+
 
