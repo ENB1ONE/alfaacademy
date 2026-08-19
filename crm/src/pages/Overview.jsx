@@ -175,7 +175,14 @@ export default function Overview() {
               <div style={{ gridColumn: 'span 2' }}><strong style={{ color: 'var(--cinza)' }}>Observa&ccedil;&otilde;es:</strong> {selectedJogo.observacao || 'Nenhuma'}</div>
             </div>
 
-            <h3 style={{ borderBottom: '1px solid var(--linha)', paddingBottom: 10, marginBottom: 15 }}>Lista de Convocados</h3>
+            <div style={{ borderBottom: '1px solid var(--linha)', paddingBottom: 10, marginBottom: 15, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ margin: 0 }}>Lista de Convocados</h3>
+                {isAdmin && (
+                    <button onClick={() => navigate('/jogos')} className="btn outline" style={{ padding: '4px 10px', fontSize: 12 }}>
+                        Gerenciar Convocações
+                    </button>
+                )}
+            </div>
             
             {loadingConvocados ? (
                 <p style={{ color: 'var(--cinza)', textAlign: 'center' }}>Carregando convocados...</p>
