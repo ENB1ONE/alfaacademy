@@ -347,9 +347,14 @@ export default function Games() {
                             const isConvocated = convocadosSet.has(a.id);
                             return (
                                 <div key={a.id} onClick={() => toggleConvocacao(a)} className="interactive" style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: 15, background: isConvocated ? 'rgba(248, 193, 70, 0.1)' : 'rgba(255,255,255,0.02)', border: isConvocated ? '1px solid var(--ouro)' : '1px solid var(--linha)', borderRadius: 8, cursor: 'pointer', transition: 'all 0.2s' }}>
-                                    <div style={{ width: 24, height: 24, borderRadius: 6, border: '2px solid', borderColor: isConvocated ? 'var(--ouro)' : 'var(--cinza)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2, background: isConvocated ? 'var(--ouro)' : 'transparent' }}>
-                                        {isConvocated && <CheckSquare size={16} color="#000" />}
-                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ width: 24, height: 24, borderRadius: 6, border: '2px solid', borderColor: isConvocated ? 'var(--ouro)' : 'var(--cinza)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: isConvocated ? 'var(--ouro)' : 'transparent' }}>
+            {isConvocated && <CheckSquare size={16} color="#000" />}
+        </div>
+        <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--linha)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden', color: 'var(--cinza)', fontSize: 12, fontWeight: 'bold' }}>
+            {a.foto ? <img src={a.foto} alt={a.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : a.nome.charAt(0)}
+        </div>
+    </div>
                                     <div>
                                         <div style={{ color: 'var(--texto)', fontSize: 14, fontWeight: isConvocated ? 'bold' : 'normal', lineHeight: '1.3', marginBottom: 2 }}>{a.nome}</div>
                                         <div style={{ color: 'var(--cinza)', fontSize: 12 }}>{a.posicao || 'Não informada'}</div>

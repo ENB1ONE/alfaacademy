@@ -286,9 +286,9 @@ export default function AttendanceHistory() {
                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 5 }}>
                         {convocadosDetail.map(a => (
                             <li key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: 'rgba(255,255,255,0.05)', borderRadius: 4, fontSize: 14 }}>
-                                <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--ouro)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0, fontSize: 12 }}>
-                                    {a.nome.charAt(0)}
-                                </div>
+                                <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'var(--ouro)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0, fontSize: 12, overflow: 'hidden' }}>
+        {a.foto ? <img src={a.foto} alt={a.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : a.nome.charAt(0)}
+    </div>
                                 <div style={{ overflow: 'hidden' }}>
                                     <div style={{ fontWeight: 'bold', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{a.nome}</div>
                                     <div style={{ fontSize: 11, color: 'var(--cinza)' }}>{a.categoria_nome || 'Categoria'}</div>

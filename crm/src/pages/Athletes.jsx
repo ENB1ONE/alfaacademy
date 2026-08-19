@@ -9,7 +9,7 @@ export default function Athletes() {
   const [editMode, setEditMode] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [categorias, setCategorias] = useState([]);
-  const [form, setForm] = useState({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto' });
+  const [form, setForm] = useState({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' });
 
   const { user } = useContext(AuthContext);
   const isAdmin = ['Administrador', 'admin', 'Admin'].includes(user?.perfil);
@@ -59,10 +59,49 @@ export default function Athletes() {
       setEditMode(false);
       setEditingId(null);
       loadAtletas();
-      setForm({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto' });
+      setForm({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' });
     } catch (e) {
       alert('Erro ao salvar atleta');
     }
+  };
+
+  
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_SIZE = 400;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          }
+        } else {
+          if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+        setForm({ ...form, foto: dataUrl });
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleEdit = (a) => {
@@ -128,7 +167,7 @@ export default function Athletes() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
         <h1 style={{ color: 'var(--ouro)' }}>Gestão de Atletas</h1>
-        <button onClick={() => { setShowForm(!showForm); setEditMode(false); setForm({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto' }); }} className="btn" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <button onClick={() => { setShowForm(!showForm); setEditMode(false); setForm({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' }); }} className="btn" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Plus size={20} /> Novo Atleta
         </button>
       </div>
@@ -137,6 +176,16 @@ export default function Athletes() {
         <div className="card" style={{ marginBottom: 30 }}>
           <h3>{editMode ? 'Editar Atleta' : 'Cadastrar Novo Atleta'}</h3>
           <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15, marginTop: 15 }}>
+            
+            <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 15, alignItems: 'center', marginBottom: 10 }}>
+              <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--linha)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                {form.foto ? <img src={form.foto} alt="Foto" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ color: 'var(--cinza)' }}>Foto</span>}
+              </div>
+              <div style={{ flex: 1 }}>
+                <label>Foto do Atleta</label>
+                <input type="file" accept="image/*" capture="environment" onChange={handleImageUpload} style={{ width: '100%', padding: '10px 0' }} />
+              </div>
+            </div>
             <div style={{ gridColumn: '1 / -1' }}><label>Nome Completo</label><input type="text" value={form.nome} onChange={e=>setForm({...form, nome: e.target.value})} required /></div>
             <div><label>Categoria</label><select value={form.categoria_id || ""} onChange={e=>setForm({...form, categoria_id: e.target.value})}><option value="">Selecione...</option>{categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}</select></div>
             <div><label>Posição</label><input type="text" value={form.posicao} onChange={e=>setForm({...form, posicao: e.target.value})} placeholder="Ex: Atacante" /></div>

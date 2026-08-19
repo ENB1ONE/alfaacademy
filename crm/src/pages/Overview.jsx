@@ -196,9 +196,9 @@ export default function Overview() {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 10 }}>
                         {convocados.map(a => (
                             <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 10, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--linha)', borderRadius: 8 }}>
-                                <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--ouro)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0 }}>
-                                    {a.nome.charAt(0)}
-                                </div>
+                                <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--ouro)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', flexShrink: 0, overflow: 'hidden' }}>
+        {a.foto ? <img src={a.foto} alt={a.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : a.nome.charAt(0)}
+    </div>
                                 <div style={{ overflow: 'hidden' }}>
                                     <div style={{ fontSize: 14, fontWeight: 'bold', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{a.nome}</div>
                                     <div style={{ fontSize: 12, color: 'var(--cinza)', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{a.categoria_nome || 'Categoria'} - {a.posicao || 'Posi&ccedil;&atilde;o'}</div>
