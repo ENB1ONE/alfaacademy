@@ -109,6 +109,7 @@ export default function Athletes() {
     setEditingId(a.id);
     setEditMode(true);
     setShowForm(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id) => {

@@ -228,7 +228,7 @@ export default function Games() {
       {/* Modal Criar/Editar Jogo */}
       {showModal && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}>
-          <div className="card" style={{ width: '100%', maxWidth: 500, padding: 30, position: 'relative' }}>
+          <div className="card" style={{ width: '100%', maxWidth: 500, padding: 30, position: 'relative', maxHeight: '90vh', overflowY: 'auto' }}>
             <button onClick={() => setShowModal(false)} style={{ position: 'absolute', top: 20, right: 20, background: 'none', border: 'none', color: 'var(--cinza)', cursor: 'pointer' }}>
               <X size={24} />
             </button>
@@ -241,20 +241,6 @@ export default function Games() {
               <div>
                 <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Data</label>
                 <input type="date" className="input" required value={form.data} onChange={e => setForm({...form, data: e.target.value})} />
-              </div>
-              <div>
-                <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Campeonato / Liga (Opcional)</label>
-                <input className="input" value={form.campeonato} onChange={e => setForm({...form, campeonato: e.target.value})} placeholder="Ex: Paulistão Sub-20" />
-              </div>
-              <div style={{ display: 'flex', gap: 15 }}>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Horário (Opcional)</label>
-                    <input type="time" className="input" value={form.horario} onChange={e => setForm({...form, horario: e.target.value})} />
-                  </div>
-              </div>
-              <div>
-                <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Observações (Opcional)</label>
-                <textarea className="input" value={form.observacao} onChange={e => setForm({...form, observacao: e.target.value})} placeholder="Instruções, local da partida, etc..." rows={3} />
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Categorias Participantes</label>
