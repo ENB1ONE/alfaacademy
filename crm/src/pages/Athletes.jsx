@@ -184,7 +184,7 @@ export default function Athletes() {
               </div>
               <div style={{ flex: 1 }}>
                 <label>Foto do Atleta</label>
-                <input type="file" accept="image/*" capture="environment" onChange={handleImageUpload} style={{ width: '100%', padding: '10px 0' }} />
+                <input type="file" accept="image/*" onChange={handleImageUpload} style={{ width: '100%', padding: '10px 0' }} />
               </div>
             </div>
             <div style={{ gridColumn: '1 / -1' }}><label>Nome Completo</label><input type="text" value={form.nome} onChange={e=>setForm({...form, nome: e.target.value})} required /></div>
@@ -234,9 +234,14 @@ export default function Athletes() {
           list.map(a => (
             <div className="card" key={a.id} style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                  <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'var(--ouro)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: 18, flexShrink: 0, overflow: 'hidden' }}>
+                    {a.foto ? <img src={a.foto} alt={a.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (a.nome ? a.nome.charAt(0) : '')}
+                  </div>
+                  <div>
                   <h3 style={{ margin: 0, color: 'var(--ouro)', fontSize: '1.2rem' }}>{a.nome}</h3>
                   <span style={{ fontSize: '0.85rem', color: 'var(--cinza)' }}>{a.posicao || 'Sem posição'}</span>
+                </div>
                 </div>
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <button onClick={() => toggleDM(a.id, a.status_medico)} title="Alternar DM" className="btn" style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}><Activity size={16} /></button>

@@ -161,6 +161,7 @@ export default function Games() {
       return acc;
   }, {});
 
+  const filteredJogos = jogos.filter(j => (j.adversario || '').toLowerCase().includes(searchTerm.toLowerCase()));
   return (
     <div className="fade-in">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
@@ -180,11 +181,11 @@ export default function Games() {
       <div className="card" style={{ padding: 20 }}>
         {loading ? (
           <div style={{ padding: 40, textAlign: 'center', color: 'var(--cinza)' }}>Carregando...</div>
-        ) : jogos.length === 0 ? (
+        ) : filteredJogos.length === 0 ? (
           <div style={{ padding: 40, textAlign: 'center', color: 'var(--cinza)' }}>Nenhum jogo encontrado.</div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px', width: '100%' }}>
-            {jogos.map(j => (
+            {filteredJogos.map(j => (
               <div key={j.id} className="interactive" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--linha)', borderRadius: 'var(--radius-sm)', padding: 20, display: 'flex', flexDirection: 'column', gap: 15 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div>

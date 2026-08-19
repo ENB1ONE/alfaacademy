@@ -163,9 +163,14 @@ export default function AttendanceReport() {
           filteredReport.map(r => (
             <div className="card" key={r.id} style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <h3 style={{ margin: 0, color: 'var(--ouro)', fontSize: '1.2rem' }}>{r.nome}</h3>
-                  <span style={{ fontSize: '0.85rem', color: 'var(--cinza)' }}>{r.categoria_nome || 'Sem Categoria'}</span>
+                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                  <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'var(--ouro)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: 18, flexShrink: 0, overflow: 'hidden' }}>
+                    {r.foto ? <img src={r.foto} alt={r.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (r.nome ? r.nome.charAt(0) : '')}
+                  </div>
+                  <div>
+                    <h3 style={{ margin: 0, color: 'var(--ouro)', fontSize: '1.2rem' }}>{r.nome}</h3>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--cinza)' }}>{r.categoria_nome || 'Sem Categoria'}</span>
+                  </div>
                 </div>
                 <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.05)', padding: '6px 12px', borderRadius: 20, color: getColor(r.total_presencas, r.total_eventos), fontWeight: 'bold', fontSize: '1.1rem' }}>
                     {getPercentage(r.total_presencas, r.total_eventos)}

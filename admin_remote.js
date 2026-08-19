@@ -513,8 +513,7 @@ router.get('/eventos/proximos', verificarAcesso, async (req, res) => {
 router.get('/frequencia-geral', verificarAcesso, async (req, res) => {
     try {
         let q = `
-            SELECT 
-                a.id, a.nome, a.categoria_id, c.nome as categoria_nome,
+            SELECT a.id, a.nome, a.foto, a.categoria_id, c.nome as categoria_nome,
                 COUNT(p.atleta_id) as total_eventos,
                 COALESCE(SUM(CASE WHEN p.status = 'P' THEN 1 ELSE 0 END), 0) as total_presencas,
                 COALESCE(SUM(CASE WHEN p.status = 'F' THEN 1 ELSE 0 END), 0) as total_faltas,
@@ -529,8 +528,7 @@ router.get('/frequencia-geral', verificarAcesso, async (req, res) => {
         
         if (req.usuario.perfil === 'Treinador') {
             q = `
-                SELECT 
-                    a.id, a.nome, a.categoria_id, c.nome as categoria_nome,
+                SELECT a.id, a.nome, a.foto, a.categoria_id, c.nome as categoria_nome,
                     COUNT(p.atleta_id) as total_eventos,
                     COALESCE(SUM(CASE WHEN p.status = 'P' THEN 1 ELSE 0 END), 0) as total_presencas,
                     COALESCE(SUM(CASE WHEN p.status = 'F' THEN 1 ELSE 0 END), 0) as total_faltas,
