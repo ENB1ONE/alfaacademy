@@ -1,3 +1,35 @@
+
+import React from 'react';
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null, info: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true };
+  }
+  componentDidCatch(error, info) {
+    this.setState({ error, info });
+    console.error("ErrorBoundary caught an error", error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: 20, color: 'white', background: 'red' }}>
+          <h2>Oops, the app crashed!</h2>
+          <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: 12 }}>
+            {this.state.error && this.state.error.toString()}
+          </pre>
+          <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: 12, marginTop: 10 }}>
+            {this.state.info && this.state.info.componentStack}
+          </pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import { useContext } from 'react';
@@ -27,6 +59,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
 
 export default function App() {
   return (
+    <ErrorBoundary>
     <AuthProvider>
       <HashRouter>
         <Routes>
@@ -47,5 +80,6 @@ export default function App() {
         </Routes>
       </HashRouter>
     </AuthProvider>
+    </ErrorBoundary>
   );
 }

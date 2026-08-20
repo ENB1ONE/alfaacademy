@@ -80,7 +80,7 @@ export default function Overview() {
 
   return (
     <div>
-      <h1 style={{ color: 'var(--ouro)', marginBottom: 30 }}>Dashboard Executivo</h1>
+      <h1 style={{ color: 'var(--ouro)', marginBottom: 30 }}>Dashboard Executivo <span style={{ fontSize: 12, color: 'var(--cinza)' }}>v1.0.4</span></h1>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 20, marginBottom: 30 }}>
         <Card title="Total de Atletas" value={metrics.total_atletas} icon={Users} color="#3b82f6" link="/atletas" />
         <Card title="Atletas no DM" value={metrics.lesionados} icon={Activity} color="#ef4444" link="/atletas" />
