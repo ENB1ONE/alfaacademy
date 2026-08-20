@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import api from '../api';
 import { Activity, Plus, Edit, Trash2, Search, Filter } from 'lucide-react';
+import Cropper from 'react-easy-crop';
 
 export default function Athletes() {
   const [atletas, setAtletas] = useState([]);
@@ -10,6 +11,12 @@ export default function Athletes() {
   const [editingId, setEditingId] = useState(null);
   const [categorias, setCategorias] = useState([]);
   const [form, setForm] = useState({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' });
+
+  // Crop States
+  const [cropImageSrc, setCropImageSrc] = useState(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
 
   const { user } = useContext(AuthContext);
   const isAdmin = ['Administrador', 'admin', 'Admin'].includes(user?.perfil);
@@ -69,39 +76,39 @@ export default function Athletes() {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const MAX_SIZE = 400;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > height) {
-          if (width > MAX_SIZE) {
-            height *= MAX_SIZE / width;
-            width = MAX_SIZE;
-          }
-        } else {
-          if (height > MAX_SIZE) {
-            width *= MAX_SIZE / height;
-            height = MAX_SIZE;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-        setForm({ ...form, foto: dataUrl });
-      };
-      img.src = event.target.result;
+    reader.onload = () => {
+        setCropImageSrc(reader.result);
+        setCrop({ x: 0, y: 0 });
+        setZoom(1);
     };
     reader.readAsDataURL(file);
+  };
+  
+  const confirmCrop = () => {
+    if (!cropImageSrc || !croppedAreaPixels) return;
+    const canvas = document.createElement('canvas');
+    const img = new Image();
+    img.onload = () => {
+        canvas.width = 400;
+        canvas.height = 400;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(
+            img,
+            croppedAreaPixels.x,
+            croppedAreaPixels.y,
+            croppedAreaPixels.width,
+            croppedAreaPixels.height,
+            0,
+            0,
+            400,
+            400
+        );
+        const base64 = canvas.toDataURL('image/jpeg', 0.85);
+        setForm({...form, foto: base64});
+        setCropImageSrc(null);
+    };
+    img.src = cropImageSrc;
   };
 
   const handleEdit = (a) => {
@@ -166,6 +173,27 @@ export default function Athletes() {
 
   return (
     <div>
+      {cropImageSrc && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.95)', display: 'flex', flexDirection: 'column', zIndex: 9999 }}>
+            <div style={{ position: 'relative', flex: 1 }}>
+                <Cropper 
+                    image={cropImageSrc}
+                    crop={crop}
+                    zoom={zoom}
+                    aspect={1}
+                    cropShape="round"
+                    showGrid={false}
+                    onCropChange={setCrop}
+                    onZoomChange={setZoom}
+                    onCropComplete={(_, croppedPixels) => setCroppedAreaPixels(croppedPixels)}
+                />
+            </div>
+            <div style={{ padding: '20px', background: '#111', display: 'flex', justifyContent: 'space-between', paddingBottom: '40px' }}>
+                <button type="button" className="btn" style={{ background: '#333' }} onClick={() => setCropImageSrc(null)}>Cancelar</button>
+                <button type="button" className="btn primary" onClick={confirmCrop}>Recortar e Usar</button>
+            </div>
+        </div>
+      )}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
         <h1 style={{ color: 'var(--ouro)' }}>Gestão de Atletas</h1>
         <button onClick={() => { setShowForm(!showForm); setEditMode(false); setForm({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' }); }} className="btn" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
