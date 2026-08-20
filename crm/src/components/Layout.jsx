@@ -62,6 +62,7 @@ export default function Layout() {
           <NavLink to="/jogos" icon={Trophy}>Jogos / Convocações</NavLink>
           {isAdmin && (
             <>
+              <NavLink to="/performance" icon={Activity}>Central Performance</NavLink>
               <NavLink to="/atletas" icon={Users}>Atletas</NavLink>
               
           {isAdmin && (
