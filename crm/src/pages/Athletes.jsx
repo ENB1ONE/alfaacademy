@@ -176,7 +176,7 @@ export default function Athletes() {
     }
 
     if (busca) {
-      matchBusca = a.nome.toLowerCase().includes(busca.toLowerCase());
+      matchBusca = (a.nome || '').toLowerCase().includes(busca.toLowerCase());
     }
 
     return matchCat && matchTreinador && matchBusca;

@@ -128,7 +128,7 @@ export default function Staff() {
 
   
   const treinadoresFiltrados = treinadores.filter(t => {
-    const matchBusca = t.nome.toLowerCase().includes(busca.toLowerCase()) || (t.usuario_lc && t.usuario_lc.toLowerCase().includes(busca.toLowerCase()));
+    const matchBusca = (t.nome || '').toLowerCase().includes(busca.toLowerCase()) || (t.usuario_lc && (t.usuario_lc || '').toLowerCase().includes(busca.toLowerCase()));
     const matchPerfil = filtroPerfil ? t.perfil === filtroPerfil : true;
     return matchBusca && matchPerfil;
   });
@@ -248,7 +248,30 @@ export default function Staff() {
         </form>
       </div>
 
+      
+      <div className="card" style={{ padding: 20, marginBottom: 30 }}>
+        <h4 style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 15, color: 'var(--ouro)' }}><Filter size={18} /> Filtros Inteligentes</h4>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
+          <div>
+            <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Buscar por Nome/Usuário</label>
+            <div style={{ position: 'relative' }}>
+              <Search size={16} style={{ position: 'absolute', left: 10, top: 12, color: 'var(--cinza)' }} />
+              <input type="text" className="input" placeholder="Digite para buscar..." value={busca} onChange={(e) => setBusca(e.target.value)} style={{ width: '100%', paddingLeft: 35, marginTop: 0 }} />
+            </div>
+          </div>
+          <div>
+            <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Perfil</label>
+            <select className="input" value={filtroPerfil} onChange={(e) => setFiltroPerfil(e.target.value)} style={{ width: '100%', marginTop: 0 }}>
+              <option value="">Todos os Perfis</option>
+              <option value="Administrador">Administrador</option>
+              <option value="Treinador">Treinador</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
+
         {treinadores.length === 0 ? (
           <div className="card" style={{ textAlign: 'center', gridColumn: '1 / -1' }}>Nenhum treinador cadastrado.</div>
         ) : (
