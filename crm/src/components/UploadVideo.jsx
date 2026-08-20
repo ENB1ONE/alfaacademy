@@ -1,15 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import api from "../api";
 
 export default function UploadVideo({ onUploadSuccess }) {
   const [file, setFile] = useState(null);
   const [atletaId, setAtletaId] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [atletas, setAtletas] = useState([]);
 
-  const mockAtletas = [
-    { id: "atl_10293", nome: "João Silva" },
-    { id: "atl_10294", nome: "Marcos Paulo" },
-    { id: "atl_10295", nome: "Felipe Santos" }
-  ];
+  useEffect(() => {
+    const fetchAtletas = async () => {
+      try {
+        const res = await api.get('/api/admin/atletas');
+        setAtletas(res.data.atletas || res.data || []);
+      } catch (error) {
+        console.error("Erro ao carregar atletas", error);
+      }
+    };
+    fetchAtletas();
+  }, []);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -42,7 +50,18 @@ export default function UploadVideo({ onUploadSuccess }) {
       const result = await response.json();
       console.log("Análise CV concluída:", result);
       
-      // Pass the returned JSON up to the parent component
+      // Inject the actual athlete info into the JSON if not provided by backend
+      const selectedAtleta = atletas.find(a => String(a.id) === String(atletaId));
+      if (selectedAtleta) {
+        result.atleta = {
+          id: selectedAtleta.id,
+          nome: selectedAtleta.nome,
+          idade: selectedAtleta.data_nascimento ? new Date().getFullYear() - new Date(selectedAtleta.data_nascimento).getFullYear() : 18,
+          posicao: selectedAtleta.posicao || "Posição Indefinida",
+          categoria: selectedAtleta.categoria || "Sub-20"
+        };
+      }
+
       if (onUploadSuccess) onUploadSuccess(result);
       
     } catch (error) {
@@ -69,8 +88,8 @@ export default function UploadVideo({ onUploadSuccess }) {
           style={{ width: "100%", padding: "10px" }}
         >
           <option value="">Selecione o atleta...</option>
-          {mockAtletas.map(a => (
-            <option key={a.id} value={a.id}>{a.nome}</option>
+          {atletas.map(a => (
+            <option key={a.id} value={a.id}>{a.nome} ({a.categoria})</option>
           ))}
         </select>
       </div>
