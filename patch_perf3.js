@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+﻿const fs = require('fs');
+
+const content = `import React, { useState } from "react";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import UploadVideo from "../components/UploadVideo";
 
@@ -163,4 +165,5 @@ export default function CentralPerformance() {
       </div>
     </div>
   );
-}
+}`;
+fs.writeFileSync('crm/src/pages/CentralPerformance.jsx', content, 'utf8');

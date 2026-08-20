@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+﻿const fs = require('fs');
+
+const content = import React, { useState } from "react";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import UploadVideo from "../components/UploadVideo";
 
@@ -115,9 +117,8 @@ export default function CentralPerformance() {
                 Análise de Inteligência Artificial: {mockData.atleta.nome} ({mockData.atleta.categoria})
             </p>
         </div>
-        <div style={{ background: "var(--ouro)", color: "#111", padding: "8px 16px", borderRadius: 8, fontWeight: "bold", textAlign: "center" }}>
-            <span style={{ fontSize: "10px", display: "block", color: "#333" }}>Score Geral</span>
-            {mockData.score_geral}
+        <div style={{ background: "var(--ouro)", color: "#111", padding: "8px 16px", borderRadius: 8, fontWeight: "bold" }}>
+            Score Geral: {mockData.score_geral}
         </div>
       </div>
 
@@ -163,4 +164,5 @@ export default function CentralPerformance() {
       </div>
     </div>
   );
-}
+};
+fs.writeFileSync('crm/src/pages/CentralPerformance.jsx', content, 'utf8');
