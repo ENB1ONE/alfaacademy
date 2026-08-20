@@ -2,45 +2,6 @@ import React, { useState } from "react";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import UploadVideo from "../components/UploadVideo";
 
-const mockData = {
-  atleta: {
-    id: "atl_10293",
-    nome: "João Silva",
-    idade: 17,
-    posicao: "Atacante",
-    categoria: "Sub-20"
-  },
-  score_geral: 82,
-  benchmark_reference: "Top 10 - Atacantes Sub-20",
-  radar_metrics_fisicas: [
-    { subject: "Mudança de ritmo", atleta: 85, top10: 80 },
-    { subject: "Finalização", atleta: 78, top10: 85 },
-    { subject: "Resistência", atleta: 88, top10: 82 },
-    { subject: "Comprometimento", atleta: 90, top10: 85 },
-    { subject: "Duelo", atleta: 70, top10: 78 }
-  ],
-  radar_metrics_taticas: [
-    { subject: "Leitura de jogo", atleta: 85, top10: 82 },
-    { subject: "Controle de bola", atleta: 82, top10: 88 },
-    { subject: "Ajuste corporal", atleta: 80, top10: 80 },
-    { subject: "Mobilidade", atleta: 86, top10: 81 },
-    { subject: "Desarme", atleta: 50, top10: 60 }
-  ],
-  analise_percentil: {
-    vantagens: [
-      { metrica: "Mudança de ritmo", diferenca: "+5", descricao: "Acima da média em explosão." },
-      { metrica: "Resistência", diferenca: "+6", descricao: "Fôlego excepcional para a idade." },
-      { metrica: "Comprometimento", diferenca: "+5", descricao: "Alto índice de recomposição." },
-      { metrica: "Mobilidade", diferenca: "+5", descricao: "Excelente flutuação entre as linhas." }
-    ],
-    lacunas: [
-      { metrica: "Finalização", diferenca: "-7", descricao: "Baixa conversão de chances reais." },
-      { metrica: "Controle de bola", diferenca: "-6", descricao: "Perde a posse sob pressão." },
-      { metrica: "Duelo", diferenca: "-8", descricao: "Baixo aproveitamento em bolas divididas." }
-    ]
-  }
-};
-
 const PerformanceRadar = ({ title, data }) => {
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -95,35 +56,44 @@ const PerformanceRadar = ({ title, data }) => {
 };
 
 export default function CentralPerformance() {
-  const [showDashboard, setShowDashboard] = useState(false);
-  const { analise_percentil } = mockData;
+  const [dashboardData, setDashboardData] = useState(null);
 
-  if (!showDashboard) {
+  if (!dashboardData) {
     return (
       <div style={{ padding: "40px 20px" }}>
-        <UploadVideo onUploadSuccess={() => setShowDashboard(true)} />
+        <UploadVideo onUploadSuccess={(data) => setDashboardData(data)} />
       </div>
     );
   }
 
+  const { analise_percentil } = dashboardData;
+
   return (
     <div style={{ color: "var(--texto)" }}>
+      <button 
+        className="btn" 
+        onClick={() => setDashboardData(null)} 
+        style={{ marginBottom: '20px', background: 'transparent', border: '1px solid var(--ouro)', color: 'var(--ouro)' }}
+      >
+        ← Voltar / Nova Análise
+      </button>
+
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <div>
             <h2 style={{ color: "var(--ouro)", margin: 0 }}>Central de Performance</h2>
             <p style={{ color: "var(--cinza)", fontSize: 13, marginTop: 4 }}>
-                Análise de Inteligência Artificial: {mockData.atleta.nome} ({mockData.atleta.categoria})
+                Análise de Inteligência Artificial: {dashboardData.atleta?.nome} ({dashboardData.atleta?.categoria})
             </p>
         </div>
         <div style={{ background: "var(--ouro)", color: "#111", padding: "8px 16px", borderRadius: 8, fontWeight: "bold", textAlign: "center" }}>
             <span style={{ fontSize: "10px", display: "block", color: "#333" }}>Score Geral</span>
-            {mockData.score_geral}
+            {dashboardData.score_geral}
         </div>
       </div>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 20, marginBottom: 20 }}>
-        <PerformanceRadar title="Métricas Físicas / Comportamentais" data={mockData.radar_metrics_fisicas} />
-        <PerformanceRadar title="Métricas Técnicas / Táticas" data={mockData.radar_metrics_taticas} />
+        <PerformanceRadar title="Métricas Físicas / Comportamentais" data={dashboardData.radar_metrics_fisicas} />
+        <PerformanceRadar title="Métricas Técnicas / Táticas" data={dashboardData.radar_metrics_taticas} />
       </div>
 
       <div className="responsive-grid" style={{ gap: 20 }}>
@@ -132,7 +102,7 @@ export default function CentralPerformance() {
                 <span style={{ fontSize: 18 }}>+</span> Vantagens Competitivas
             </h3>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {analise_percentil.vantagens.map((v, i) => (
+                {analise_percentil?.vantagens.map((v, i) => (
                     <div key={i} style={{ padding: 12, background: "rgba(16, 185, 129, 0.1)", border: "1px solid rgba(16, 185, 129, 0.2)", borderRadius: 8 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                             <strong style={{ color: "#10B981" }}>{v.metrica}</strong>
@@ -149,7 +119,7 @@ export default function CentralPerformance() {
                 <span style={{ fontSize: 18 }}>-</span> Lacunas de Desenvolvimento
             </h3>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {analise_percentil.lacunas.map((l, i) => (
+                {analise_percentil?.lacunas.map((l, i) => (
                     <div key={i} style={{ padding: 12, background: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.2)", borderRadius: 8 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
                             <strong style={{ color: "#EF4444" }}>{l.metrica}</strong>
