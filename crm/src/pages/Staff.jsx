@@ -71,6 +71,7 @@ export default function Staff() {
       id: t.id, nome: t.nome, usuario_lc: t.usuario_lc, senha: '', perfil: t.perfil, foto: t.foto || '',
       categorias: t.categorias ? t.categorias.map(c => c.id) : []
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleExcluir = async (id) => {
@@ -280,7 +281,7 @@ export default function Staff() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                   <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'var(--ouro)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: 18, flexShrink: 0, overflow: 'hidden' }}>
-                    {t.foto ? <img src={t.foto} alt={t.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (t.nome ? t.nome.charAt(0) : '')}
+                    {t.foto ? <img src={t.foto} alt={t.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (t.nome ? String(t.nome).charAt(0) : '')}
                   </div>
                   <div>
                     <h3 style={{ margin: 0, color: 'var(--ouro)', fontSize: '1.2rem' }}>{t.nome}</h3>

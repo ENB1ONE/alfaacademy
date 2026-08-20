@@ -1,11 +1,23 @@
 ﻿const fs = require('fs');
 let app = fs.readFileSync('crm/src/App.jsx', 'utf8');
 
-if (!app.includes('<Route path="performance"')) {
-    const target = `<Route path="equipe" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><Staff /></PrivateRoute>} />`;
-    const replaceWith = target + `\n            <Route path="performance" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><CentralPerformance /></PrivateRoute>} />`;
+// I'll just regex replace the athletes route to append the missing routes
+if (!app.includes('/perfil/:id')) {
+    app = app.replace(
+        `<Route path="atletas" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><Athletes /></PrivateRoute>} />`,
+        `<Route path="atletas" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><Athletes /></PrivateRoute>} />
+            <Route path="perfil/:id" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><PerfilAtleta /></PrivateRoute>} />
+            <Route path="relatorios" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><GeradorRelatorios /></PrivateRoute>} />`
+    );
     
-    app = app.replace(target, replaceWith);
+    // Add imports if missing
+    if (!app.includes('PerfilAtleta')) {
+        app = app.replace(
+            "import Athletes from './pages/Athletes';",
+            "import Athletes from './pages/Athletes';\nimport PerfilAtleta from './pages/PerfilAtleta';\nimport GeradorRelatorios from './pages/GeradorRelatorios';"
+        );
+    }
+    
     fs.writeFileSync('crm/src/App.jsx', app, 'utf8');
-    console.log('App.jsx patched with performance route.');
 }
+console.log('App.jsx fixed');
