@@ -51,7 +51,7 @@ export default function Athletes() {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get('status') === 'dm') {
-      setFiltroStatus('Departamento Médico');
+      setFiltroStatus('Lesionado');
     }
   }, [location.search]);
 
@@ -158,9 +158,11 @@ export default function Athletes() {
   const rawList = Array.isArray(atletas) ? atletas : (atletas?.atletas || []);
   
   const list = rawList.filter(a => {
-    let matchCat = true;
-    let matchTreinador = true;
-    let matchBusca = true;
+      let matchCat = true;
+      let matchTreinador = true;
+      let matchBusca = true;
+      let matchStatus = true;
+
 
     if (filtroCategoria) {
       matchCat = String(a.categoria_id) === String(filtroCategoria);
@@ -179,8 +181,13 @@ export default function Athletes() {
       matchBusca = (a.nome || '').toLowerCase().includes(busca.toLowerCase());
     }
 
-    return matchCat && matchTreinador && matchBusca;
-  });
+    
+      if (filtroStatus) {
+        matchStatus = a.status_medico === filtroStatus;
+      }
+
+      return matchCat && matchTreinador && matchBusca && matchStatus;
+    });
 
 
   return (
@@ -249,12 +256,21 @@ export default function Athletes() {
             </div>
           </div>
           <div>
-            <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Filtrar Categoria</label>
-            <select value={filtroCategoria} onChange={e => setFiltroCategoria(e.target.value)} style={{ marginTop: 0, marginBottom: 0 }}>
-              <option value="">Todas as Categorias</option>
-              {categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
-            </select>
-          </div>
+              <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Filtrar Categoria</label>
+              <select value={filtroCategoria} onChange={e => setFiltroCategoria(e.target.value)} style={{ marginTop: 0, marginBottom: 0 }}>
+                <option value="">Todas as Categorias</option>
+                {categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
+              </select>
+            </div>
+            <div>
+              <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Status Médico</label>
+              <select value={filtroStatus} onChange={e => setFiltroStatus(e.target.value)} style={{ marginTop: 0, marginBottom: 0 }}>
+                <option value="">Todos</option>
+                <option value="Apto">Apto</option>
+                <option value="Lesionado">Lesionado</option>
+                <option value="Transição">Transição</option>
+              </select>
+            </div>
           {isAdmin && (
             <div>
               <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Filtrar Professor</label>
