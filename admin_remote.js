@@ -186,7 +186,7 @@ router.put('/atletas/:id/status', verificarAcesso, async (req, res) => {
 router.get('/treinadores', verificarAdmin, async (req, res) => {
     try {
         const query = `
-            SELECT t.id, t.nome, t.usuario_lc, t.perfil,
+            SELECT t.id, t.nome, t.usuario_lc, t.perfil, t.foto,
                    COALESCE(json_agg(c.*) FILTER (WHERE c.id IS NOT NULL), '[]') as categorias
             FROM treinadores t
             LEFT JOIN treinador_categoria tc ON t.id = tc.treinador_id
@@ -199,14 +199,14 @@ router.get('/treinadores', verificarAdmin, async (req, res) => {
 });
 
 router.post('/treinadores', verificarAdmin, async (req, res) => {
-    const { nome, usuario_lc, senha, perfil, categorias } = req.body;
+    const { nome, usuario_lc, senha, perfil, categorias, foto } = req.body;
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
         const senhaHash = bcrypt.hashSync(senha, 10);
         
-        const q1 = "INSERT INTO treinadores (nome, usuario_lc, senha_hash, perfil, precisa_trocar_senha) VALUES ($1, $2, $3, $4, true) RETURNING id";
-        const resT = await client.query(q1, [nome, usuario_lc.toLowerCase(), senhaHash, perfil]);
+        const q1 = "INSERT INTO treinadores (nome, usuario_lc, senha_hash, perfil, foto, precisa_trocar_senha) VALUES ($1, $2, $3, $4, $5, true) RETURNING id";
+        const resT = await client.query(q1, [nome, usuario_lc.toLowerCase(), senhaHash, perfil, foto || '']);
         const treinadorId = resT.rows[0].id;
         
         if (categorias && categorias.length > 0) {
@@ -230,9 +230,9 @@ router.put('/treinadores/:id', verificarAdmin, async (req, res) => {
         
         if (senha && senha.trim() !== '') {
             const senhaHash = bcrypt.hashSync(senha, 10);
-            await client.query("UPDATE treinadores SET nome = $1, usuario_lc = $2, senha_hash = $3, perfil = $4 WHERE id = $5", [nome, usuario_lc.toLowerCase(), senhaHash, perfil, id]);
+            await client.query("UPDATE treinadores SET nome = $1, usuario_lc = $2, senha_hash = $3, perfil = $4, foto = $5 WHERE id = $6", [nome, usuario_lc.toLowerCase(), senhaHash, perfil, foto || '', id]);
         } else {
-            await client.query("UPDATE treinadores SET nome = $1, usuario_lc = $2, perfil = $3 WHERE id = $4", [nome, usuario_lc.toLowerCase(), perfil, id]);
+            await client.query("UPDATE treinadores SET nome = $1, usuario_lc = $2, perfil = $3, foto = $4 WHERE id = $5", [nome, usuario_lc.toLowerCase(), perfil, foto || '', id]);
         }
         
         await client.query("DELETE FROM treinador_categoria WHERE treinador_id = $1", [id]);

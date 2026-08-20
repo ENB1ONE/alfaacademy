@@ -1,14 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../api';
 import { AuthContext } from '../context/AuthContext';
-import { Edit2, Trash2, X } from 'lucide-react';
+import { Edit2, Trash2, X, UserPlus } from 'lucide-react';
+import Cropper from 'react-easy-crop';
 
 export default function Staff() {
   const { user } = useContext(AuthContext);
   const [treinadores, setTreinadores] = useState([]);
   const [allCategorias, setAllCategorias] = useState([]);
   
-  const [form, setForm] = useState({ id: null, nome: '', usuario_lc: '', senha: '', perfil: 'Treinador', categorias: [] });
+  const [form, setForm] = useState({ id: null, nome: '', usuario_lc: '', senha: '', perfil: 'Treinador', categorias: [], foto: '' });
+  
+  // Crop States
+  const [cropImageSrc, setCropImageSrc] = useState(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -49,7 +57,7 @@ export default function Staff() {
         await api.post('/api/admin/treinadores', form);
         alert('Treinador cadastrado!');
       }
-      setForm({ id: null, nome: '', usuario_lc: '', senha: '', perfil: 'Treinador', categorias: [] });
+      setForm({ id: null, nome: '', usuario_lc: '', senha: '', perfil: 'Treinador', categorias: [], foto: '' });
       setIsEditing(false);
       carregarTreinadores();
     } catch (e) { alert('Erro ao salvar treinador.'); }
@@ -71,12 +79,73 @@ export default function Staff() {
     } catch (e) { alert('Erro ao excluir treinador.'); }
   };
 
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+        setCropImageSrc(reader.result);
+        setCrop({ x: 0, y: 0 });
+        setZoom(1);
+    };
+    reader.readAsDataURL(file);
+  };
+  
+  const confirmCrop = () => {
+    if (!cropImageSrc || !croppedAreaPixels) return;
+    const canvas = document.createElement('canvas');
+    const img = new Image();
+    img.onload = () => {
+        canvas.width = 400;
+        canvas.height = 400;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(
+            img,
+            croppedAreaPixels.x,
+            croppedAreaPixels.y,
+            croppedAreaPixels.width,
+            croppedAreaPixels.height,
+            0,
+            0,
+            400,
+            400
+        );
+        const base64 = canvas.toDataURL('image/jpeg', 0.85);
+        setForm({...form, foto: base64});
+        setCropImageSrc(null);
+    };
+    img.src = cropImageSrc;
+  };
+
   if (user?.perfil !== 'Administrador' && user?.perfil !== 'admin') {
     return <div style={{color: 'white'}}>Acesso restrito a Administradores.</div>;
   }
 
   return (
     <div style={{ color: 'var(--texto)' }}>
+
+      {cropImageSrc && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.95)', display: 'flex', flexDirection: 'column', zIndex: 9999 }}>
+            <div style={{ position: 'relative', flex: 1 }}>
+                <Cropper 
+                    image={cropImageSrc}
+                    crop={crop}
+                    zoom={zoom}
+                    aspect={1}
+                    cropShape="round"
+                    showGrid={false}
+                    onCropChange={setCrop}
+                    onZoomChange={setZoom}
+                    onCropComplete={(_, croppedPixels) => setCroppedAreaPixels(croppedPixels)}
+                />
+            </div>
+            <div style={{ padding: '20px', background: '#111', display: 'flex', justifyContent: 'space-between', paddingBottom: '40px' }}>
+                <button type="button" className="btn" style={{ background: '#333' }} onClick={() => setCropImageSrc(null)}>Cancelar</button>
+                <button type="button" className="btn primary" onClick={confirmCrop}>Recortar e Usar</button>
+            </div>
+        </div>
+      )}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
         <h2 style={{ color: 'var(--ouro)' }}>Comissão Técnica</h2>
       </div>
@@ -150,7 +219,7 @@ export default function Staff() {
 
           <div style={{ gridColumn: '1 / -1' }}>
             <button type="submit" className="btn btn-primary">{isEditing ? 'Salvar Alterações' : 'Salvar'}</button>
-            {isEditing && <button type="button" className="btn btn-danger" style={{ marginLeft: 10 }} onClick={() => { setIsEditing(false); setForm({ id: null, nome: '', usuario_lc: '', senha: '', perfil: 'Treinador', categorias: [] }); }}>Cancelar</button>}
+            {isEditing && <button type="button" className="btn btn-danger" style={{ marginLeft: 10 }} onClick={() => { setIsEditing(false); setForm({ id: null, nome: '', usuario_lc: '', senha: '', perfil: 'Treinador', categorias: [], foto: '' }); }}>Cancelar</button>}
           </div>
         </form>
       </div>
