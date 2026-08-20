@@ -1,16 +1,19 @@
 import { useState, useEffect, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import api from '../api';
 import { Activity, Plus, Edit, Trash2, Search, Filter, UserPlus } from 'lucide-react';
 import Cropper from 'react-easy-crop';
 
 export default function Athletes() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [atletas, setAtletas] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [categorias, setCategorias] = useState([]);
-  const [form, setForm] = useState({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' });
+  const [form, setForm] = useState({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '', peso: '', altura: '' });
 
   // Crop States
   const [cropImageSrc, setCropImageSrc] = useState(null);
@@ -25,6 +28,7 @@ export default function Athletes() {
   const [filtroCategoria, setFiltroCategoria] = useState('');
   const [filtroTreinador, setFiltroTreinador] = useState('');
   const [busca, setBusca] = useState('');
+  const [filtroStatus, setFiltroStatus] = useState('');
 
 
   
@@ -42,6 +46,14 @@ export default function Athletes() {
       setCategorias(res.data.categorias || res.data);
     } catch (e) { console.error(e); }
   };
+
+  
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('status') === 'dm') {
+      setFiltroStatus('Departamento Médico');
+    }
+  }, [location.search]);
 
   const loadAtletas = async () => {
     try {
@@ -263,11 +275,11 @@ export default function Athletes() {
             <div className="card" key={a.id} style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                  <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'var(--ouro)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: 18, flexShrink: 0, overflow: 'hidden' }}>
+                  <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'var(--ouro)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: 18, flexShrink: 0, overflow: 'hidden', cursor: 'pointer' }} onClick={() => navigate(`/perfil/${a.id}`)}>
                     {a.foto ? <img src={a.foto} alt={a.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (a.nome ? a.nome.charAt(0) : '')}
                   </div>
                   <div>
-                  <h3 style={{ margin: 0, color: 'var(--ouro)', fontSize: '1.2rem' }}>{a.nome}</h3>
+                  <h3 style={{ margin: 0, color: 'var(--ouro)', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => navigate(`/perfil/${a.id}`)}>{a.nome}</h3>
                   <span style={{ fontSize: '0.85rem', color: 'var(--cinza)' }}>{a.posicao || 'Sem posição'}</span>
                 </div>
                 </div>

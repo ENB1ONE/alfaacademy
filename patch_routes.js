@@ -1,19 +1,28 @@
 ﻿const fs = require('fs');
 
-let app = fs.readFileSync('crm/src/App.jsx', 'utf8');
-
-if (!app.includes('CentralPerformance')) {
-    app = app.replace("import Staff from './pages/Staff';", "import Staff from './pages/Staff';\nimport CentralPerformance from './pages/CentralPerformance';");
-    app = app.replace("<Route path=\"/staff\" element={<Staff />} />", "<Route path=\"/staff\" element={<Staff />} />\n            <Route path=\"/performance\" element={<CentralPerformance />} />");
-    fs.writeFileSync('crm/src/App.jsx', app, 'utf8');
-    console.log('App.jsx patched.');
+let appFile = fs.readFileSync('crm/src/App.jsx', 'utf8');
+if (!appFile.includes('PerfilAtleta')) {
+    appFile = appFile.replace(
+        "import Athletes from './pages/Athletes';",
+        "import Athletes from './pages/Athletes';\nimport PerfilAtleta from './pages/PerfilAtleta';\nimport GeradorRelatorios from './pages/GeradorRelatorios';"
+    );
+    appFile = appFile.replace(
+        `<Route path="/atletas" element={<Athletes />} />`,
+        `<Route path="/atletas" element={<Athletes />} />\n            <Route path="/perfil/:id" element={<PerfilAtleta />} />\n            <Route path="/relatorios" element={<GeradorRelatorios />} />`
+    );
+    fs.writeFileSync('crm/src/App.jsx', appFile, 'utf8');
 }
 
-let sidebar = fs.readFileSync('crm/src/components/Sidebar.jsx', 'utf8');
-if (!sidebar.includes('/performance')) {
-    // We insert it after Relatórios
-    sidebar = sidebar.replace("to=\"/relatorios\"", "to=\"/relatorios\""); // just to find the place
-    sidebar = sidebar.replace("<Link to=\"/relatorios\" className=\"menu-item\" onClick={() => setOpen(false)}><BarChart2 size={20} /> Relatórios</Link>", "<Link to=\"/relatorios\" className=\"menu-item\" onClick={() => setOpen(false)}><BarChart2 size={20} /> Relatórios</Link>\n        <Link to=\"/performance\" className=\"menu-item\" onClick={() => setOpen(false)}><Activity size={20} /> Central Performance</Link>");
-    fs.writeFileSync('crm/src/components/Sidebar.jsx', sidebar, 'utf8');
-    console.log('Sidebar.jsx patched.');
+let layoutFile = fs.readFileSync('crm/src/components/Layout.jsx', 'utf8');
+if (!layoutFile.includes('/relatorios')) {
+    layoutFile = layoutFile.replace(
+        "import { Users, Calendar, ClipboardList, Activity, LayoutDashboard, LogOut, FileText, Menu, X, CheckSquare, Target } from 'lucide-react';",
+        "import { Users, Calendar, ClipboardList, Activity, LayoutDashboard, LogOut, FileText, Menu, X, CheckSquare, Target, Download } from 'lucide-react';"
+    );
+    layoutFile = layoutFile.replace(
+        `<NavItem to="/frequencia" icon={<FileText size={20} />} text="Frequência" />`,
+        `<NavItem to="/frequencia" icon={<FileText size={20} />} text="Frequência" />\n            <NavItem to="/relatorios" icon={<Download size={20} />} text="Gerar PDF" />`
+    );
+    fs.writeFileSync('crm/src/components/Layout.jsx', layoutFile, 'utf8');
 }
+console.log('Routes added');

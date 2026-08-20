@@ -1,0 +1,17 @@
+﻿ALTER TABLE atletas ADD COLUMN IF NOT EXISTS peso DECIMAL(5,2);
+ALTER TABLE atletas ADD COLUMN IF NOT EXISTS altura DECIMAL(3,2);
+
+CREATE TABLE IF NOT EXISTS analise_ia_progresso (
+    id SERIAL PRIMARY KEY,
+    atleta_id INT REFERENCES atletas(id) ON DELETE CASCADE,
+    dados_parciais JSONB NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS avaliacoes_completas (
+    id SERIAL PRIMARY KEY,
+    atleta_id INT REFERENCES atletas(id) ON DELETE CASCADE,
+    dados_finais JSONB NOT NULL,
+    score_geral INT NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

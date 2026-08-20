@@ -5,6 +5,8 @@ import Login from './pages/Login';
 import Layout from './components/Layout';
 import Overview from './pages/Overview';
 import Athletes from './pages/Athletes';
+import PerfilAtleta from './pages/PerfilAtleta';
+import GeradorRelatorios from './pages/GeradorRelatorios';
 import Staff from './pages/Staff';
 import CentralPerformance from './pages/CentralPerformance';
 import Categories from './pages/Categories';
