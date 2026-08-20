@@ -1,48 +1,19 @@
 ﻿const fs = require('fs');
-const path = require('path');
-const p = path.join('/opt/alfa-api/routes/admin.js');
-let content = fs.readFileSync(p, 'utf8');
 
-if (!content.includes('/avisos')) {
-    const avisosCode = 
-// Avisos Endpoints
-router.get('/avisos', verificarAdmin, async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM avisos ORDER BY data_criacao DESC LIMIT 10');
-        res.json({ success: true, avisos: result.rows });
-    } catch(err) {
-        console.error(err);
-        res.status(500).json({ erro: 'Erro ao buscar avisos' });
-    }
-});
+let app = fs.readFileSync('crm/src/App.jsx', 'utf8');
 
-router.post('/avisos', verificarAdmin, async (req, res) => {
-    try {
-        const { titulo, descricao, tipo } = req.body;
-        if(!titulo || !descricao) return res.status(400).json({ erro: 'Titulo e descricao obrigatorios' });
-        await pool.query('INSERT INTO avisos (titulo, descricao, tipo) VALUES (\, \, \)', [titulo, descricao, tipo || 'Aviso']);
-        res.json({ success: true });
-    } catch(err) {
-        console.error(err);
-        res.status(500).json({ erro: 'Erro ao criar aviso' });
-    }
-});
+if (!app.includes('CentralPerformance')) {
+    app = app.replace("import Staff from './pages/Staff';", "import Staff from './pages/Staff';\nimport CentralPerformance from './pages/CentralPerformance';");
+    app = app.replace("<Route path=\"/staff\" element={<Staff />} />", "<Route path=\"/staff\" element={<Staff />} />\n            <Route path=\"/performance\" element={<CentralPerformance />} />");
+    fs.writeFileSync('crm/src/App.jsx', app, 'utf8');
+    console.log('App.jsx patched.');
+}
 
-router.delete('/avisos/:id', verificarAdmin, async (req, res) => {
-    try {
-        const { id } = req.params;
-        await pool.query('DELETE FROM avisos WHERE id = \', [id]);
-        res.json({ success: true });
-    } catch(err) {
-        console.error(err);
-        res.status(500).json({ erro: 'Erro ao excluir aviso' });
-    }
-});
-;
-    // Insert before module.exports
-    content = content.replace('module.exports = router;', avisosCode + '\nmodule.exports = router;');
-    fs.writeFileSync(p, content);
-    console.log('Rotas de avisos adicionadas!');
-} else {
-    console.log('Rotas ja existem.');
+let sidebar = fs.readFileSync('crm/src/components/Sidebar.jsx', 'utf8');
+if (!sidebar.includes('/performance')) {
+    // We insert it after Relatórios
+    sidebar = sidebar.replace("to=\"/relatorios\"", "to=\"/relatorios\""); // just to find the place
+    sidebar = sidebar.replace("<Link to=\"/relatorios\" className=\"menu-item\" onClick={() => setOpen(false)}><BarChart2 size={20} /> Relatórios</Link>", "<Link to=\"/relatorios\" className=\"menu-item\" onClick={() => setOpen(false)}><BarChart2 size={20} /> Relatórios</Link>\n        <Link to=\"/performance\" className=\"menu-item\" onClick={() => setOpen(false)}><Activity size={20} /> Central Performance</Link>");
+    fs.writeFileSync('crm/src/components/Sidebar.jsx', sidebar, 'utf8');
+    console.log('Sidebar.jsx patched.');
 }
