@@ -161,7 +161,20 @@ export default function Games() {
       return acc;
   }, {});
 
-  const filteredJogos = jogos.filter(j => (j.adversario || '').toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredJogos = jogos.filter(j => {
+    const termo = searchTerm.toLowerCase();
+    const matchName = (j.adversario || '').toLowerCase().includes(termo);
+    const matchDate = (j.data_raw || '').toLowerCase().includes(termo) || (j.data_formatada || '').toLowerCase().includes(termo);
+    let matchCat = false;
+    if (j.categorias_ids && categorias) {
+        const catNomes = j.categorias_ids.map(cid => {
+            const cat = categorias.find(c => c.id.toString() === cid.toString());
+            return cat ? cat.nome.toLowerCase() : '';
+        });
+        matchCat = catNomes.some(n => n.includes(termo));
+    }
+    return matchName || matchDate || matchCat;
+  });
   return (
     <div className="fade-in">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
@@ -176,6 +189,18 @@ export default function Games() {
             <Plus size={18} /> Agendar Jogo
           </button>
         )}
+      </div>
+
+      
+      <div className="card" style={{ padding: 20, marginBottom: 30 }}>
+        <h4 style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 15, color: 'var(--ouro)' }}><Search size={18} /> Filtro de Pesquisa</h4>
+        <div>
+          <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Buscar por Título, Data ou Categoria</label>
+          <div style={{ position: 'relative' }}>
+             <Search size={16} style={{ position: 'absolute', top: 12, left: 10, color: 'var(--cinza)' }} />
+             <input type="text" placeholder="Ex: Flamengo, 23/08, SUB15..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} style={{ marginTop: 0, paddingLeft: 35, marginBottom: 0, width: '100%' }} className="input" />
+          </div>
+        </div>
       </div>
 
       <div className="card" style={{ padding: 20 }}>
