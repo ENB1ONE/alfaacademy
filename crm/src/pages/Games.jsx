@@ -217,7 +217,7 @@ export default function Games() {
                       </>
                   )}
                   <button className="btn outline" onClick={() => openConvocacao(j)} style={{ padding: '8px 12px', fontSize: 13, flex: '1 1 100%', display: 'flex', justifyContent: 'center' }}>
-                    Gerir ConvocaÃ§Ã£o
+                    Gerir Convocação
                   </button>
                 </div>
               </div>

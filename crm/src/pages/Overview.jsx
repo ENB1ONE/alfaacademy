@@ -84,15 +84,15 @@ export default function Overview() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 20, marginBottom: 30 }}>
         <Card title="Total de Atletas" value={metrics.total_atletas} icon={Users} color="#3b82f6" link="/atletas" />
         <Card title="Atletas no DM" value={metrics.lesionados} icon={Activity} color="#ef4444" link="/atletas" />
-        <Card title="ComissÃ£o TÃ©cnica" value={metrics.total_treinadores} icon={UserCog} color="#eab308" link="/equipe" />
+        <Card title="Comissão Técnica" value={metrics.total_treinadores} icon={UserCog} color="#eab308" link="/equipe" />
       </div>
 
       <div className="card" style={{ marginBottom: 30, padding: 20 }}>
         <h3 style={{ color: 'var(--ouro)', margin: '0 0 15px 0', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Trophy size={20} /> PrÃ³ximos Jogos (10 dias)
+          <Trophy size={20} /> Próximos Jogos (10 dias)
         </h3>
         {proximosJogos.length === 0 ? (
-            <p style={{ margin: 0, color: 'var(--cinza)' }}>Nenhum jogo agendado para os prÃ³ximos dias.</p>
+            <p style={{ margin: 0, color: 'var(--cinza)' }}>Nenhum jogo agendado para os próximos dias.</p>
         ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 15 }}>
                 {Object.values(proximosJogos.reduce((acc, j) => {
@@ -132,7 +132,7 @@ export default function Overview() {
       
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
         <div className="card">
-          <h3 style={{ marginBottom: 20 }}>DistribuiÃ§Ã£o por Categoria</h3>
+          <h3 style={{ marginBottom: 20 }}>Distribuição por Categoria</h3>
           <div style={{ height: 300 }}>
             {dist.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -147,7 +147,7 @@ export default function Overview() {
           </div>
         </div>
 
-        <div className="card" style={{ cursor: 'pointer', transition: '0.2s' }} onClick={() => navigate('/frequencia')} title="Ver RelatÃ³rio Completo">
+        <div className="card" style={{ cursor: 'pointer', transition: '0.2s' }} onClick={() => navigate('/frequencia')} title="Ver Relatório Completo">
           <h3 style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between' }}>Top Atletas Faltosos <span style={{fontSize: 12, color: 'var(--ouro)', fontWeight: 'normal'}}>Ver Todos &rarr;</span></h3>
           <div style={{ height: 300 }}>
             {metrics.top_faltosos.length > 0 ? (
@@ -182,7 +182,7 @@ export default function Overview() {
                 <h3 style={{ margin: 0 }}>Lista de Convocados</h3>
                 {isAdmin && (
                     <button onClick={() => navigate('/jogos')} className="btn outline" style={{ padding: '4px 10px', fontSize: 12 }}>
-                        Gerenciar ConvocaÃ§Ãµes
+                        Gerenciar Convocações
                     </button>
                 )}
             </div>
