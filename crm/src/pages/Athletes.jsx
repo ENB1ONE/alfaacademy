@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import api from '../api';
 import { Activity, Plus, Edit, Trash2, Search, Filter, UserPlus } from 'lucide-react';
