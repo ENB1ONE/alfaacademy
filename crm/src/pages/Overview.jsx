@@ -130,7 +130,7 @@ export default function Overview() {
         )}
       </div>
       
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+      <div className="responsive-grid-2">
         <div className="card">
           <h3 style={{ marginBottom: 20 }}>Distribuição por Categoria</h3>
           <div style={{ height: 300 }}>

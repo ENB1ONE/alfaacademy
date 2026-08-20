@@ -204,7 +204,7 @@ export default function Athletes() {
       {showForm && (
         <div className="card" style={{ marginBottom: 30 }}>
           <h3>{editMode ? 'Editar Atleta' : 'Cadastrar Novo Atleta'}</h3>
-          <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15, marginTop: 15 }}>
+          <form onSubmit={handleSubmit} className="responsive-grid">
             
             <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 15, alignItems: 'center', marginBottom: 10 }}>
               <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--linha)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -228,7 +228,7 @@ export default function Athletes() {
 
       <div className="card" style={{ padding: 20, marginBottom: 30 }}>
         <h4 style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 15, color: 'var(--ouro)' }}><Filter size={18} /> Filtros de Pesquisa</h4>
-        <div style={{ display: 'grid', gridTemplateColumns: isAdmin ? '1fr 1fr 1fr' : '1fr 1fr', gap: 15 }}>
+        <div className="filter-grid">
           <div>
             <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Buscar por Nome</label>
             <div style={{ position: 'relative' }}>

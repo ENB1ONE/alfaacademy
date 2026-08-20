@@ -152,7 +152,7 @@ export default function Staff() {
 
       <div className="card" style={{ marginBottom: 30 }}>
         <h3 style={{ marginBottom: 15 }}>{isEditing ? 'Editar Membro' : 'Cadastrar Novo Membro'}</h3>
-        <form onSubmit={handleSalvar} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 15 }}>
+        <form onSubmit={handleSalvar} className="responsive-grid">
           <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '15px 0' }}>
             <div style={{ width: 100, height: 100, borderRadius: '50%', background: 'var(--linha)', marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
               {form.foto ? <img src={form.foto} alt="Foto" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <UserPlus size={40} color="var(--cinza)" />}
