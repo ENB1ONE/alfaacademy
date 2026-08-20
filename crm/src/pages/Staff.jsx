@@ -66,7 +66,7 @@ export default function Staff() {
   const handleEditar = (t) => {
     setIsEditing(true);
     setForm({
-      id: t.id, nome: t.nome, usuario_lc: t.usuario_lc, senha: '', perfil: t.perfil,
+      id: t.id, nome: t.nome, usuario_lc: t.usuario_lc, senha: '', perfil: t.perfil, foto: t.foto || '',
       categorias: t.categorias ? t.categorias.map(c => c.id) : []
     });
   };
