@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import api from '../api';
-import { Activity, Plus, Edit, Trash2, Search, Filter } from 'lucide-react';
+import { Activity, Plus, Edit, Trash2, Search, Filter, UserPlus } from 'lucide-react';
 import Cropper from 'react-easy-crop';
 
 export default function Athletes() {
@@ -206,15 +206,15 @@ export default function Athletes() {
           <h3>{editMode ? 'Editar Atleta' : 'Cadastrar Novo Atleta'}</h3>
           <form onSubmit={handleSubmit} className="responsive-grid">
             
-            <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 15, alignItems: 'center', marginBottom: 10 }}>
-              <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--linha)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                {form.foto ? <img src={form.foto} alt="Foto" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ color: 'var(--cinza)' }}>Foto</span>}
+            <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '15px 0' }}>
+                <div style={{ width: 100, height: 100, borderRadius: '50%', background: 'var(--linha)', marginBottom: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                  {form.foto ? <img src={form.foto} alt="Foto" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <UserPlus size={40} color="var(--cinza)" />}
+                </div>
+                <label className="btn" style={{ cursor: 'pointer', display: 'inline-block' }}>
+                  <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+                  Escolher Imagem
+                </label>
               </div>
-              <div style={{ flex: 1 }}>
-                <label>Foto do Atleta</label>
-                <input type="file" accept="image/*" onChange={handleImageUpload} style={{ width: '100%', padding: '10px 0' }} />
-              </div>
-            </div>
             <div style={{ gridColumn: '1 / -1' }}><label>Nome Completo</label><input type="text" value={form.nome} onChange={e=>setForm({...form, nome: e.target.value})} required /></div>
             <div><label>Categoria</label><select value={form.categoria_id || ""} onChange={e=>setForm({...form, categoria_id: e.target.value})}><option value="">Selecione...</option>{categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}</select></div>
             <div><label>Posição</label><input type="text" value={form.posicao} onChange={e=>setForm({...form, posicao: e.target.value})} placeholder="Ex: Atacante" /></div>

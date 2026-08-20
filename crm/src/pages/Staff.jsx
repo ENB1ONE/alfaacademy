@@ -113,6 +113,12 @@ export default function Staff() {
         );
         const base64 = canvas.toDataURL('image/jpeg', 0.85);
         setForm({...form, foto: base64});
+        if (isEditing && form.id) {
+            const payload = { ...form, foto: base64 };
+            api.put(`/api/admin/treinadores/${form.id}`, payload).then(() => {
+                carregarTreinadores();
+            }).catch(e => console.error(e));
+        }
         setCropImageSrc(null);
     };
     img.src = cropImageSrc;
