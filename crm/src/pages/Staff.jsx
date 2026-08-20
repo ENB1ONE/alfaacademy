@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../api';
 import { AuthContext } from '../context/AuthContext';
-import { Edit2, Trash2, X, UserPlus } from 'lucide-react';
+import { Edit2, Trash2, X, UserPlus, Search, Filter } from 'lucide-react';
 import Cropper from 'react-easy-crop';
 
 export default function Staff() {
@@ -18,6 +18,8 @@ export default function Staff() {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
 
   const [isEditing, setIsEditing] = useState(false);
+  const [busca, setBusca] = useState('');
+  const [filtroPerfil, setFiltroPerfil] = useState('');
 
   useEffect(() => {
     carregarTreinadores();
@@ -123,6 +125,13 @@ export default function Staff() {
     };
     img.src = cropImageSrc;
   };
+
+  
+  const treinadoresFiltrados = treinadores.filter(t => {
+    const matchBusca = t.nome.toLowerCase().includes(busca.toLowerCase()) || (t.usuario_lc && t.usuario_lc.toLowerCase().includes(busca.toLowerCase()));
+    const matchPerfil = filtroPerfil ? t.perfil === filtroPerfil : true;
+    return matchBusca && matchPerfil;
+  });
 
   if (user?.perfil !== 'Administrador' && user?.perfil !== 'admin') {
     return <div style={{color: 'white'}}>Acesso restrito a Administradores.</div>;
@@ -243,7 +252,7 @@ export default function Staff() {
         {treinadores.length === 0 ? (
           <div className="card" style={{ textAlign: 'center', gridColumn: '1 / -1' }}>Nenhum treinador cadastrado.</div>
         ) : (
-          treinadores.map(t => (
+          treinadoresFiltrados.map(t => (
             <div className="card" key={t.id} style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
