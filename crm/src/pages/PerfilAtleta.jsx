@@ -47,7 +47,7 @@ export default function PerfilAtleta() {
     <div style={{ color: 'var(--texto)', maxWidth: '900px', margin: '0 auto' }}>
       
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
-        <button className="btn" onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'transparent', border: '1px solid var(--ouro)' }}>
+        <button className="btn" onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'transparent', border: '1px solid var(--ouro)', color: 'var(--ouro)' }}>
           <ArrowLeft size={16} /> Voltar
         </button>
         <button className="btn primary" onClick={() => exportElementToPDF(pdfRef.current, `Perfil_${atleta.nome.replace(/\s+/g, '_')}.pdf`)} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
