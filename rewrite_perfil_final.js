@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿const fs = require('fs');
+
+const componentCode = `import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Download, ArrowLeft, Activity } from 'lucide-react';
 import api from '../api';
@@ -36,7 +38,7 @@ export default function PerfilAtleta() {
   if (!atleta) return <div style={{ color: 'white', padding: 20 }}>Carregando Perfil...</div>;
 
   const idade = atleta.data_nascimento ? new Date().getFullYear() - new Date(atleta.data_nascimento).getFullYear() : '--';
-  const username = atleta.nome ? atleta.nome.toLowerCase().replace(/\s+/g, '') : 'atleta';
+  const username = atleta.nome ? atleta.nome.toLowerCase().replace(/\\s+/g, '') : 'atleta';
   const pos = (atleta.posicao || '').toLowerCase();
   let dotTop = '50%';
   if (pos.includes('ata')) dotTop = '20%';
@@ -117,7 +119,7 @@ export default function PerfilAtleta() {
         
         {/* Buttons Row */}
         <div style={{ display: 'flex', gap: 15, marginBottom: 25 }}>
-          <button onClick={() => exportElementToPDF(pdfRef.current, `Perfil_${atleta.nome.replace(/\s+/g, '_')}.pdf`)} style={{ flex: 1, background: 'transparent', border: '1px solid #444', color: '#fff', padding: '12px', borderRadius: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+          <button onClick={() => exportElementToPDF(pdfRef.current, \`Perfil_\${atleta.nome.replace(/\\s+/g, '_')}.pdf\`)} style={{ flex: 1, background: 'transparent', border: '1px solid #444', color: '#fff', padding: '12px', borderRadius: '8px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
             Baixar Relatório <Download size={16} />
           </button>
         </div>
@@ -222,3 +224,6 @@ export default function PerfilAtleta() {
     </div>
   );
 }
+`;
+fs.writeFileSync('crm/src/pages/PerfilAtleta.jsx', componentCode, 'utf8');
+console.log('PerfilAtleta.jsx rewrited flawlessly.');

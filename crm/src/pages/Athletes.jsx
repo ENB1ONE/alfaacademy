@@ -13,7 +13,7 @@ export default function Athletes() {
   const [editMode, setEditMode] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [categorias, setCategorias] = useState([]);
-  const [form, setForm] = useState({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '', peso: '', altura: '' });
+  const [form, setForm] = useState({ nome: '', categoria_id: '', posicao: '', pe_dominante: '', competicoes: '', clube_atual: '', peso: '', altura: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' });
 
   // Crop States
   const [cropImageSrc, setCropImageSrc] = useState(null);
@@ -78,7 +78,7 @@ export default function Athletes() {
       setEditMode(false);
       setEditingId(null);
       loadAtletas();
-      setForm({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' });
+      setForm({ nome: '', categoria_id: '', posicao: '', pe_dominante: '', competicoes: '', clube_atual: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' });
     } catch (e) {
       alert('Erro ao salvar atleta');
     }
@@ -236,7 +236,12 @@ export default function Athletes() {
               </div>
             <div style={{ gridColumn: '1 / -1' }}><label>Nome Completo</label><input type="text" value={form.nome} onChange={e=>setForm({...form, nome: e.target.value})} required /></div>
             <div><label>Categoria</label><select value={form.categoria_id || ""} onChange={e=>setForm({...form, categoria_id: e.target.value})}><option value="">Selecione...</option>{categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}</select></div>
-            <div><label>Posição</label><input type="text" value={form.posicao} onChange={e=>setForm({...form, posicao: e.target.value})} placeholder="Ex: Atacante" /></div>
+            <div><label>Posição</label><input type="text" value={form.posicao || ''} onChange={e=>setForm({...form, posicao: e.target.value})} placeholder="Ex: Atacante" /></div>
+              <div><label>Pé Dominante</label><select value={form.pe_dominante || ''} onChange={e=>setForm({...form, pe_dominante: e.target.value})}><option value="">Selecione...</option><option value="Destro">Destro</option><option value="Canhoto">Canhoto</option><option value="Ambidestro">Ambidestro</option></select></div>
+              <div><label>Peso (kg)</label><input type="number" step="0.1" value={form.peso || ''} onChange={e=>setForm({...form, peso: e.target.value})} placeholder="Ex: 75.5" /></div>
+              <div><label>Altura (m)</label><input type="number" step="0.01" value={form.altura || ''} onChange={e=>setForm({...form, altura: e.target.value})} placeholder="Ex: 1.82" /></div>
+              <div><label>Clube Atual</label><input type="text" value={form.clube_atual || ''} onChange={e=>setForm({...form, clube_atual: e.target.value})} placeholder="Ex: Alfa Academy" /></div>
+              <div><label>Competições</label><input type="text" value={form.competicoes || ''} onChange={e=>setForm({...form, competicoes: e.target.value})} placeholder="Ex: Paulistão 2026" /></div>
             <div><label>Nome do Responsável</label><input type="text" value={form.nome_responsavel} onChange={e=>setForm({...form, nome_responsavel: e.target.value})} /></div>
             <div><label>Telefone</label><input type="text" value={form.telefone_responsavel} onChange={e=>setForm({...form, telefone_responsavel: e.target.value})} /></div>
             <div style={{ gridColumn: '1 / -1' }}><button type="submit" className="btn">{editMode ? 'Atualizar Atleta' : 'Salvar Atleta'}</button></div>
