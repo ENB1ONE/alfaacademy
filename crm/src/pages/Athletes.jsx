@@ -288,39 +288,39 @@ export default function Athletes() {
           <div className="card" style={{ textAlign: 'center', gridColumn: '1 / -1', padding: '20px', color: 'var(--cinza)' }}>Nenhum atleta encontrado.</div>
         ) : (
           list.map(a => (
-            <div className="card" key={a.id} style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                  <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'var(--ouro)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: 18, flexShrink: 0, overflow: 'hidden', cursor: 'pointer' }} onClick={() => navigate(`/perfil/${a.id}`)}>
-                    {a.foto ? <img src={a.foto} alt={a.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (a.nome ? String(a.nome).charAt(0) : '')}
+            <div className="card" key={a.id} style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', gap: 15, alignItems: 'center' }}>
+                    <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--ouro)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: 20, flexShrink: 0, overflow: 'hidden', cursor: 'pointer', border: '2px solid rgba(234,179,8,0.3)' }} onClick={() => navigate(`/perfil/${a.id}`)}>
+                      {a.foto ? <img src={a.foto} alt={a.nome} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (a.nome ? String(a.nome).charAt(0).toUpperCase() : '')}
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <h3 style={{ margin: 0, color: 'var(--ouro)', fontSize: '1.1rem', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.5px' }} onClick={() => navigate(`/perfil/${a.id}`)}>{a.nome}</h3>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--cinza)', fontWeight: '500', marginTop: 4 }}>{a.posicao || 'SEM POSIÇÃO'}</span>
+                    </div>
                   </div>
-                  <div>
-                  <h3 style={{ margin: 0, color: 'var(--ouro)', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => navigate(`/perfil/${a.id}`)}>{a.nome}</h3>
-                  <span style={{ fontSize: '0.85rem', color: 'var(--cinza)' }}>{a.posicao || 'Sem posição'}</span>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button onClick={() => toggleDM(a.id, a.status_medico)} title="Alternar DM" className="btn" style={{ padding: '8px', background: 'rgba(255,255,255,0.03)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}><Activity size={16} /></button>
+                    <button onClick={() => handleEdit(a)} title="Editar" className="btn" style={{ padding: '8px', background: 'rgba(59, 130, 246, 0.05)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '8px' }}><Edit size={16} /></button>
+                    <button onClick={() => handleDelete(a.id)} title="Excluir" className="btn" style={{ padding: '8px', background: 'rgba(239, 68, 68, 0.05)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '8px' }}><Trash2 size={16} /></button>
+                  </div>
                 </div>
-                </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button onClick={() => toggleDM(a.id, a.status_medico)} title="Alternar DM" className="btn" style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}><Activity size={16} /></button>
-                  <button onClick={() => handleEdit(a)} title="Editar" className="btn" style={{ padding: '8px', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.3)' }}><Edit size={16} /></button>
-                  <button onClick={() => handleDelete(a.id)} title="Excluir" className="btn" style={{ padding: '8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)' }}><Trash2 size={16} /></button>
-                </div>
-              </div>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.95rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--linha)', paddingBottom: '8px' }}>
-                  <span style={{ color: 'var(--cinza)' }}>Categoria:</span>
-                  <strong>{a.categoria}</strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '4px' }}>
-                  <span style={{ color: 'var(--cinza)' }}>Status Médico:</span>
-                  <span style={{ padding: '4px 8px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: '500', background: a.status_medico === 'Lesionado' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)', color: a.status_medico === 'Lesionado' ? '#ef4444' : '#22c55e' }}>
-                    {a.status_medico || 'Apto'}
-                  </span>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.05)', padding: '12px 0' }}>
+                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--cinza)' }}>Categoria</span>
+                    <strong style={{ color: '#fff', fontSize: '0.9rem' }}>{a.categoria || 'Sem Categoria'}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px' }}>
+                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--cinza)' }}>Status Médico</span>
+                    <span style={{ padding: '4px 12px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px', background: a.status_medico === 'Lesionado' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(34, 197, 94, 0.15)', color: a.status_medico === 'Lesionado' ? '#ef4444' : '#22c55e', border: `1px solid ${a.status_medico === 'Lesionado' ? 'rgba(239,68,68,0.3)' : 'rgba(34,197,94,0.3)'}` }}>
+                      {a.status_medico || 'Apto'}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
-        )}
+            ))
+          )}
       </div>
     </div>
   );

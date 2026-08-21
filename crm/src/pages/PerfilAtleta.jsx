@@ -51,28 +51,27 @@ export default function PerfilAtleta() {
           <ArrowLeft size={16} /> Voltar
         </button>
         <button className="btn primary" onClick={() => exportElementToPDF(pdfRef.current, `Perfil_${atleta.nome.replace(/\s+/g, '_')}.pdf`)} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Download size={16} /> Exportar PDF
+          <Download size={16} /> Baixar Relatório
         </button>
       </div>
 
       <div ref={pdfRef} style={{ background: '#111', padding: '30px', borderRadius: '12px' }}>
         
-        <div style={{ display: 'flex', gap: '30px', alignItems: 'center', marginBottom: '30px' }}>
-          <div style={{ width: '120px', height: '120px', borderRadius: '50%', background: 'var(--ouro)', flexShrink: 0, overflow: 'hidden' }}>
-            {atleta.foto ? <img src={atleta.foto} style={{width:'100%', height:'100%', objectFit:'cover'}} /> : <span style={{fontSize:40, color:'#000', display:'flex', height:'100%', justifyContent:'center', alignItems:'center', fontWeight:'bold'}}>{atleta.nome.charAt(0)}</span>}
+        <div style={{ background: 'linear-gradient(135deg, #111 0%, #2a220a 100%)', padding: '30px', borderRadius: '12px', border: '1px solid rgba(234, 179, 8, 0.2)', display: 'flex', gap: '30px', alignItems: 'center', marginBottom: '30px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ width: '120px', height: '120px', borderRadius: '50%', background: 'var(--ouro)', flexShrink: 0, overflow: 'hidden', border: '3px solid #111', boxShadow: '0 0 15px rgba(234,179,8,0.5)' }}>
+            {atleta.foto ? <img src={atleta.foto} style={{width:'100%', height:'100%', objectFit:'cover'}} /> : <span style={{fontSize:40, color:'#000', display:'flex', height:'100%', justifyContent:'center', alignItems:'center', fontWeight:'bold'}}>{(atleta.nome||'').charAt(0).toUpperCase()}</span>}
           </div>
-          <div>
-            <h1 style={{ color: 'var(--ouro)', margin: 0, fontSize: '2rem' }}>{atleta.nome}</h1>
-            <h3 style={{ color: 'var(--cinza)', margin: '5px 0' }}>{atleta.posicao || 'Sem Posição'} • {atleta.categoria_nome || 'Sem Categoria'}</h3>
+          <div style={{ zIndex: 1 }}>
+            <h1 style={{ color: 'var(--ouro)', margin: 0, fontSize: '2.5rem', textTransform: 'uppercase', letterSpacing: '1px' }}>{atleta.nome}</h1>
             <div style={{ display: 'flex', gap: '15px', marginTop: '15px' }}>
-              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '5px 15px', borderRadius: '8px' }}>Idade: <strong>{atleta.data_nascimento ? new Date().getFullYear() - new Date(atleta.data_nascimento).getFullYear() : 18}</strong></div>
-              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '5px 15px', borderRadius: '8px' }}>Peso: <strong>{atleta.peso ? `${atleta.peso}kg` : '--'}</strong></div>
-              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '5px 15px', borderRadius: '8px' }}>Altura: <strong>{atleta.altura ? `${atleta.altura}m` : '--'}</strong></div>
+              <div style={{ background: 'rgba(0,0,0,0.5)', padding: '8px 20px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)' }}><span style={{color: 'var(--cinza)', fontSize: '0.8rem', textTransform: 'uppercase', marginRight: 5}}>Idade</span> <strong style={{color: '#fff'}}>{atleta.data_nascimento ? new Date().getFullYear() - new Date(atleta.data_nascimento).getFullYear() : 18}</strong></div>
+              <div style={{ background: 'rgba(0,0,0,0.5)', padding: '8px 20px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)' }}><span style={{color: 'var(--cinza)', fontSize: '0.8rem', textTransform: 'uppercase', marginRight: 5}}>Peso</span> <strong style={{color: '#fff'}}>{atleta.peso ? `${atleta.peso}kg` : '--'}</strong></div>
+              <div style={{ background: 'rgba(0,0,0,0.5)', padding: '8px 20px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.05)' }}><span style={{color: 'var(--cinza)', fontSize: '0.8rem', textTransform: 'uppercase', marginRight: 5}}>Altura</span> <strong style={{color: '#fff'}}>{atleta.altura ? `${atleta.altura}m` : '--'}</strong></div>
             </div>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '15px', borderBottom: '1px solid var(--linha)', paddingBottom: '10px', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', gap: '30px', borderBottom: '1px solid var(--linha)', paddingBottom: '10px', marginBottom: '30px' }}>
           <button 
             style={{ background: 'none', border: 'none', color: activeTab === 'detalhes' ? 'var(--ouro)' : 'var(--cinza)', fontSize: '1.1rem', fontWeight: activeTab === 'detalhes' ? 'bold' : 'normal', cursor: 'pointer' }}
             onClick={() => setActiveTab('detalhes')}
