@@ -158,7 +158,7 @@ export default function PerfilAtleta() {
               {/* Right Column (Radar) */}
               <div style={{ background: '#1a1a1a', borderRadius: '12px', padding: '15px', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div style={{ color: 'var(--ouro)', fontSize: '12px' }}>Avaliação da IA {aiData ? '' : '(Sem Dados)'}</div>
+                  <div style={{ color: 'var(--ouro)', fontSize: '12px' }}>Avaliação de Desempenho {aiData ? '' : '(Sem Dados)'}</div>
                   <div style={{ background: '#333', width: 16, height: 16, borderRadius: '50%', color: '#aaa', fontSize: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>i</div>
                 </div>
                 <div style={{ flex: 1, position: 'relative', marginTop: 10, minHeight: '220px' }}>
