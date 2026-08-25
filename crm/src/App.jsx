@@ -1,3 +1,4 @@
+import InstallPrompt from './components/InstallPrompt';
 
 import React from 'react';
 class ErrorBoundary extends React.Component {
