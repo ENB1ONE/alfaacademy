@@ -9,6 +9,7 @@ export default function Overview() {
   const { user } = useContext(AuthContext);
   const isAdmin = ['Administrador', 'admin', 'Admin'].includes(user?.perfil);
   const [proximosJogos, setProximosJogos] = useState([]);
+  const [isJogosExpanded, setIsJogosExpanded] = useState(false);
   const [metrics, setMetrics] = useState({ total_atletas: 0, lesionados: 0, total_treinadores: 0, top_faltosos: [] });
   const [dist, setDist] = useState([]);
   const [selectedJogo, setSelectedJogo] = useState(null);
@@ -109,7 +110,7 @@ export default function Overview() {
         }
     }
     return acc;
-}, {})).map((j, i) => (
+}, {})).slice(0, isJogosExpanded ? undefined : 1).map((j, i) => (
     <div key={i} className="card interactive" onClick={() => openJogoModal(j)} style={{ padding: 15, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--linha)', cursor: 'pointer' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
             <span style={{ color: '#EF4444', fontWeight: 'bold' }}>{j.data_br}</span>
@@ -127,9 +128,34 @@ export default function Overview() {
     </div>
 ))}
             </div>
+        
+        )}
+        
+        {Object.keys(proximosJogos.reduce((acc, j) => {
+            const key = j.data_br + '_' + j.titulo;
+            acc[key] = true;
+            return acc;
+        }, {})).length > 1 && (
+            <button 
+                onClick={() => setIsJogosExpanded(!isJogosExpanded)}
+                style={{
+                    marginTop: '15px',
+                    width: '100%',
+                    padding: '10px',
+                    background: 'transparent',
+                    color: 'var(--ouro)',
+                    border: '1px dashed var(--ouro)',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    transition: 'all 0.3s'
+                }}
+            >
+                {isJogosExpanded ? 'Mostrar Menos' : 'Expandir mais ' + (Object.keys(proximosJogos.reduce((acc, j) => { const key = j.data_br + '_' + j.titulo; acc[key] = true; return acc; }, {})).length - 1) + ' Jogos'}
+            </button>
         )}
       </div>
-      
+        
       <div className="responsive-grid-2">
         <div className="card">
           <h3 style={{ marginBottom: 20 }}>Distribuição por Categoria</h3>
