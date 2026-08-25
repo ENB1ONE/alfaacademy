@@ -1,28 +1,21 @@
 ﻿const fs = require('fs');
-let content = fs.readFileSync('crm/src/pages/Overview.jsx', 'utf8');
+let code = fs.readFileSync('crm/src/pages/Overview.jsx', 'utf8');
 
-if (!content.includes("import { useNavigate }")) {
-    content = content.replace(
-        "import { useState, useEffect } from 'react';",
-        "import { useState, useEffect } from 'react';\nimport { useNavigate } from 'react-router-dom';"
-    );
-    content = content.replace(
-        "export default function Overview() {",
-        "export default function Overview() {\n  const navigate = useNavigate();"
-    );
-}
+// Replace PieChart with BarChart for Distribuição por Categoria
+const regexPie = /<PieChart>[\s\S]*?<\/PieChart>/;
+const newBar = `<BarChart data={dist} margin={{ top: 20, right: 30, left: -20, bottom: 0 }}>
+                    <XAxis dataKey="name" stroke="var(--cinza)" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis stroke="var(--cinza)" fontSize={12} tickLine={false} axisLine={false} />
+                    <RechartsTooltip cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ background: '#1e1e24', border: 'none', borderRadius: 8, color: '#fff' }} itemStyle={{ color: 'var(--ouro)' }} />
+                    <Bar dataKey="value" fill="var(--ouro)" radius={[4, 4, 0, 0]} barSize={30} />
+                  </BarChart>`;
 
-// Replace DM Card div with onClick navigation
-content = content.replace(
-    `<div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
-            <Activity size={24} />
-          </div>`,
-    `<div className="stat-card" style={{ cursor: 'pointer' }} onClick={() => navigate('/atletas?status=dm')}>
-          <div className="stat-icon" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
-            <Activity size={24} />
-          </div>`
-);
+code = code.replace(regexPie, newBar);
 
-fs.writeFileSync('crm/src/pages/Overview.jsx', content, 'utf8');
-console.log('Overview.jsx updated');
+// Change the "Ver Relatório Completo" text underneath to point to /relatorios
+code = code.replace(/navigate\('\/frequencia'\)/g, `navigate('/relatorios')`);
+code = code.replace(/<span style=\{\{ color: 'var\(--ouro\)', fontSize: 12, fontWeight: 'bold' \}\}>Frequência/g, `<span style={{ color: 'var(--ouro)', fontSize: 12, fontWeight: 'bold' }}>Relatórios`);
+code = code.replace(/<span style=\{\{ color: 'var\(--ouro\)', fontSize: 12, fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: 10 \}\}>\s*Relatórios/g, `<span style={{ color: 'var(--ouro)', fontSize: 12, fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: 10 }}>\n                Central de Relatórios &gt;&gt;&gt;`);
+
+fs.writeFileSync('crm/src/pages/Overview.jsx', code, 'utf8');
+console.log('Overview patched');

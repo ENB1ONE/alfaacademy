@@ -60,6 +60,7 @@ const PrivateRoute = ({ children, allowedRoles }) => {
 export default function App() {
   return (
     <ErrorBoundary>
+      <InstallPrompt />
     <AuthProvider>
       <HashRouter>
         <Routes>

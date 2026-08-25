@@ -1,3 +1,2 @@
 ﻿const fs = require('fs');
-let code = fs.readFileSync('clean_admin.js', 'utf8');
-console.log(code.substring(0, 100));
+console.log(fs.readFileSync('crm/src/pages/Overview.jsx', 'utf8').substring(0, 1000));

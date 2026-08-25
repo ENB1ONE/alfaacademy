@@ -1,0 +1,21 @@
+﻿{
+  "short_name": "Alfa Academy",
+  "name": "Alfa Academy Admin",
+  "icons": [
+    {
+      "src": "/alfaacademy/admin/logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/alfaacademy/admin/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/alfaacademy/admin/",
+  "background_color": "#0a0a0a",
+  "display": "standalone",
+  "scope": "/alfaacademy/admin/",
+  "theme_color": "#eab308"
+}
