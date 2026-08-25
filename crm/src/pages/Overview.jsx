@@ -136,12 +136,12 @@ export default function Overview() {
           <div style={{ height: 300 }}>
             {dist.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={dist} margin={{ top: 20, right: 30, left: -20, bottom: 0 }}>
-                    <XAxis dataKey="name" stroke="var(--cinza)" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="var(--cinza)" fontSize={12} tickLine={false} axisLine={false} />
-                    <RechartsTooltip contentStyle={{ background: '#1e1e24', border: 'none', borderRadius: 8, color: '#fff' }} itemStyle={{ color: 'var(--ouro)' }} />
-                    <Line type="monotone" dataKey="value" stroke="var(--ouro)" strokeWidth={3} dot={{ r: 5, fill: 'var(--ouro)' }} activeDot={{ r: 8 }} />
-                  </LineChart>
+                <BarChart layout="vertical" data={dist} margin={{ top: 0, right: 30, left: 20, bottom: 0 }}>
+                    <XAxis type="number" hide />
+                    <YAxis dataKey="name" type="category" width={100} stroke="var(--cinza)" fontSize={11} tickLine={false} axisLine={false} />
+                    <RechartsTooltip cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ background: '#1e1e24', border: 'none', borderRadius: 8, color: '#fff' }} itemStyle={{ color: 'var(--ouro)' }} />
+                    <Bar dataKey="value" fill="var(--ouro)" radius={[0, 4, 4, 0]} barSize={25} />
+                  </BarChart>
               </ResponsiveContainer>
             ) : <p style={{ textAlign: 'center', color: 'var(--cinza)', marginTop: 100 }}>Carregando dados...</p>}
           </div>

@@ -9,34 +9,39 @@ export default function InstallPrompt() {
   const [showIosPrompt, setShowIosPrompt] = useState(false);
 
   useEffect(() => {
-    // Check if already installed
+    // 1. Check if already installed
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
     if (isStandalone) {
       return;
     }
 
-    // iOS detection
+    // 2. Check if dismissed
+    const isDismissed = localStorage.getItem('pwa_prompt_dismissed');
+    if (isDismissed) {
+      return;
+    }
+
+    // 3. Detect iOS Safari
     const isIos = () => {
       const userAgent = window.navigator.userAgent.toLowerCase();
       return /iphone|ipad|ipod/.test(userAgent);
     };
 
     if (isIos()) {
-      // Show iOS prompt if not installed
-      const hasSeenIosPrompt = localStorage.getItem('alfa_ios_prompt_seen');
-      if (!hasSeenIosPrompt) {
+      // Delay 2 seconds before showing iOS prompt
+      const timer = setTimeout(() => {
         setShowIosPrompt(true);
-      }
+      }, 2000);
+      return () => clearTimeout(timer);
     }
 
-    // Android / Desktop standard PWA event
+    // 4. Android / Desktop standard PWA event
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      const hasSeenAndroidPrompt = localStorage.getItem('alfa_android_prompt_seen');
-      if (!hasSeenAndroidPrompt) {
+      const timer = setTimeout(() => {
         setShowAndroidPrompt(true);
-      }
+      }, 2000);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -51,19 +56,15 @@ export default function InstallPrompt() {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
-        setShowAndroidPrompt(false);
+        dismissPrompt();
       }
       setDeferredPrompt(null);
     }
   };
 
-  const closeAndroid = () => {
-    localStorage.setItem('alfa_android_prompt_seen', 'true');
+  const dismissPrompt = () => {
+    localStorage.setItem('pwa_prompt_dismissed', 'true');
     setShowAndroidPrompt(false);
-  };
-
-  const closeIos = () => {
-    localStorage.setItem('alfa_ios_prompt_seen', 'true');
     setShowIosPrompt(false);
   };
 
@@ -72,74 +73,84 @@ export default function InstallPrompt() {
   return (
     <div style={{
       position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      backgroundColor: 'rgba(0,0,0,0.8)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      bottom: '20px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      width: '90%',
+      maxWidth: '400px',
       zIndex: 99999,
-      padding: '20px'
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
     }}>
       <div style={{
-        background: '#1a1a1a',
+        background: '#111',
         borderRadius: '16px',
-        padding: '24px',
-        maxWidth: '400px',
+        padding: '20px',
         width: '100%',
         position: 'relative',
         border: '1px solid var(--ouro)',
-        boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
-        textAlign: 'center'
+        boxShadow: '0 10px 25px rgba(0,0,0,0.8)',
       }}>
-        <button onClick={showIosPrompt ? closeIos : closeAndroid} style={{
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-          background: 'transparent',
-          border: 'none',
-          color: '#aaa',
-          cursor: 'pointer'
-        }}>
-          <X size={20} />
-        </button>
-
-        <img src="/alfaacademy/admin/logo192.png" alt="Alfa Academy" style={{ width: '80px', height: '80px', borderRadius: '16px', marginBottom: '16px', border: '2px solid var(--ouro)' }} />
         
-        <h3 style={{ color: 'var(--ouro)', marginBottom: '12px' }}>Instalar Aplicativo</h3>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>
+            <img src="/alfaacademy/admin/logo192.png" alt="Alfa Academy" style={{ width: '50px', height: '50px', borderRadius: '12px', border: '1px solid var(--ouro)' }} />
+            <h4 style={{ color: 'var(--ouro)', margin: 0, fontSize: '16px', fontWeight: 'bold' }}>Instalar Aplicativo</h4>
+        </div>
         
         {showIosPrompt && (
-          <div style={{ color: '#ccc', fontSize: '14px', lineHeight: '1.5' }}>
-            <p style={{ marginBottom: '16px' }}>Para instalar o Alfa Academy no seu iPhone ou iPad:</p>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '12px', background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '8px' }}>
-              <span>1. Toque em Compartilhar</span>
+          <div style={{ color: '#ddd', fontSize: '14px', lineHeight: '1.6' }}>
+            <p style={{ marginBottom: '15px', fontWeight: 'bold' }}>Para uma experiência completa de aplicativo:</p>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+              <span style={{ color: 'var(--ouro)', fontWeight: 'bold' }}>1.</span>
+              <span>Toque no ícone de Compartilhar (abaixo)</span>
               <Share size={18} color="var(--ouro)" />
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '8px' }}>
-              <span>2. Selecione "Adicionar à Tela de Início"</span>
-              <span style={{ fontSize: '18px' }}>+</span>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+              <span style={{ color: 'var(--ouro)', fontWeight: 'bold' }}>2.</span>
+              <span>Role para baixo e selecione <br/><strong style={{color: '#fff'}}>"Adicionar à Tela de Início"</strong></span>
+              <span style={{ fontSize: '20px', color: 'var(--ouro)', fontWeight: 'bold', marginLeft: '5px' }}>+</span>
             </div>
-            <button onClick={closeIos} style={{ marginTop: '20px', width: '100%', padding: '12px', background: 'var(--ouro)', color: '#000', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>
-              Entendi
+            
+            <button onClick={dismissPrompt} style={{ width: '100%', padding: '12px', background: 'transparent', color: 'var(--ouro)', border: '1px solid var(--ouro)', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>
+              Fechar / Entendi
             </button>
           </div>
         )}
 
         {showAndroidPrompt && (
-          <div style={{ color: '#ccc', fontSize: '14px', lineHeight: '1.5' }}>
-            <p style={{ marginBottom: '20px' }}>Instale o aplicativo da Alfa Academy para um acesso mais rápido e uma experiência completa.</p>
-            <button onClick={handleInstallAndroid} style={{ width: '100%', padding: '12px', background: 'var(--ouro)', color: '#000', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-              <Download size={18} /> Instalar Agora
-            </button>
+          <div style={{ color: '#ddd', fontSize: '14px', lineHeight: '1.6' }}>
+            <p style={{ marginBottom: '20px' }}>Instale o aplicativo da Alfa Academy para um acesso rápido diretamente da sua tela inicial.</p>
+            
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={dismissPrompt} style={{ flex: 1, padding: '12px', background: 'transparent', color: '#888', border: '1px solid #444', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>
+                Agora Não
+              </button>
+              <button onClick={handleInstallAndroid} style={{ flex: 2, padding: '12px', background: 'var(--ouro)', color: '#000', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <Download size={18} /> Instalar
+              </button>
+            </div>
           </div>
         )}
       </div>
+
+      {/* Seta visual apontando para baixo (navbar do Safari) se for iOS */}
+      {showIosPrompt && (
+        <div style={{
+          width: 0,
+          height: 0,
+          borderLeft: '10px solid transparent',
+          borderRight: '10px solid transparent',
+          borderTop: '10px solid var(--ouro)',
+          marginTop: '-1px', // Evitar gap
+        }} />
+      )}
     </div>
   );
 }
 `;
 
 fs.writeFileSync('crm/src/components/InstallPrompt.jsx', code, 'utf8');
-console.log('InstallPrompt created');
+console.log('InstallPrompt rewritten');

@@ -89,12 +89,12 @@ export default function CentralRelatorios() {
               <h3 style={{ marginBottom: 20, color: '#fff' }}>Distribuição por Categoria</h3>
               <div style={{ height: 250 }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={distCategoria} margin={{ top: 20, right: 30, left: -20, bottom: 0 }}>
-                    <XAxis dataKey="name" stroke="var(--cinza)" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="var(--cinza)" fontSize={12} tickLine={false} axisLine={false} />
-                    <RechartsTooltip contentStyle={{ background: '#1e1e24', border: 'none', borderRadius: 8, color: '#fff' }} itemStyle={{ color: 'var(--ouro)' }} />
-                    <Line type="monotone" dataKey="total" stroke="var(--ouro)" strokeWidth={3} dot={{ r: 5, fill: 'var(--ouro)' }} activeDot={{ r: 8 }} />
-                  </LineChart>
+                  <BarChart layout="vertical" data={distCategoria} margin={{ top: 0, right: 30, left: 40, bottom: 0 }}>
+                    <XAxis type="number" hide />
+                    <YAxis dataKey="name" type="category" width={120} stroke="var(--cinza)" fontSize={11} tickLine={false} axisLine={false} />
+                    <RechartsTooltip cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ background: '#1e1e24', border: 'none', borderRadius: 8, color: '#fff' }} itemStyle={{ color: 'var(--ouro)' }} />
+                    <Bar dataKey="total" fill="var(--ouro)" radius={[0, 4, 4, 0]} barSize={25} />
+                  </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>

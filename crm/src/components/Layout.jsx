@@ -63,6 +63,7 @@ export default function Layout() {
           {isAdmin && (
             <>
               <NavLink to="/performance" icon={Activity}>Central Performance</NavLink>
+              <NavLink to="/relatorios" icon={Activity}>Central de Relatórios</NavLink>
               <NavLink to="/atletas" icon={Users}>Atletas</NavLink>
               
           {isAdmin && (
