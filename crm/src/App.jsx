@@ -38,7 +38,7 @@ import Layout from './components/Layout';
 import Overview from './pages/Overview';
 import Athletes from './pages/Athletes';
 import PerfilAtleta from './pages/PerfilAtleta';
-import GeradorRelatorios from './pages/GeradorRelatorios';
+import CentralRelatorios from './pages/CentralRelatorios';
 import Staff from './pages/Staff';
 import CentralPerformance from './pages/CentralPerformance';
 import Categories from './pages/Categories';
@@ -68,7 +68,7 @@ export default function App() {
             <Route index element={<Overview />} />
             <Route path="atletas" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><Athletes /></PrivateRoute>} />
             <Route path="perfil/:id" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><PerfilAtleta /></PrivateRoute>} />
-            <Route path="relatorios" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><GeradorRelatorios /></PrivateRoute>} />
+            <Route path="relatorios" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><CentralRelatorios /></PrivateRoute>} />
             <Route path="equipe" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><Staff /></PrivateRoute>} />
             <Route path="performance" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><CentralPerformance /></PrivateRoute>} />
             <Route path="categorias" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><Categories /></PrivateRoute>} />

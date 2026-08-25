@@ -136,18 +136,18 @@ export default function Overview() {
           <div style={{ height: 300 }}>
             {dist.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie data={dist} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
-                    {dist.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
-                  </Pie>
-                  <RechartsTooltip contentStyle={{ background: '#1e1e24', border: 'none', borderRadius: 8 }} />
-                </PieChart>
+                <LineChart data={dist} margin={{ top: 20, right: 30, left: -20, bottom: 0 }}>
+                    <XAxis dataKey="name" stroke="var(--cinza)" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis stroke="var(--cinza)" fontSize={12} tickLine={false} axisLine={false} />
+                    <RechartsTooltip contentStyle={{ background: '#1e1e24', border: 'none', borderRadius: 8, color: '#fff' }} itemStyle={{ color: 'var(--ouro)' }} />
+                    <Line type="monotone" dataKey="value" stroke="var(--ouro)" strokeWidth={3} dot={{ r: 5, fill: 'var(--ouro)' }} activeDot={{ r: 8 }} />
+                  </LineChart>
               </ResponsiveContainer>
             ) : <p style={{ textAlign: 'center', color: 'var(--cinza)', marginTop: 100 }}>Carregando dados...</p>}
           </div>
         </div>
 
-        <div className="card" style={{ cursor: 'pointer', transition: '0.2s' }} onClick={() => navigate('/frequencia')} title="Ver Relatório Completo">
+        <div className="card" style={{ cursor: 'pointer', transition: '0.2s' }} onClick={() => navigate('/relatorios')} title="Ver Relatório Completo">
           <h3 style={{ marginBottom: 20, display: 'flex', justifyContent: 'space-between' }}>Top Atletas Faltosos <span style={{fontSize: 12, color: 'var(--ouro)', fontWeight: 'normal'}}>Ver Todos &rarr;</span></h3>
           <div style={{ height: 300 }}>
             {metrics.top_faltosos.length > 0 ? (
