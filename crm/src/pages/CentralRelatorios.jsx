@@ -99,89 +99,49 @@ export default function CentralRelatorios() {
     setExportingDashboard(true);
     await new Promise(resolve => setTimeout(resolve, 50));
     
-    // FOOLPROOF HACK FOR HTML2CANVAS ON MOBILE
-    const clone = element.cloneNode(true);
-    clone.style.width = '800px';
-    clone.style.minWidth = '800px';
-    clone.style.position = 'absolute';
-    clone.style.top = '0';
-    clone.style.left = '0';
-    clone.style.margin = '0';
-    clone.style.padding = '40px';
-    
-    const wrapper = document.createElement('div');
-    wrapper.style.position = 'absolute';
-    wrapper.style.top = '0';
-    wrapper.style.left = '0';
-    wrapper.style.width = '1200px';
-    wrapper.style.height = '2000px';
-    wrapper.style.overflow = 'visible';
-    wrapper.style.zIndex = '-9999';
-    wrapper.style.opacity = '0.001';
-    wrapper.appendChild(clone);
-    document.body.appendChild(wrapper);
-
     const opt = {
       margin:       [10, 10, 15, 10],
       filename:     `Dashboard_Executivo_${new Date().getTime()}.pdf`,
       image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, windowWidth: 1200, width: 800, scrollX: 0, scrollY: 0 },
+      html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak:    { mode: ['css', 'legacy'] }
     };
     
-    try {
-        await html2pdf().from(clone).set(opt).save();
-    } finally {
-        if(document.body.contains(wrapper)) document.body.removeChild(wrapper);
+    html2pdf().from(element).set(opt).save().then(() => {
         setExportingDashboard(false);
-    }
+    }).catch(() => {
+        setExportingDashboard(false);
+    });
   };
 
   const exportPDF = async () => {
     const element = document.getElementById('a4-preview');
+    const wrapper = document.getElementById('a4-preview-wrapper');
     if (!element) return;
     
     setExportingA4(true);
     await new Promise(resolve => setTimeout(resolve, 50));
     
-    // FOOLPROOF HACK FOR HTML2CANVAS ON MOBILE
-    const clone = element.cloneNode(true);
-    clone.style.width = '800px';
-    clone.style.minWidth = '800px';
-    clone.style.position = 'absolute';
-    clone.style.top = '0';
-    clone.style.left = '0';
-    clone.style.margin = '0';
-    clone.style.padding = '40px';
-    
-    const wrapper = document.createElement('div');
-    wrapper.style.position = 'absolute';
-    wrapper.style.top = '0';
-    wrapper.style.left = '0';
-    wrapper.style.width = '1200px';
-    wrapper.style.height = '2000px';
-    wrapper.style.overflow = 'visible';
-    wrapper.style.zIndex = '-9999';
-    wrapper.style.opacity = '0.001';
-    wrapper.appendChild(clone);
-    document.body.appendChild(wrapper);
+    const origOverflow = wrapper ? wrapper.style.overflowX : 'auto';
+    if (wrapper) wrapper.style.overflowX = 'visible';
 
     const opt = {
       margin:       [10, 10, 15, 10],
       filename:     `Relatorio_${modulo}_${new Date().getTime()}.pdf`,
       image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, windowWidth: 1200, width: 800, scrollX: 0, scrollY: 0 },
+      html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak:    { mode: ['css', 'legacy'] }
     };
     
-    try {
-        await html2pdf().from(clone).set(opt).save();
-    } finally {
-        if(document.body.contains(wrapper)) document.body.removeChild(wrapper);
+    html2pdf().from(element).set(opt).save().then(() => {
+        if (wrapper) wrapper.style.overflowX = origOverflow;
         setExportingA4(false);
-    }
+    }).catch(() => {
+        if (wrapper) wrapper.style.overflowX = origOverflow;
+        setExportingA4(false);
+    });
   };
 
   return (
@@ -397,17 +357,11 @@ export default function CentralRelatorios() {
                     )}
                 </div>
                 
-                <div style={{
-                    width: '100%',
-                    maxWidth: '900px',
-                    margin: '0 auto',
-                    overflowX: 'auto',
-                    background: '#1a1a1a',
+                <div id="a4-preview-wrapper" style={{ width: '100%', maxWidth: '900px', margin: '0 auto', overflowX: 'auto', background: '#1a1a1a',
                     padding: '20px',
                     borderRadius: '8px'
                 }}>
-                    <div id="a4-preview" style={{
-                        minWidth: '800px',
+                    <div id="a4-preview" style={{ width: '800px', minWidth: '800px', maxWidth: '800px', 
                         background: '#ffffff',
                         padding: '40px',
                         boxSizing: 'border-box'
@@ -508,8 +462,8 @@ export default function CentralRelatorios() {
       )}
 
       {/* HIDDEN EXECUTIVE DASHBOARD REPORT */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '900px', zIndex: -9999, opacity: 0.001, pointerEvents: 'none' }}>
-          <div id="dashboard-a4-preview" style={{
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '800px', zIndex: -9999, opacity: 0.001, pointerEvents: 'none' }}>
+          <div id="dashboard-a4-preview" style={{ width: '800px', minWidth: '800px', maxWidth: '800px', 
               width: '100%',
               
               background: '#ffffff',
