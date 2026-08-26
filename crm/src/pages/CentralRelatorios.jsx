@@ -4,6 +4,8 @@ import { AuthContext } from '../context/AuthContext';
 import { Download, Search, Filter, Activity, Users, FileText, PieChart as PieIcon, LayoutTemplate, Printer } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import html2pdf from 'html2pdf.js';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const COLORS = ['#22c55e', '#ef4444', '#eab308', '#3b82f6', '#a855f7', '#f97316', '#06b6d4'];
 
@@ -99,20 +101,34 @@ export default function CentralRelatorios() {
     setExportingDashboard(true);
     await new Promise(resolve => setTimeout(resolve, 50));
     
-    const opt = {
-      margin:       [10, 10, 15, 10],
-      filename:     `Dashboard_Executivo_${new Date().getTime()}.pdf`,
-      image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, windowWidth: 1200 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['css', 'legacy'] }
-    };
-    
-    html2pdf().from(element).set(opt).save().then(() => {
+    try {
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true, windowWidth: 794 });
+        const imgData = canvas.toDataURL('image/png');
+        
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210; 
+        const pageHeight = 297; 
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+                let heightLeft = imgHeight;
+        let position = 0;
+        
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+        
+        pdf.save(`Dashboard_Executivo_${new Date().getTime()}.pdf`);
+    } catch (error) {
+        console.error("PDF Export Error:", error);
+    } finally {
         setExportingDashboard(false);
-    }).catch(() => {
-        setExportingDashboard(false);
-    });
+    }
   };
 
   const exportPDF = async () => {
@@ -126,22 +142,36 @@ export default function CentralRelatorios() {
     const origOverflow = wrapper ? wrapper.style.overflowX : 'auto';
     if (wrapper) wrapper.style.overflowX = 'visible';
 
-    const opt = {
-      margin:       [10, 10, 15, 10],
-      filename:     `Relatorio_${modulo}_${new Date().getTime()}.pdf`,
-      image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, windowWidth: 1200 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['css', 'legacy'] }
-    };
-    
-    html2pdf().from(element).set(opt).save().then(() => {
+    try {
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true, windowWidth: 794 });
+        const imgData = canvas.toDataURL('image/png');
+        
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210; 
+        const pageHeight = 297; 
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        // Multi-page logic if canvas is very tall
+        let heightLeft = imgHeight;
+        let position = 0;
+        
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+        
+        pdf.save(`Relatorio_${modulo}_${new Date().getTime()}.pdf`);
+    } catch (error) {
+        console.error("PDF Export Error:", error);
+    } finally {
         if (wrapper) wrapper.style.overflowX = origOverflow;
         setExportingA4(false);
-    }).catch(() => {
-        if (wrapper) wrapper.style.overflowX = origOverflow;
-        setExportingA4(false);
-    });
+    }
   };
 
   return (
@@ -361,7 +391,7 @@ export default function CentralRelatorios() {
                     padding: '20px',
                     borderRadius: '8px'
                 }}>
-                    <div id="a4-preview" style={{ width: '1024px', minWidth: '1024px', maxWidth: '1024px', 
+                    <div id="a4-preview" style={{ width: '100%', minWidth: '794px', maxWidth: '794px', 
                         background: '#ffffff',
                         padding: '40px',
                         boxSizing: 'border-box'
@@ -382,7 +412,7 @@ export default function CentralRelatorios() {
                                     </p>
                                 )}
                             </div>
-                            <div style={{ flex: '0 0 220px', minWidth: '220px', textAlign: 'right', color: '#6c757d', fontSize: '11px', lineHeight: '1.5', paddingTop: '5px', whiteSpace: 'nowrap' }}>
+                            <div style={{ flex: '0 0 180px', minWidth: '180px', textAlign: 'right', color: '#6c757d', fontSize: '10px', lineHeight: '1.4', paddingTop: '5px' }}>
                                 {filtros.data_inicio && filtros.data_fim && (
                                     <div style={{ marginBottom: 6 }}>
                                         Período:<br/>
@@ -462,8 +492,8 @@ export default function CentralRelatorios() {
       )}
 
       {/* HIDDEN EXECUTIVE DASHBOARD REPORT */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '1024px', zIndex: -9999, opacity: 0.001, pointerEvents: 'none' }}>
-          <div id="dashboard-a4-preview" style={{ width: '1024px', minWidth: '1024px', maxWidth: '1024px', 
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '794px', zIndex: -9999, opacity: 0.001, pointerEvents: 'none' }}>
+          <div id="dashboard-a4-preview" style={{ width: '100%', minWidth: '794px', maxWidth: '794px', 
               width: '100%',
               
               background: '#ffffff',
@@ -482,16 +512,24 @@ export default function CentralRelatorios() {
                       table-layout: fixed;
                       margin-bottom: 25px;
                   }
+                  #dashboard-a4-preview table, #a4-preview table {
+                      table-layout: fixed !important;
+                      width: 100% !important;
+                  }
                   #dashboard-a4-preview th, #a4-preview th {
                       background-color: #111111 !important;
                       color: #eab308 !important;
-                      padding: 10px 4px !important;
-                      font-size: 11px !important;
+                      padding: 6px 4px !important;
+                      font-size: 9px !important;
                       font-weight: bold !important;
                       text-transform: uppercase !important;
                       border: 1px solid #000 !important;
-                      white-space: nowrap !important;
-                      word-break: keep-all !important;
+                      white-space: normal !important;
+                      word-wrap: break-word !important;
+                  }
+                  #dashboard-a4-preview td, #a4-preview td {
+                      font-size: 10px !important;
+                      word-wrap: break-word !important;
                   }
                   #dashboard-a4-preview td, #a4-preview td {
                       padding: 9px 12px;
@@ -573,7 +611,7 @@ export default function CentralRelatorios() {
                       </h2>
                       <p style={{ margin: '5px 0 0 0', color: '#555', fontSize: '13px', fontWeight: 500 }}>Relatório Analítico Executivo</p>
                   </div>
-                  <div style={{ flex: '0 0 220px', minWidth: '220px', textAlign: 'right', color: '#6c757d', fontSize: '11px', lineHeight: '1.5', paddingTop: '5px', whiteSpace: 'nowrap' }}>
+                  <div style={{ flex: '0 0 180px', minWidth: '180px', textAlign: 'right', color: '#6c757d', fontSize: '10px', lineHeight: '1.4', paddingTop: '5px' }}>
                       Gerado em:<br/>
                       <strong style={{ color: '#333', fontSize: '13px' }}>
                           {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
