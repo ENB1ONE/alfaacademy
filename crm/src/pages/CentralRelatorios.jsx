@@ -414,56 +414,110 @@ export default function CentralRelatorios() {
               minHeight: '1123px',
               background: '#ffffff',
               padding: '40px',
-              color: '#333333',
-              fontFamily: 'Arial, sans-serif',
               boxSizing: 'border-box'
           }}>
+              <style>
+                  {`
+                  #dashboard-a4-preview {
+                      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                      color: #333333;
+                  }
+                  #dashboard-a4-preview table {
+                      width: 100%;
+                      border-collapse: collapse;
+                      table-layout: fixed;
+                      margin-bottom: 25px;
+                  }
+                  #dashboard-a4-preview th {
+                      background-color: #111111;
+                      color: #eab308;
+                      padding: 10px 12px;
+                      font-size: 13px;
+                      font-weight: bold;
+                      text-transform: uppercase;
+                      border: 1px solid #000;
+                  }
+                  #dashboard-a4-preview td {
+                      padding: 9px 12px;
+                      font-size: 12px;
+                      color: #333333 !important;
+                      border-bottom: 1px solid #dee2e6;
+                      border-left: 1px solid #dee2e6;
+                      border-right: 1px solid #dee2e6;
+                  }
+                  #dashboard-a4-preview tr:nth-child(even) td {
+                      background-color: #f8f9fa;
+                  }
+                  #dashboard-a4-preview .text-cell {
+                      white-space: nowrap;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                      text-align: left;
+                  }
+                  #dashboard-a4-preview .num-cell {
+                      text-align: center;
+                  }
+                  #dashboard-a4-preview .cap-text {
+                      text-transform: capitalize;
+                  }
+                  .empty-cell {
+                      color: #999 !important;
+                      font-style: italic;
+                  }
+                  `}
+              </style>
+
               {/* Header */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #eab308', paddingBottom: '20px', marginBottom: '30px' }}>
-                  <div>
-                      <img src="/alfaacademy/admin/alfa_logo.png" alt="Logo" style={{ width: 70, background: 'transparent' }} />
-                  </div>
-                  <div style={{ textAlign: 'center' }}>
-                      <h2 style={{ margin: 0, color: '#111', fontSize: '24px', textTransform: 'uppercase', fontWeight: 800 }}>
-                          Relatório Analítico Executivo
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '3px solid #eab308', paddingBottom: '20px', marginBottom: '30px' }}>
+                  <img src="/alfaacademy/admin/alfa_logo.png" alt="Logo" style={{ width: 65, objectFit: 'contain' }} />
+                  <div style={{ flex: 1, paddingLeft: '20px', paddingTop: '5px' }}>
+                      <h2 style={{ margin: 0, color: '#111', fontSize: '22px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '-0.5px' }}>
+                          Dashboard de Performance e Gestão de Atletas
                       </h2>
-                      <p style={{ margin: '5px 0 0 0', color: '#555', fontSize: '14px' }}>Dashboard de Performance e Gestão</p>
+                      <p style={{ margin: '5px 0 0 0', color: '#555', fontSize: '13px', fontWeight: 500 }}>Relatório Analítico Executivo</p>
                   </div>
-                  <div style={{ textAlign: 'right', color: '#666', fontSize: '12px' }}>
-                      Emissão:<br/>
-                      {new Date().toLocaleDateString('pt-BR')} <br/>
-                      {new Date().toLocaleTimeString('pt-BR')}
+                  <div style={{ textAlign: 'right', color: '#6c757d', fontSize: '11px', lineHeight: '1.5', paddingTop: '5px' }}>
+                      Gerado em:<br/>
+                      <strong style={{ color: '#333', fontSize: '13px' }}>
+                          {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                      </strong>
                   </div>
               </div>
 
               {/* Distribuição por Categoria */}
-              <div style={{ marginBottom: 30 }}>
-                  <h3 style={{ color: '#000', borderBottom: '1px solid #ddd', paddingBottom: 5, marginBottom: 15, fontSize: 18 }}>Distribuição por Categoria</h3>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+              <div>
+                  <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>Distribuição por Categoria</h3>
+                  <table>
                       <thead>
-                          <tr style={{ background: '#f5f5f5' }}>
-                              <th style={{ padding: 8, textAlign: 'left', borderBottom: '2px solid #ccc' }}>Categoria</th>
-                              <th style={{ padding: 8, textAlign: 'center', borderBottom: '2px solid #ccc' }}>Total de Atletas</th>
-                              <th style={{ padding: 8, textAlign: 'center', borderBottom: '2px solid #ccc' }}>Novos (30 dias)</th>
+                          <tr>
+                              <th className="text-cell" style={{ width: '25%' }}>Categoria</th>
+                              <th className="num-cell" style={{ width: '15%' }}>Total</th>
+                              <th className="num-cell" style={{ width: '20%' }}>Novos (30 dias)</th>
+                              <th className="num-cell" style={{ width: '20%' }}>Desligamentos</th>
+                              <th className="num-cell" style={{ width: '20%' }}>Saldo</th>
                           </tr>
                       </thead>
                       <tbody>
                           {distCategoria.map((cat, i) => {
-                              const catAtletas = atletas.filter(a => (a.categoria_nome || a.categoria || 'Sem Cat.') === cat.name);
+                              const catAtletas = atletas.filter(a => (a.categoria_nome || a.categoria || '') === cat.name);
                               const novos = catAtletas.filter(a => {
                                   if(!a.criado_em) return false;
-                                  const date = new Date(a.criado_em);
-                                  const diffTime = Math.abs(new Date() - date);
-                                  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                                  const diffDays = Math.ceil(Math.abs(new Date() - new Date(a.criado_em)) / (1000 * 60 * 60 * 24)); 
                                   return diffDays <= 30;
                               }).length;
+                              
+                              const displayCat = cat.name && cat.name.trim() !== '' ? cat.name : '-';
+                              const emptyClass = displayCat === '-' ? ' empty-cell' : '';
+
                               return (
-                                  <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
-                                      <td style={{ padding: 8, fontWeight: 'bold' }}>{cat.name}</td>
-                                      <td style={{ padding: 8, textAlign: 'center' }}>{cat.total}</td>
-                                      <td style={{ padding: 8, textAlign: 'center', color: novos > 0 ? '#22c55e' : '#999', fontWeight: 'bold' }}>
-                                          {novos > 0 ? `+${novos}` : '0'}
+                                  <tr key={i}>
+                                      <td className={`text-cell cap-text${emptyClass}`} title={displayCat}><strong>{displayCat}</strong></td>
+                                      <td className="num-cell">{cat.total}</td>
+                                      <td className="num-cell" style={{ color: novos > 0 ? '#16a34a' : '#333', fontWeight: novos > 0 ? 'bold' : 'normal' }}>
+                                          {novos > 0 ? `↑ ${novos}` : '0'}
                                       </td>
+                                      <td className="num-cell empty-cell">-</td>
+                                      <td className="num-cell" style={{ fontWeight: 'bold' }}>{cat.total}</td>
                                   </tr>
                               );
                           })}
@@ -472,85 +526,104 @@ export default function CentralRelatorios() {
               </div>
 
               {/* Status Médico (Lesionados) */}
-              <div style={{ marginBottom: 30 }}>
-                  <h3 style={{ color: '#000', borderBottom: '1px solid #ddd', paddingBottom: 5, marginBottom: 15, fontSize: 18 }}>Departamento Médico (Lesionados)</h3>
+              <div>
+                  <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>Departamento Médico (Lesionados)</h3>
                   {atletas.filter(a => a.status_medico === 'Lesionado').length > 0 ? (
-                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                      <table>
                           <thead>
-                              <tr style={{ background: '#fef2f2', color: '#b91c1c' }}>
-                                  <th style={{ padding: 8, textAlign: 'left', borderBottom: '2px solid #f87171' }}>Atleta</th>
-                                  <th style={{ padding: 8, textAlign: 'left', borderBottom: '2px solid #f87171' }}>Categoria</th>
-                                  <th style={{ padding: 8, textAlign: 'left', borderBottom: '2px solid #f87171' }}>Posição</th>
-                                  <th style={{ padding: 8, textAlign: 'center', borderBottom: '2px solid #f87171' }}>Data Registro</th>
+                              <tr>
+                                  <th className="text-cell" style={{ width: '30%' }}>Atleta</th>
+                                  <th className="text-cell" style={{ width: '15%' }}>Categoria</th>
+                                  <th className="text-cell" style={{ width: '15%' }}>Posição</th>
+                                  <th className="num-cell" style={{ width: '15%' }}>Data Registro</th>
+                                  <th className="text-cell" style={{ width: '15%' }}>Tipo Lesão</th>
+                                  <th className="num-cell" style={{ width: '10%' }}>Status</th>
                               </tr>
                           </thead>
                           <tbody>
-                              {atletas.filter(a => a.status_medico === 'Lesionado').map((a, i) => (
-                                  <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
-                                      <td style={{ padding: 8, fontWeight: 'bold', color: '#ef4444' }}>{a.nome}</td>
-                                      <td style={{ padding: 8 }}>{a.categoria_nome || a.categoria}</td>
-                                      <td style={{ padding: 8 }}>{a.posicao || '-'}</td>
-                                      <td style={{ padding: 8, textAlign: 'center' }}>{a.criado_em ? new Date(a.criado_em).toLocaleDateString('pt-BR') : 'Não informada'}</td>
-                                  </tr>
-                              ))}
+                              {atletas.filter(a => a.status_medico === 'Lesionado').map((a, i) => {
+                                  const nome = (a.nome && a.nome.trim() !== '') ? a.nome : '-';
+                                  const cat = (a.categoria_nome || a.categoria || '').trim() !== '' ? (a.categoria_nome || a.categoria) : '-';
+                                  const pos = (a.posicao && a.posicao.trim() !== '') ? a.posicao : '-';
+                                  const dt = a.criado_em ? new Date(a.criado_em).toLocaleDateString('pt-BR') : '-';
+                                  
+                                  return (
+                                      <tr key={i}>
+                                          <td className={`text-cell${nome === '-' ? ' empty-cell' : ''}`}><strong>{nome}</strong></td>
+                                          <td className={`text-cell cap-text${cat === '-' ? ' empty-cell' : ''}`}>{cat}</td>
+                                          <td className={`text-cell cap-text${pos === '-' ? ' empty-cell' : ''}`}>{pos}</td>
+                                          <td className={`num-cell${dt === '-' ? ' empty-cell' : ''}`}>{dt}</td>
+                                          <td className="num-cell empty-cell">-</td>
+                                          <td className="num-cell" style={{ color: '#dc2626', fontWeight: 'bold' }}>Lesionado</td>
+                                      </tr>
+                                  );
+                              })}
                           </tbody>
                       </table>
                   ) : (
-                      <p style={{ color: '#22c55e', fontWeight: 'bold', fontSize: 14 }}>Nenhum atleta lesionado no momento.</p>
+                      <p style={{ color: '#16a34a', fontWeight: 'bold', fontSize: 13, padding: '10px 0', marginBottom: 25 }}>Nenhum atleta lesionado no momento. DM Vazio.</p>
                   )}
               </div>
 
-              {/* Top Atletas Faltosos */}
-              <div style={{ marginBottom: 30 }}>
-                  <h3 style={{ color: '#000', borderBottom: '1px solid #ddd', paddingBottom: 5, marginBottom: 15, fontSize: 18 }}>Índice de Faltas (Top Ausentes)</h3>
-                  {faltosos.length > 0 ? (
-                      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+              {/* Mapeamento Tático & Top Faltosos (Side by side for better A4 usage) */}
+              <div style={{ display: 'flex', gap: '30px' }}>
+                  
+                  {/* Mapeamento Tático */}
+                  <div style={{ flex: 1 }}>
+                      <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>Mapeamento Tático</h3>
+                      <table>
                           <thead>
-                              <tr style={{ background: '#fffbeb', color: '#b45309' }}>
-                                  <th style={{ padding: 8, textAlign: 'left', borderBottom: '2px solid #fbbf24' }}>Atleta</th>
-                                  <th style={{ padding: 8, textAlign: 'center', borderBottom: '2px solid #fbbf24' }}>Total de Faltas</th>
+                              <tr>
+                                  <th className="text-cell" style={{ width: '70%' }}>Posição</th>
+                                  <th className="num-cell" style={{ width: '30%' }}>Atletas</th>
                               </tr>
                           </thead>
                           <tbody>
-                              {faltosos.map((f, i) => (
-                                  <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
-                                      <td style={{ padding: 8, fontWeight: 'bold' }}>{f.nome}</td>
-                                      <td style={{ padding: 8, textAlign: 'center', color: '#ef4444', fontWeight: 'bold' }}>{f.faltas}</td>
-                                  </tr>
-                              ))}
+                              {Array.from(new Set(atletas.map(a => (a.posicao && a.posicao.trim() !== '') ? a.posicao : '-'))).sort().map((pos, i) => {
+                                  const qtd = atletas.filter(a => ((a.posicao && a.posicao.trim() !== '') ? a.posicao : '-') === pos).length;
+                                  return (
+                                      <tr key={i}>
+                                          <td className={`text-cell cap-text${pos === '-' ? ' empty-cell' : ''}`}><strong>{pos}</strong></td>
+                                          <td className="num-cell">{qtd}</td>
+                                      </tr>
+                                  );
+                              })}
                           </tbody>
                       </table>
-                  ) : (
-                      <p style={{ color: '#999', fontSize: 14 }}>Nenhum registro de falta.</p>
-                  )}
-              </div>
+                  </div>
 
-              {/* Distribuição por Posição Detalhada */}
-              <div style={{ marginBottom: 30 }}>
-                  <h3 style={{ color: '#000', borderBottom: '1px solid #ddd', paddingBottom: 5, marginBottom: 15, fontSize: 18 }}>Mapeamento Tático (Atletas por Posição)</h3>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
-                      {Array.from(new Set(atletas.map(a => a.posicao || 'Sem Posição'))).sort().map((pos, i) => {
-                          const atletasPos = atletas.filter(a => (a.posicao || 'Sem Posição') === pos);
-                          return (
-                              <div key={i} style={{ background: '#fafafa', padding: 15, borderRadius: 8, border: '1px solid #eaeaea' }}>
-                                  <h4 style={{ margin: '0 0 10px 0', color: '#06b6d4', display: 'flex', justifyContent: 'space-between' }}>
-                                      <span>{pos}</span>
-                                      <span style={{ color: '#999', fontSize: 12 }}>{atletasPos.length} atleta(s)</span>
-                                  </h4>
-                                  <ul style={{ margin: 0, paddingLeft: 20, fontSize: 11, color: '#444' }}>
-                                      {atletasPos.map((a, idx) => (
-                                          <li key={idx}><strong>{a.nome}</strong> <span style={{ color: '#888' }}>({a.categoria_nome || a.categoria || 'Sem Cat.'})</span></li>
-                                      ))}
-                                  </ul>
-                              </div>
-                          )
-                      })}
+                  {/* Faltosos */}
+                  <div style={{ flex: 1 }}>
+                      <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>Índice de Ausências</h3>
+                      {faltosos.length > 0 ? (
+                          <table>
+                              <thead>
+                                  <tr>
+                                      <th className="text-cell" style={{ width: '75%' }}>Atleta</th>
+                                      <th className="num-cell" style={{ width: '25%' }}>Faltas</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  {faltosos.map((f, i) => {
+                                      const nome = (f.nome && f.nome.trim() !== '') ? f.nome : '-';
+                                      return (
+                                          <tr key={i}>
+                                              <td className={`text-cell${nome === '-' ? ' empty-cell' : ''}`}><strong>{nome}</strong></td>
+                                              <td className="num-cell" style={{ color: '#dc2626', fontWeight: 'bold' }}>{f.faltas}</td>
+                                          </tr>
+                                      );
+                                  })}
+                              </tbody>
+                          </table>
+                      ) : (
+                          <p style={{ color: '#6c757d', fontSize: 13, fontStyle: 'italic', padding: '10px 0' }}>Nenhum registro de falta.</p>
+                      )}
                   </div>
               </div>
 
               {/* Footer */}
-              <div style={{ marginTop: '50px', paddingTop: '20px', borderTop: '1px solid #eee', textAlign: 'center', color: '#999', fontSize: '10px' }}>
-                  Gerado automaticamente via Alfa Academy BI • Confidencial
+              <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #ddd', textAlign: 'center', color: '#888', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                  Documento Confidencial • Gerado automaticamente via Alfa Academy BI
               </div>
           </div>
       </div>
