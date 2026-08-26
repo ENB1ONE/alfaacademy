@@ -503,12 +503,13 @@ export default function CentralRelatorios() {
                   #dashboard-a4-preview th, #a4-preview th {
                       background-color: #111111;
                       color: #eab308;
-                      padding: 10px 12px;
-                      font-size: 13px;
+                      padding: 10px 4px;
+                      font-size: 11px;
                       font-weight: bold;
                       text-transform: uppercase;
                       border: 1px solid #000;
-                      white-space: normal; word-wrap: break-word; overflow: visible;
+                      letter-spacing: -0.2px;
+                      white-space: normal;
                   }
                   #dashboard-a4-preview td, #a4-preview td {
                       padding: 9px 12px;

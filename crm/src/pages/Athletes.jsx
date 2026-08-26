@@ -236,7 +236,23 @@ export default function Athletes() {
               </div>
             <div style={{ gridColumn: '1 / -1' }}><label>Nome Completo</label><input type="text" value={form.nome} onChange={e=>setForm({...form, nome: e.target.value})} required /></div>
             <div><label>Categoria</label><select value={form.categoria_id || ""} onChange={e=>setForm({...form, categoria_id: e.target.value})}><option value="">Selecione...</option>{categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}</select></div>
-            <div><label>Posição</label><input type="text" value={form.posicao || ''} onChange={e=>setForm({...form, posicao: e.target.value})} placeholder="Ex: Atacante" /></div>
+            <div><label>Posição</label>
+    <select value={form.posicao || ''} onChange={e=>setForm({...form, posicao: e.target.value})}>
+        <option value="">Selecione...</option>
+        <option value="Goleiro (GK)">Goleiro (GK)</option>
+        <option value="Zagueiro (ZAG)">Zagueiro (ZAG)</option>
+        <option value="Lateral Direito (LD)">Lateral Direito (LD)</option>
+        <option value="Lateral Esquerdo (LE)">Lateral Esquerdo (LE)</option>
+        <option value="Ala">Ala</option>
+        <option value="Volante / Meio-Campista Defensivo (VOL)">Volante / Meio-Campista Defensivo (VOL)</option>
+        <option value="Meia Central (MC)">Meia Central (MC)</option>
+        <option value="Meia Armador / Meia Ofensivo (MEI)">Meia Armador / Meia Ofensivo (MEI)</option>
+        <option value="Ponta Direita (PD)">Ponta Direita (PD)</option>
+        <option value="Ponta Esquerda (PE)">Ponta Esquerda (PE)</option>
+        <option value="Segundo Atacante (SA)">Segundo Atacante (SA)</option>
+        <option value="Centroavante (CA)">Centroavante (CA)</option>
+    </select>
+</div>
               <div><label>Pé Dominante</label><select value={form.pe_dominante || ''} onChange={e=>setForm({...form, pe_dominante: e.target.value})}><option value="">Selecione...</option><option value="Destro">Destro</option><option value="Canhoto">Canhoto</option><option value="Ambidestro">Ambidestro</option></select></div>
               <div><label>Peso (kg)</label><input type="number" step="0.1" value={form.peso || ''} onChange={e=>setForm({...form, peso: e.target.value})} placeholder="Ex: 75.5" /></div>
               <div><label>Altura (m)</label><input type="number" step="0.01" value={form.altura || ''} onChange={e=>setForm({...form, altura: e.target.value})} placeholder="Ex: 1.82" /></div>
