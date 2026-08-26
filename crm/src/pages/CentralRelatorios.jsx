@@ -304,6 +304,19 @@ export default function CentralRelatorios() {
                         </div>
                     )}
 
+                    {(modulo === 'presencas' || modulo === 'jogos') && (
+                        <>
+                            <div style={{ flex: '1 1 140px' }}>
+                                <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Data Inicial</label>
+                                <input type="date" className="input" value={filtros.data_inicio || ''} onChange={(e) => setFiltros({...filtros, data_inicio: e.target.value})} style={{ width: '100%', colorScheme: 'dark' }} />
+                            </div>
+                            <div style={{ flex: '1 1 140px' }}>
+                                <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Data Final</label>
+                                <input type="date" className="input" value={filtros.data_fim || ''} onChange={(e) => setFiltros({...filtros, data_fim: e.target.value})} style={{ width: '100%', colorScheme: 'dark' }} />
+                            </div>
+                        </>
+                    )}
+                    
                     <div style={{ flex: '1 1 150px' }}>
                         <button className="btn primary" onClick={handleGerarRelatorio} disabled={!modulo || generating} style={{ width: '100%' }}>
                             {generating ? 'Processando...' : 'Gerar Visualização'}
@@ -345,7 +358,8 @@ export default function CentralRelatorios() {
                                 <h2 style={{ margin: 0, color: '#111', fontSize: '22px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '-0.5px' }}>
                                     {modulo === 'elenco' ? 'Relatório de Elenco' : modulo === 'presencas' ? 'Histórico de Presenças' : modulo === 'jogos' ? 'Relatório de Partidas' : 'Relatório Dinâmico'}
                                 </h2>
-                                {filtros.categoria && <p style={{ margin: '5px 0 0 0', color: '#555', fontSize: '13px', fontWeight: 500 }}>Filtro Aplicado: {filtros.categoria}</p>}
+                                {filtros.categoria && <p style={{ margin: '5px 0 0 0', color: '#555', fontSize: '13px', fontWeight: 500 }}>Filtro Categoria: {filtros.categoria}</p>}
+                                {filtros.data_inicio && filtros.data_fim && <p style={{ margin: '2px 0 0 0', color: '#555', fontSize: '12px', fontWeight: 500 }}>Período: {new Date(filtros.data_inicio + 'T12:00:00').toLocaleDateString('pt-BR')} a {new Date(filtros.data_fim + 'T12:00:00').toLocaleDateString('pt-BR')}</p>}
                             </div>
                             <div style={{ textAlign: 'right', color: '#6c757d', fontSize: '11px', lineHeight: '1.5', paddingTop: '5px', minWidth: '150px' }}>
                                 Gerado em:<br/>
