@@ -103,7 +103,7 @@ export default function CentralRelatorios() {
       margin:       [10, 10, 15, 10],
       filename:     `Dashboard_Executivo_${new Date().getTime()}.pdf`,
       image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
+      html2canvas:  { scale: 2, useCORS: true, windowWidth: 1200 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak:    { mode: ['css', 'legacy'] }
     };
@@ -130,7 +130,7 @@ export default function CentralRelatorios() {
       margin:       [10, 10, 15, 10],
       filename:     `Relatorio_${modulo}_${new Date().getTime()}.pdf`,
       image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
+      html2canvas:  { scale: 2, useCORS: true, windowWidth: 1200 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak:    { mode: ['css', 'legacy'] }
     };
