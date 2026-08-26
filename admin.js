@@ -784,18 +784,23 @@ router.post('/relatorios/gerador', verificarAdmin, async (req, res) => {
         let count = 1;
 
         if (modulo === 'elenco') {
-            query = 'SELECT nome, categoria, posicao, status_medico, status_pagamento FROM atletas WHERE 1=1';
-            if (filtros && filtros.categoria) { query += ` AND categoria = ${count++}`; params.push(filtros.categoria); }
-            if (filtros && filtros.status_medico) { query += ` AND status_medico = ${count++}`; params.push(filtros.status_medico); }
-            query += ' ORDER BY nome ASC';
+            query = `SELECT a.nome, c.nome as categoria, a.posicao, a.status_medico 
+                     FROM atletas a 
+                     LEFT JOIN categorias c ON a.categoria_id = c.id WHERE 1=1`;
+            if (filtros && filtros.categoria) { query += ` AND c.nome = ${count++}`; params.push(filtros.categoria); }
+            if (filtros && filtros.status_medico) { query += ` AND a.status_medico = ${count++}`; params.push(filtros.status_medico); }
+            query += ' ORDER BY a.nome ASC';
         } 
         else if (modulo === 'presencas') {
-            query = `SELECT p.data_treino, p.status, a.nome, a.categoria 
-                     FROM presencas_treinos p 
-                     JOIN atletas a ON p.atleta_id = a.id WHERE 1=1`;
-            if (filtros && filtros.categoria) { query += ` AND a.categoria = ${count++}`; params.push(filtros.categoria); }
+            query = `SELECT t.data AS data_treino, p.status, a.nome, c.nome as categoria 
+                     FROM presencas p 
+                     JOIN atletas a ON p.atleta_id = a.id 
+                     LEFT JOIN categorias c ON a.categoria_id = c.id
+                     JOIN treinos t ON p.treino_id = t.id 
+                     WHERE 1=1`;
+            if (filtros && filtros.categoria) { query += ` AND c.nome = ${count++}`; params.push(filtros.categoria); }
             if (filtros && filtros.atleta_id) { query += ` AND a.id = ${count++}`; params.push(filtros.atleta_id); }
-            query += ' ORDER BY p.data_treino DESC LIMIT 200';
+            query += ' ORDER BY t.data DESC LIMIT 200';
         }
         else if (modulo === 'jogos') {
             query = 'SELECT data_jogo, adversario, categoria, resultado FROM jogos WHERE 1=1';
