@@ -98,14 +98,15 @@ export default function CentralRelatorios() {
     // Using off-screen rendering
     
     const opt = {
-      margin:       10,
+      margin:       [10, 10, 15, 10], // top, left, bottom, right
       filename:     `Dashboard_Executivo_${new Date().getTime()}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      image:        { type: 'jpeg', quality: 1 },
+      html2canvas:  { scale: 2, useCORS: true, windowWidth: 900 },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak:    { mode: ['css', 'legacy'] }
     };
     
-    html2pdf().from(element).set(opt).save().then(() => { });
+    html2pdf().from(element).set(opt).save();
   };
 
   const exportPDF = () => {
@@ -408,9 +409,9 @@ export default function CentralRelatorios() {
       )}
 
       {/* HIDDEN EXECUTIVE DASHBOARD REPORT */}
-      <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', zIndex: -100 }}>
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '900px', zIndex: -9999, opacity: 0.001, pointerEvents: 'none' }}>
           <div id="dashboard-a4-preview" style={{
-              width: '794px',
+              width: '100%',
               minHeight: '1123px',
               background: '#ffffff',
               padding: '40px',
@@ -464,6 +465,13 @@ export default function CentralRelatorios() {
                       color: #999 !important;
                       font-style: italic;
                   }
+                  /* Fix Page Breaks for PDF */
+                  #dashboard-a4-preview tr { page-break-inside: avoid; page-break-after: auto; }
+                  #dashboard-a4-preview thead { display: table-header-group; }
+                  #dashboard-a4-preview tfoot { display: table-row-group; }
+                  .avoid-break { page-break-inside: avoid; }
+                  /* Ensure headers wrap normally */
+                  #dashboard-a4-preview th { white-space: normal; word-wrap: break-word; overflow: visible; }
                   `}
               </style>
 
@@ -476,7 +484,7 @@ export default function CentralRelatorios() {
                       </h2>
                       <p style={{ margin: '5px 0 0 0', color: '#555', fontSize: '13px', fontWeight: 500 }}>Relatório Analítico Executivo</p>
                   </div>
-                  <div style={{ textAlign: 'right', color: '#6c757d', fontSize: '11px', lineHeight: '1.5', paddingTop: '5px' }}>
+                  <div style={{ textAlign: 'right', color: '#6c757d', fontSize: '11px', lineHeight: '1.5', paddingTop: '5px', minWidth: '150px' }}>
                       Gerado em:<br/>
                       <strong style={{ color: '#333', fontSize: '13px' }}>
                           {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
@@ -490,11 +498,11 @@ export default function CentralRelatorios() {
                   <table>
                       <thead>
                           <tr>
-                              <th className="text-cell" style={{ width: '25%' }}>Categoria</th>
-                              <th className="num-cell" style={{ width: '15%' }}>Total</th>
-                              <th className="num-cell" style={{ width: '20%' }}>Novos (30 dias)</th>
-                              <th className="num-cell" style={{ width: '20%' }}>Desligamentos</th>
-                              <th className="num-cell" style={{ width: '20%' }}>Saldo</th>
+                              <th style={{ width: '25%' }}>Categoria</th>
+                              <th style={{ textAlign: "center", width: '15%' }}>Total</th>
+                              <th style={{ textAlign: "center", width: '20%' }}>Novos (30 dias)</th>
+                              <th style={{ textAlign: "center", width: '20%' }}>Desligamentos</th>
+                              <th style={{ textAlign: "center", width: '20%' }}>Saldo</th>
                           </tr>
                       </thead>
                       <tbody>
@@ -532,12 +540,12 @@ export default function CentralRelatorios() {
                       <table>
                           <thead>
                               <tr>
-                                  <th className="text-cell" style={{ width: '30%' }}>Atleta</th>
-                                  <th className="text-cell" style={{ width: '15%' }}>Categoria</th>
-                                  <th className="text-cell" style={{ width: '15%' }}>Posição</th>
-                                  <th className="num-cell" style={{ width: '15%' }}>Data Registro</th>
-                                  <th className="text-cell" style={{ width: '15%' }}>Tipo Lesão</th>
-                                  <th className="num-cell" style={{ width: '10%' }}>Status</th>
+                                  <th style={{ width: '30%' }}>Atleta</th>
+                                  <th style={{ width: '15%' }}>Categoria</th>
+                                  <th style={{ width: '15%' }}>Posição</th>
+                                  <th style={{ textAlign: "center", width: '15%' }}>Data Registro</th>
+                                  <th style={{ width: '15%' }}>Tipo Lesão</th>
+                                  <th style={{ textAlign: "center", width: '10%' }}>Status</th>
                               </tr>
                           </thead>
                           <tbody>
@@ -574,8 +582,8 @@ export default function CentralRelatorios() {
                       <table>
                           <thead>
                               <tr>
-                                  <th className="text-cell" style={{ width: '70%' }}>Posição</th>
-                                  <th className="num-cell" style={{ width: '30%' }}>Atletas</th>
+                                  <th style={{ width: '70%' }}>Posição</th>
+                                  <th style={{ textAlign: "center", width: '30%' }}>Atletas</th>
                               </tr>
                           </thead>
                           <tbody>
@@ -599,8 +607,8 @@ export default function CentralRelatorios() {
                           <table>
                               <thead>
                                   <tr>
-                                      <th className="text-cell" style={{ width: '75%' }}>Atleta</th>
-                                      <th className="num-cell" style={{ width: '25%' }}>Faltas</th>
+                                      <th style={{ width: '75%' }}>Atleta</th>
+                                      <th style={{ textAlign: "center", width: '25%' }}>Faltas</th>
                                   </tr>
                               </thead>
                               <tbody>
