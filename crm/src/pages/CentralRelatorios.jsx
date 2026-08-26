@@ -29,6 +29,8 @@ export default function CentralRelatorios() {
   const [filtros, setFiltros] = useState({});
   const [reportData, setReportData] = useState(null);
   const [generating, setGenerating] = useState(false);
+  const [exportingDashboard, setExportingDashboard] = useState(false);
+  const [exportingA4, setExportingA4] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,12 +92,13 @@ export default function CentralRelatorios() {
   };
 
   
-  const exportDashboardPDF = () => {
+  const exportDashboardPDF = async () => {
     const element = document.getElementById('dashboard-a4-preview');
     if (!element) return;
     
-    // Temporarily make it block for html2canvas to render
-    // Using off-screen rendering
+    setExportingDashboard(true);
+    // Allow React to render the loading state before html2canvas blocks the thread
+    await new Promise(resolve => setTimeout(resolve, 50));
     
     const opt = {
       margin:       [10, 10, 15, 10], // top, left, bottom, right
@@ -106,12 +109,20 @@ export default function CentralRelatorios() {
       pagebreak:    { mode: ['css', 'legacy'] }
     };
     
-    html2pdf().from(element).set(opt).save();
+    html2pdf().from(element).set(opt).save().then(() => {
+        setExportingDashboard(false);
+    }).catch(() => {
+        setExportingDashboard(false);
+    });
   };
 
-  const exportPDF = () => {
+  const exportPDF = async () => {
     const element = document.getElementById('a4-preview');
     if (!element) return;
+    
+    setExportingA4(true);
+    await new Promise(resolve => setTimeout(resolve, 50));
+    
     const opt = {
       margin:       [10, 10, 15, 10],
       filename:     `Relatorio_${modulo}_${new Date().getTime()}.pdf`,
@@ -120,7 +131,12 @@ export default function CentralRelatorios() {
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak:    { mode: ['css', 'legacy'] }
     };
-    html2pdf().from(element).set(opt).save();
+    
+    html2pdf().from(element).set(opt).save().then(() => {
+        setExportingA4(false);
+    }).catch(() => {
+        setExportingA4(false);
+    });
   };
 
   return (
@@ -152,8 +168,8 @@ export default function CentralRelatorios() {
       {activeTab === 'dashboard' && (
         <>
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
-            <button className="btn primary" onClick={exportDashboardPDF} style={{ display: 'flex', gap: 8, alignItems: 'center', background: 'var(--ouro)', color: '#000', fontWeight: 'bold' }}>
-              <Download size={18} /> Baixar Relatório Executivo
+            <button className="btn primary" onClick={exportDashboardPDF} disabled={exportingDashboard} style={{ display: 'flex', gap: 8, alignItems: 'center', background: exportingDashboard ? '#666' : 'var(--ouro)', color: exportingDashboard ? '#ccc' : '#000', fontWeight: 'bold', cursor: exportingDashboard ? 'wait' : 'pointer' }}>
+              <Download size={18} /> {exportingDashboard ? 'Processando PDF...' : 'Baixar Relatório Executivo'}
             </button>
           </div>
           {loading ? (
@@ -330,8 +346,8 @@ export default function CentralRelatorios() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                     <h3 style={{ color: 'var(--texto)' }}>Preview A4</h3>
                     {reportData && (
-                        <button className="btn primary" onClick={exportPDF} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--ouro)', color: '#000' }}>
-                            <Download size={18} /> Baixar PDF Executivo
+                        <button className="btn primary" onClick={exportPDF} disabled={exportingA4} style={{ display: 'flex', alignItems: 'center', gap: 8, background: exportingA4 ? '#666' : 'var(--ouro)', color: exportingA4 ? '#ccc' : '#000', cursor: exportingA4 ? 'wait' : 'pointer' }}>
+                            <Download size={18} /> {exportingA4 ? 'Processando...' : 'Baixar PDF Executivo'}
                         </button>
                     )}
                 </div>
