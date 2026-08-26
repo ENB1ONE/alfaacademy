@@ -97,23 +97,45 @@ export default function CentralRelatorios() {
     if (!element) return;
     
     setExportingDashboard(true);
-    // Allow React to render the loading state before html2canvas blocks the thread
     await new Promise(resolve => setTimeout(resolve, 50));
     
+    // FOOLPROOF HACK FOR HTML2CANVAS ON MOBILE
+    const clone = element.cloneNode(true);
+    clone.style.width = '800px';
+    clone.style.minWidth = '800px';
+    clone.style.position = 'absolute';
+    clone.style.top = '0';
+    clone.style.left = '0';
+    clone.style.margin = '0';
+    clone.style.padding = '40px';
+    
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'absolute';
+    wrapper.style.top = '0';
+    wrapper.style.left = '0';
+    wrapper.style.width = '1200px';
+    wrapper.style.height = '2000px';
+    wrapper.style.overflow = 'visible';
+    wrapper.style.zIndex = '-9999';
+    wrapper.style.opacity = '0.001';
+    wrapper.appendChild(clone);
+    document.body.appendChild(wrapper);
+
     const opt = {
-      margin:       [10, 10, 15, 10], // top, left, bottom, right
+      margin:       [10, 10, 15, 10],
       filename:     `Dashboard_Executivo_${new Date().getTime()}.pdf`,
       image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, windowWidth: 900 },
+      html2canvas:  { scale: 2, useCORS: true, windowWidth: 1200, width: 800, scrollX: 0, scrollY: 0 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak:    { mode: ['css', 'legacy'] }
     };
     
-    html2pdf().from(element).set(opt).save().then(() => {
+    try {
+        await html2pdf().from(clone).set(opt).save();
+    } finally {
+        if(document.body.contains(wrapper)) document.body.removeChild(wrapper);
         setExportingDashboard(false);
-    }).catch(() => {
-        setExportingDashboard(false);
-    });
+    }
   };
 
   const exportPDF = async () => {
@@ -123,37 +145,43 @@ export default function CentralRelatorios() {
     setExportingA4(true);
     await new Promise(resolve => setTimeout(resolve, 50));
     
-    // TEMPORARY HACK FOR MOBILE SAFARI/CHROME
-    // To prevent html2canvas from clipping the horizontally scrollable container,
-    // we clone the element into a fixed, non-scrollable off-screen container.
+    // FOOLPROOF HACK FOR HTML2CANVAS ON MOBILE
     const clone = element.cloneNode(true);
-    const hiddenContainer = document.createElement('div');
-    hiddenContainer.style.position = 'fixed';
-    hiddenContainer.style.top = '0';
-    hiddenContainer.style.left = '0';
-    hiddenContainer.style.width = '800px';
-    hiddenContainer.style.zIndex = '-9999';
-    hiddenContainer.style.opacity = '0.001';
-    hiddenContainer.style.pointerEvents = 'none';
-    hiddenContainer.appendChild(clone);
-    document.body.appendChild(hiddenContainer);
+    clone.style.width = '800px';
+    clone.style.minWidth = '800px';
+    clone.style.position = 'absolute';
+    clone.style.top = '0';
+    clone.style.left = '0';
+    clone.style.margin = '0';
+    clone.style.padding = '40px';
+    
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'absolute';
+    wrapper.style.top = '0';
+    wrapper.style.left = '0';
+    wrapper.style.width = '1200px';
+    wrapper.style.height = '2000px';
+    wrapper.style.overflow = 'visible';
+    wrapper.style.zIndex = '-9999';
+    wrapper.style.opacity = '0.001';
+    wrapper.appendChild(clone);
+    document.body.appendChild(wrapper);
 
     const opt = {
       margin:       [10, 10, 15, 10],
       filename:     `Relatorio_${modulo}_${new Date().getTime()}.pdf`,
       image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
+      html2canvas:  { scale: 2, useCORS: true, windowWidth: 1200, width: 800, scrollX: 0, scrollY: 0 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak:    { mode: ['css', 'legacy'] }
     };
     
-    html2pdf().from(clone).set(opt).save().then(() => {
-        document.body.removeChild(hiddenContainer);
+    try {
+        await html2pdf().from(clone).set(opt).save();
+    } finally {
+        if(document.body.contains(wrapper)) document.body.removeChild(wrapper);
         setExportingA4(false);
-    }).catch(() => {
-        if(document.body.contains(hiddenContainer)) document.body.removeChild(hiddenContainer);
-        setExportingA4(false);
-    });
+    }
   };
 
   return (
@@ -400,7 +428,7 @@ export default function CentralRelatorios() {
                                     </p>
                                 )}
                             </div>
-                            <div style={{ flex: '0 0 170px', textAlign: 'right', color: '#6c757d', fontSize: '11px', lineHeight: '1.5', paddingTop: '5px' }}>
+                            <div style={{ flex: '0 0 220px', minWidth: '220px', textAlign: 'right', color: '#6c757d', fontSize: '11px', lineHeight: '1.5', paddingTop: '5px', whiteSpace: 'nowrap' }}>
                                 {filtros.data_inicio && filtros.data_fim && (
                                     <div style={{ marginBottom: 6 }}>
                                         Período:<br/>
@@ -501,15 +529,15 @@ export default function CentralRelatorios() {
                       margin-bottom: 25px;
                   }
                   #dashboard-a4-preview th, #a4-preview th {
-                      background-color: #111111;
-                      color: #eab308;
-                      padding: 10px 4px;
-                      font-size: 11px;
-                      font-weight: bold;
-                      text-transform: uppercase;
-                      border: 1px solid #000;
-                      letter-spacing: -0.2px;
-                      white-space: normal;
+                      background-color: #111111 !important;
+                      color: #eab308 !important;
+                      padding: 10px 4px !important;
+                      font-size: 11px !important;
+                      font-weight: bold !important;
+                      text-transform: uppercase !important;
+                      border: 1px solid #000 !important;
+                      white-space: nowrap !important;
+                      word-break: keep-all !important;
                   }
                   #dashboard-a4-preview td, #a4-preview td {
                       padding: 9px 12px;
@@ -591,7 +619,7 @@ export default function CentralRelatorios() {
                       </h2>
                       <p style={{ margin: '5px 0 0 0', color: '#555', fontSize: '13px', fontWeight: 500 }}>Relatório Analítico Executivo</p>
                   </div>
-                  <div style={{ textAlign: 'right', color: '#6c757d', fontSize: '11px', lineHeight: '1.5', paddingTop: '5px', minWidth: '150px' }}>
+                  <div style={{ flex: '0 0 220px', minWidth: '220px', textAlign: 'right', color: '#6c757d', fontSize: '11px', lineHeight: '1.5', paddingTop: '5px', whiteSpace: 'nowrap' }}>
                       Gerado em:<br/>
                       <strong style={{ color: '#333', fontSize: '13px' }}>
                           {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
