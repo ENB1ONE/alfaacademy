@@ -361,7 +361,7 @@ export default function CentralRelatorios() {
                     padding: '20px',
                     borderRadius: '8px'
                 }}>
-                    <div id="a4-preview" style={{ width: '800px', minWidth: '800px', maxWidth: '800px', 
+                    <div id="a4-preview" style={{ width: '1024px', minWidth: '1024px', maxWidth: '1024px', 
                         background: '#ffffff',
                         padding: '40px',
                         boxSizing: 'border-box'
@@ -462,8 +462,8 @@ export default function CentralRelatorios() {
       )}
 
       {/* HIDDEN EXECUTIVE DASHBOARD REPORT */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '800px', zIndex: -9999, opacity: 0.001, pointerEvents: 'none' }}>
-          <div id="dashboard-a4-preview" style={{ width: '800px', minWidth: '800px', maxWidth: '800px', 
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '1024px', zIndex: -9999, opacity: 0.001, pointerEvents: 'none' }}>
+          <div id="dashboard-a4-preview" style={{ width: '1024px', minWidth: '1024px', maxWidth: '1024px', 
               width: '100%',
               
               background: '#ffffff',
