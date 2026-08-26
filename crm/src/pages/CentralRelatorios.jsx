@@ -105,7 +105,7 @@ export default function CentralRelatorios() {
       margin:       [10, 10, 15, 10], // margin in mm
       filename:     `Dashboard_Executivo_${new Date().getTime()}.pdf`,
       image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, windowWidth: 794 },
+      html2canvas: { scale: 2, useCORS: true, width: 794, windowWidth: 794 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak:    { mode: ['css', 'legacy'] }
     };
@@ -132,7 +132,7 @@ export default function CentralRelatorios() {
       margin:       [10, 10, 15, 10],
       filename:     `Relatorio_${modulo}_${new Date().getTime()}.pdf`,
       image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, windowWidth: 794 },
+      html2canvas: { scale: 2, useCORS: true, width: 794, windowWidth: 794 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak:    { mode: ['css', 'legacy'] }
     };
@@ -363,7 +363,7 @@ export default function CentralRelatorios() {
                     padding: '20px',
                     borderRadius: '8px'
                 }}>
-                    <div id="a4-preview" style={{ width: '100%', minWidth: '794px', maxWidth: '794px', 
+                    <div id="a4-preview" className="pdf-export-container" style={{ width: '794px', minWidth: '794px', maxWidth: '794px', 
                         background: '#ffffff',
                         padding: '20px 40px',
                         boxSizing: 'border-box'
@@ -508,7 +508,7 @@ export default function CentralRelatorios() {
 
       {/* HIDDEN EXECUTIVE DASHBOARD REPORT */}
       <div style={{ position: 'fixed', top: 0, left: 0, width: '794px', zIndex: -9999, opacity: 0.001, pointerEvents: 'none' }}>
-          <div id="dashboard-a4-preview" style={{ width: '100%', minWidth: '794px', maxWidth: '794px', 
+          <div id="dashboard-a4-preview" className="pdf-export-container" style={{ width: '794px', minWidth: '794px', maxWidth: '794px', 
               width: '100%',
               
               background: '#ffffff',
@@ -521,15 +521,69 @@ export default function CentralRelatorios() {
                       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
                       color: #333333;
                   }
+                  
+                  .pdf-export-container {
+                      width: 794px !important;
+                      max-width: 794px !important;
+                      box-sizing: border-box !important;
+                      padding: 20px !important;
+                      overflow: hidden !important;
+                  }
+                  .pdf-export-container table {
+                      table-layout: fixed !important;
+                      width: 100% !important;
+                  }
+                  .pdf-export-container th, .pdf-export-container td {
+                      word-wrap: break-word !important;
+                      white-space: normal !important;
+                      padding: 4px !important;
+                      font-size: 10px !important;
+                  }
                   #dashboard-a4-preview table, #a4-preview table {
                       width: 100%;
                       border-collapse: collapse;
                       table-layout: fixed;
                       margin-bottom: 25px;
                   }
+                  
+                  .pdf-export-container {
+                      width: 794px !important;
+                      max-width: 794px !important;
+                      box-sizing: border-box !important;
+                      padding: 20px !important;
+                      overflow: hidden !important;
+                  }
+                  .pdf-export-container table {
+                      table-layout: fixed !important;
+                      width: 100% !important;
+                  }
+                  .pdf-export-container th, .pdf-export-container td {
+                      word-wrap: break-word !important;
+                      white-space: normal !important;
+                      padding: 4px !important;
+                      font-size: 10px !important;
+                  }
                   #dashboard-a4-preview table, #a4-preview table {
                       table-layout: fixed !important;
                       width: 100% !important;
+                  }
+                  
+                  .pdf-export-container {
+                      width: 794px !important;
+                      max-width: 794px !important;
+                      box-sizing: border-box !important;
+                      padding: 20px !important;
+                      overflow: hidden !important;
+                  }
+                  .pdf-export-container table {
+                      table-layout: fixed !important;
+                      width: 100% !important;
+                  }
+                  .pdf-export-container th, .pdf-export-container td {
+                      word-wrap: break-word !important;
+                      white-space: normal !important;
+                      padding: 4px !important;
+                      font-size: 10px !important;
                   }
                   #dashboard-a4-preview table, #a4-preview table {
                       table-layout: fixed !important;
@@ -755,7 +809,7 @@ export default function CentralRelatorios() {
                       <table>
                           <thead>
                               <tr>
-                                  <th style={{ width: '30%' }}>Atleta</th>
+                                  <th style={{ width: '25%' }}>Atleta</th>
                                   <th style={{ width: '15%' }}>Categoria</th>
                                   <th style={{ width: '15%' }}>Posição</th>
                                   <th style={{ textAlign: "center", width: '15%' }}>Data Registro</th>
