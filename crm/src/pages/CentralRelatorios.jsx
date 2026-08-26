@@ -113,11 +113,12 @@ export default function CentralRelatorios() {
     const element = document.getElementById('a4-preview');
     if (!element) return;
     const opt = {
-      margin:       10,
+      margin:       [10, 10, 15, 10],
       filename:     `Relatorio_${modulo}_${new Date().getTime()}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      image:        { type: 'jpeg', quality: 1 },
+      html2canvas:  { scale: 2, useCORS: true, windowWidth: 900 },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak:    { mode: ['css', 'legacy'] }
     };
     html2pdf().from(element).set(opt).save();
   };
@@ -324,7 +325,7 @@ export default function CentralRelatorios() {
                 
                 <div style={{
                     width: '100%',
-                    maxWidth: '794px', // A4 Width at 96 DPI
+                    maxWidth: '900px',
                     margin: '0 auto',
                     overflowX: 'auto',
                     background: '#1a1a1a',
@@ -333,45 +334,41 @@ export default function CentralRelatorios() {
                 }}>
                     <div id="a4-preview" style={{
                         background: '#ffffff',
-                        minHeight: '1123px', // A4 Height at 96 DPI
                         padding: '40px',
-                        boxShadow: '0 0 10px rgba(0,0,0,0.5)',
-                        color: '#333333',
-                        fontFamily: 'Arial, sans-serif'
+                        boxSizing: 'border-box'
                     }}>
                         {/* A4 Header */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #eab308', paddingBottom: '20px', marginBottom: '30px' }}>
-                            <div>
-                                <img src="/alfaacademy/admin/logo192.png" alt="Logo" style={{ width: 60 }} />
-                            </div>
-                            <div style={{ textAlign: 'center' }}>
-                                <h2 style={{ margin: 0, color: '#111', fontSize: '24px', textTransform: 'uppercase' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '3px solid #eab308', paddingBottom: '20px', marginBottom: '30px' }}>
+                            <img src="/alfaacademy/admin/alfa_logo.png" alt="Logo" style={{ width: 65, objectFit: 'contain' }} />
+                            <div style={{ flex: 1, paddingLeft: '20px', paddingTop: '5px', textAlign: 'center' }}>
+                                <h2 style={{ margin: 0, color: '#111', fontSize: '22px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '-0.5px' }}>
                                     {modulo === 'elenco' ? 'Relatório de Elenco' : modulo === 'presencas' ? 'Histórico de Presenças' : modulo === 'jogos' ? 'Relatório de Partidas' : 'Relatório Dinâmico'}
                                 </h2>
-                                {filtros.categoria && <p style={{ margin: '5px 0 0 0', color: '#555', fontSize: '14px' }}>Filtro: {filtros.categoria}</p>}
+                                {filtros.categoria && <p style={{ margin: '5px 0 0 0', color: '#555', fontSize: '13px', fontWeight: 500 }}>Filtro Aplicado: {filtros.categoria}</p>}
                             </div>
-                            <div style={{ textAlign: 'right', color: '#666', fontSize: '12px' }}>
-                                Emissão:<br/>
-                                {new Date().toLocaleDateString('pt-BR')} <br/>
-                                {new Date().toLocaleTimeString('pt-BR')}
+                            <div style={{ textAlign: 'right', color: '#6c757d', fontSize: '11px', lineHeight: '1.5', paddingTop: '5px', minWidth: '150px' }}>
+                                Gerado em:<br/>
+                                <strong style={{ color: '#333', fontSize: '13px' }}>
+                                    {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                </strong>
                             </div>
                         </div>
 
                         {/* A4 Body (Table) */}
                         {!reportData ? (
-                            <div style={{ textAlign: 'center', color: '#999', marginTop: 100 }}>
+                            <div style={{ textAlign: 'center', color: '#999', marginTop: 100, fontStyle: 'italic' }}>
                                 Configure os filtros acima e clique em "Gerar Visualização"
                             </div>
                         ) : reportData.length === 0 ? (
-                            <div style={{ textAlign: 'center', color: '#999', marginTop: 100 }}>
+                            <div style={{ textAlign: 'center', color: '#999', marginTop: 100, fontStyle: 'italic' }}>
                                 Nenhum dado encontrado para os filtros selecionados.
                             </div>
                         ) : (
-                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                            <table>
                                 <thead>
-                                    <tr style={{ background: '#f5f5f5', color: '#111' }}>
+                                    <tr>
                                         {Object.keys(reportData[0]).map(key => (
-                                            <th key={key} style={{ padding: '10px 8px', textAlign: 'left', borderBottom: '2px solid #ccc', textTransform: 'capitalize' }}>
+                                            <th key={key}>
                                                 {key.replace(/_/g, ' ')}
                                             </th>
                                         ))}
@@ -379,16 +376,21 @@ export default function CentralRelatorios() {
                                 </thead>
                                 <tbody>
                                     {reportData.map((row, idx) => (
-                                        <tr key={idx} style={{ borderBottom: '1px solid #eee' }}>
+                                        <tr key={idx}>
                                             {Object.values(row).map((val, i) => {
-                                                // format dates nicely if looks like ISO
                                                 let displayVal = val;
                                                 if (typeof val === 'string' && val.match(/^\d{4}-\d{2}-\d{2}T/)) {
                                                     displayVal = new Date(val).toLocaleDateString('pt-BR');
                                                 }
+                                                displayVal = (displayVal && displayVal.toString().trim() !== '') ? displayVal : '-';
+                                                const emptyClass = displayVal === '-' ? 'empty-cell' : '';
+                                                
+                                                // Center numbers and dates, left-align text
+                                                const isNumOrDate = !isNaN(displayVal) || (typeof displayVal === 'string' && displayVal.includes('/'));
+                                                
                                                 return (
-                                                    <td key={i} style={{ padding: '8px', color: '#444' }}>
-                                                        {displayVal || '-'}
+                                                    <td key={i} className={emptyClass} style={{ textAlign: isNumOrDate ? 'center' : 'left' }}>
+                                                        {displayVal}
                                                     </td>
                                                 )
                                             })}
@@ -399,8 +401,8 @@ export default function CentralRelatorios() {
                         )}
                         
                         {/* A4 Footer */}
-                        <div style={{ marginTop: '50px', paddingTop: '20px', borderTop: '1px solid #eee', textAlign: 'center', color: '#999', fontSize: '10px' }}>
-                            Gerado automaticamente via Alfa Academy BI &bull; Confidencial
+                        <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #ddd', textAlign: 'center', color: '#888', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                            Documento Confidencial • Gerado automaticamente via Alfa Academy BI
                         </div>
                     </div>
                 </div>
@@ -412,13 +414,48 @@ export default function CentralRelatorios() {
       <div style={{ position: 'fixed', top: 0, left: 0, width: '900px', zIndex: -9999, opacity: 0.001, pointerEvents: 'none' }}>
           <div id="dashboard-a4-preview" style={{
               width: '100%',
-              minHeight: '1123px',
+              
               background: '#ffffff',
               padding: '40px',
               boxSizing: 'border-box'
           }}>
               <style>
                   {`
+                  #dashboard-a4-preview, #a4-preview {
+                      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                      color: #333333;
+                  }
+                  #dashboard-a4-preview table, #a4-preview table {
+                      width: 100%;
+                      border-collapse: collapse;
+                      table-layout: fixed;
+                      margin-bottom: 25px;
+                  }
+                  #dashboard-a4-preview th, #a4-preview th {
+                      background-color: #111111;
+                      color: #eab308;
+                      padding: 10px 12px;
+                      font-size: 13px;
+                      font-weight: bold;
+                      text-transform: uppercase;
+                      border: 1px solid #000;
+                      white-space: normal; word-wrap: break-word; overflow: visible;
+                  }
+                  #dashboard-a4-preview td, #a4-preview td {
+                      padding: 9px 12px;
+                      font-size: 12px;
+                      color: #333333 !important;
+                      border-bottom: 1px solid #dee2e6;
+                      border-left: 1px solid #dee2e6;
+                      border-right: 1px solid #dee2e6;
+                  }
+                  #dashboard-a4-preview tr:nth-child(even) td, #a4-preview tr:nth-child(even) td {
+                      background-color: #f8f9fa;
+                  }
+                  #dashboard-a4-preview tr, #a4-preview tr { page-break-inside: avoid; page-break-after: auto; }
+                  #dashboard-a4-preview thead, #a4-preview thead { display: table-header-group; }
+                  #dashboard-a4-preview tfoot, #a4-preview tfoot { display: table-row-group; }
+                  
                   #dashboard-a4-preview {
                       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
                       color: #333333;
