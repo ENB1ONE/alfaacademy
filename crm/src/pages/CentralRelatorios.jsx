@@ -123,6 +123,21 @@ export default function CentralRelatorios() {
     setExportingA4(true);
     await new Promise(resolve => setTimeout(resolve, 50));
     
+    // TEMPORARY HACK FOR MOBILE SAFARI/CHROME
+    // To prevent html2canvas from clipping the horizontally scrollable container,
+    // we clone the element into a fixed, non-scrollable off-screen container.
+    const clone = element.cloneNode(true);
+    const hiddenContainer = document.createElement('div');
+    hiddenContainer.style.position = 'fixed';
+    hiddenContainer.style.top = '0';
+    hiddenContainer.style.left = '0';
+    hiddenContainer.style.width = '900px';
+    hiddenContainer.style.zIndex = '-9999';
+    hiddenContainer.style.opacity = '0.001';
+    hiddenContainer.style.pointerEvents = 'none';
+    hiddenContainer.appendChild(clone);
+    document.body.appendChild(hiddenContainer);
+
     const opt = {
       margin:       [10, 10, 15, 10],
       filename:     `Relatorio_${modulo}_${new Date().getTime()}.pdf`,
@@ -132,9 +147,11 @@ export default function CentralRelatorios() {
       pagebreak:    { mode: ['css', 'legacy'] }
     };
     
-    html2pdf().from(element).set(opt).save().then(() => {
+    html2pdf().from(clone).set(opt).save().then(() => {
+        document.body.removeChild(hiddenContainer);
         setExportingA4(false);
     }).catch(() => {
+        if(document.body.contains(hiddenContainer)) document.body.removeChild(hiddenContainer);
         setExportingA4(false);
     });
   };
