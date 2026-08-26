@@ -469,9 +469,10 @@ export default function CentralRelatorios() {
                         )}
                         
                         {/* A4 Footer */}
-                        <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #ddd', textAlign: 'center', color: '#888', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            Documento Confidencial • Gerado automaticamente via Alfa Academy BI
-                        </div>
+                        <div style={{ width: '100%', marginTop: '20px', paddingTop: '10px', borderTop: '1px solid #EAEAEA', textAlign: 'center', color: '#6C757D', fontSize: '10px' }}>
+                  <strong style={{ fontWeight: 'bold' }}>Alfa Academy – Formando Atletas e Cidadãos.</strong><br/>
+                  Documento de uso interno e confidencial gerado automaticamente. É vedado o compartilhamento com terceiros sem autorização prévia da coordenação esportiva.
+              </div>
                     </div>
                 </div>
             </div>
@@ -735,8 +736,9 @@ export default function CentralRelatorios() {
               </div>
 
               {/* Footer */}
-              <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #ddd', textAlign: 'center', color: '#888', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  Documento Confidencial • Gerado automaticamente via Alfa Academy BI
+              <div style={{ width: '100%', marginTop: '20px', paddingTop: '10px', borderTop: '1px solid #EAEAEA', textAlign: 'center', color: '#6C757D', fontSize: '10px' }}>
+                  <strong style={{ fontWeight: 'bold' }}>Alfa Academy – Formando Atletas e Cidadãos.</strong><br/>
+                  Documento de uso interno e confidencial gerado automaticamente. É vedado o compartilhamento com terceiros sem autorização prévia da coordenação esportiva.
               </div>
           </div>
       </div>
