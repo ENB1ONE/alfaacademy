@@ -162,7 +162,7 @@ export default function CentralRelatorios() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 20 }}>
-                <div className="card" style={{ padding: 20 }}>
+                <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
                   <h3 style={{ marginBottom: 20, color: '#fff' }}>Distribuição por Categoria</h3>
                   <div style={{ height: 250 }}>
                     <ResponsiveContainer width="100%" height="100%">
@@ -176,7 +176,7 @@ export default function CentralRelatorios() {
                   </div>
                 </div>
 
-                <div className="card" style={{ padding: 20 }}>
+                <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                     <h3 style={{ color: '#fff', margin: 0 }}>Top Atletas Faltosos</h3>
                   </div>
@@ -198,7 +198,7 @@ export default function CentralRelatorios() {
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
-                <div className="card" style={{ padding: 20 }}>
+                <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
                   <h3 style={{ marginBottom: 20, color: '#fff' }}>Status Médico</h3>
                   <div style={{ height: 250 }}>
                     <ResponsiveContainer width="100%" height="100%">
@@ -213,7 +213,7 @@ export default function CentralRelatorios() {
                   </div>
                 </div>
                 
-                <div className="card" style={{ padding: 20 }}>
+                <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
                   <h3 style={{ marginBottom: 20, color: '#fff' }}>Pé Dominante</h3>
                   <div style={{ height: 250 }}>
                     <ResponsiveContainer width="100%" height="100%">
@@ -228,7 +228,7 @@ export default function CentralRelatorios() {
                   </div>
                 </div>
 
-                <div className="card" style={{ padding: 20 }}>
+                <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
                   <h3 style={{ marginBottom: 20, color: '#fff' }}>Distribuição por Posição</h3>
                   <div style={{ height: 250 }}>
                     <ResponsiveContainer width="100%" height="100%">
@@ -251,7 +251,7 @@ export default function CentralRelatorios() {
       {activeTab === 'generator' && (
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 30 }}>
             {/* Construtor Visual */}
-            <div className="card" style={{ padding: 20 }}>
+            <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
                 <h3 style={{ color: 'var(--ouro)', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}><Search size={20} /> Construtor de Relatório</h3>
                 
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, alignItems: 'flex-end' }}>
@@ -313,8 +313,8 @@ export default function CentralRelatorios() {
             </div>
 
             {/* A4 Preview */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                     <h3 style={{ color: 'var(--texto)' }}>Preview A4</h3>
                     {reportData && (
                         <button className="btn primary" onClick={exportPDF} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--ouro)', color: '#000' }}>
@@ -333,6 +333,7 @@ export default function CentralRelatorios() {
                     borderRadius: '8px'
                 }}>
                     <div id="a4-preview" style={{
+                        minWidth: '800px',
                         background: '#ffffff',
                         padding: '40px',
                         boxSizing: 'border-box'
