@@ -131,7 +131,7 @@ export default function CentralRelatorios() {
     hiddenContainer.style.position = 'fixed';
     hiddenContainer.style.top = '0';
     hiddenContainer.style.left = '0';
-    hiddenContainer.style.width = '900px';
+    hiddenContainer.style.width = '800px';
     hiddenContainer.style.zIndex = '-9999';
     hiddenContainer.style.opacity = '0.001';
     hiddenContainer.style.pointerEvents = 'none';
@@ -142,7 +142,7 @@ export default function CentralRelatorios() {
       margin:       [10, 10, 15, 10],
       filename:     `Relatorio_${modulo}_${new Date().getTime()}.pdf`,
       image:        { type: 'jpeg', quality: 1 },
-      html2canvas:  { scale: 2, useCORS: true, windowWidth: 900 },
+      html2canvas:  { scale: 2, useCORS: true, windowWidth: 800 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak:    { mode: ['css', 'legacy'] }
     };
