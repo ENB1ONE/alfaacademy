@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+﻿const fs = require('fs');
+
+const code = `import React, { useState, useEffect, useContext } from 'react';
 import api from '../api';
 import { AuthContext } from '../context/AuthContext';
 import { Download, Search, Filter, Activity, Users, FileText, PieChart as PieIcon, LayoutTemplate, Printer } from 'lucide-react';
@@ -94,7 +96,7 @@ export default function CentralRelatorios() {
     if (!element) return;
     const opt = {
       margin:       10,
-      filename:     `Relatorio_${modulo}_${new Date().getTime()}.pdf`,
+      filename:     \`Relatorio_\${modulo}_\${new Date().getTime()}.pdf\`,
       image:        { type: 'jpeg', quality: 0.98 },
       html2canvas:  { scale: 2 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -355,7 +357,7 @@ export default function CentralRelatorios() {
                                             {Object.values(row).map((val, i) => {
                                                 // format dates nicely if looks like ISO
                                                 let displayVal = val;
-                                                if (typeof val === 'string' && val.match(/^\d{4}-\d{2}-\d{2}T/)) {
+                                                if (typeof val === 'string' && val.match(/^\\d{4}-\\d{2}-\\d{2}T/)) {
                                                     displayVal = new Date(val).toLocaleDateString('pt-BR');
                                                 }
                                                 return (
@@ -382,3 +384,7 @@ export default function CentralRelatorios() {
     </div>
   );
 }
+`;
+
+fs.writeFileSync('crm/src/pages/CentralRelatorios.jsx', code, 'utf8');
+console.log('CentralRelatorios.jsx rewritten with BI module');
