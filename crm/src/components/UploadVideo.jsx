@@ -80,6 +80,26 @@ export default function UploadVideo({ onUploadSuccess }) {
       
       <div style={{ marginBottom: "20px" }}>
         <label style={{ display: "block", marginBottom: "8px", color: "var(--cinza)" }}>
+          Categoria (Opcional)
+        </label>
+        <select 
+          className="input" 
+          value={categoriaSelecionada} 
+          onChange={(e) => {
+              setCategoriaSelecionada(e.target.value);
+              setAtletaId(""); 
+          }}
+          style={{ width: "100%", padding: "10px" }}
+        >
+          <option value="">Todas as Categorias</option>
+          {Array.from(new Set(atletas.map(a => a.categoria).filter(Boolean))).sort().map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
+      </div>
+
+      <div style={{ marginBottom: "20px" }}>
+        <label style={{ display: "block", marginBottom: "8px", color: "var(--cinza)" }}>
           Atleta
         </label>
         <select 
@@ -87,10 +107,11 @@ export default function UploadVideo({ onUploadSuccess }) {
           value={atletaId} 
           onChange={(e) => setAtletaId(e.target.value)}
           style={{ width: "100%", padding: "10px" }}
+          disabled={categoriaSelecionada !== "" && !atletas.some(a => a.categoria === categoriaSelecionada)}
         >
           <option value="">Selecione o atleta...</option>
-          {atletas.map(a => (
-            <option key={a.id} value={a.id}>{a.nome} ({a.categoria})</option>
+          {(categoriaSelecionada ? atletas.filter(a => a.categoria === categoriaSelecionada) : atletas).map(a => (
+            <option key={a.id} value={a.id}>{a.nome} {categoriaSelecionada ? '' : `(${a.categoria})`}</option>
           ))}
         </select>
       </div>
