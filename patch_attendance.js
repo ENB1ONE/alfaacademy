@@ -1,66 +1,38 @@
 ﻿const fs = require('fs');
-let content = fs.readFileSync('crm/src/pages/AttendanceReport.jsx', 'utf8');
+let code = fs.readFileSync('crm/src/pages/Attendance.jsx', 'utf8');
 
-const oldGrid = `<div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '0.9rem', background: 'rgba(0,0,0,0.2)', padding: '15px', borderRadius: '10px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <span style={{ color: 'var(--cinza)', fontSize: '0.8rem' }}>Chamadas</span>
-                  <strong style={{ fontSize: '1.1rem' }}>{r.total_eventos}</strong>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <span style={{ color: 'var(--cinza)', fontSize: '0.8rem' }}>Convocado</span>
-                  <strong style={{ fontSize: '1.1rem', color: 'var(--ouro)' }}>{r.total_convocacoes || 0}</strong>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', borderTop: '1px solid var(--linha)', paddingTop: '10px' }}>
-                  <span style={{ color: 'var(--cinza)', fontSize: '0.8rem' }}>Presenças</span>
-                  <strong style={{ fontSize: '1.1rem', color: '#10B981' }}>{r.total_presencas}</strong>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', borderTop: '1px solid var(--linha)', paddingTop: '10px' }}>
-                  <span style={{ color: 'var(--cinza)', fontSize: '0.8rem' }}>Faltas</span>
-                  <strong style={{ fontSize: '1.1rem', color: '#EF4444' }}>{r.total_faltas}</strong>
-                </div>
-              </div>`;
-
-const newGrid = `
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', background: 'rgba(0,0,0,0.2)', padding: '15px', borderRadius: '10px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-                  <span style={{ color: 'var(--cinza)' }}>Total de Eventos: <strong>{r.total_eventos}</strong></span>
-                  <span style={{ color: 'var(--cinza)' }}>Convocado: <strong>{r.total_convocacoes || 0}</strong></span>
-                </div>
-                
-                {/* Barras de Progresso */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {/* Barra Presença */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ width: '40px', fontSize: '0.8rem', color: '#10B981', fontWeight: 'bold' }}>
-                      {r.total_presencas} P
-                    </div>
-                    <div style={{ flex: 1, background: 'rgba(255,255,255,0.05)', height: '12px', borderRadius: '6px', overflow: 'hidden' }}>
-                      <div style={{ width: \`\${(r.total_presencas / Math.max(1, r.total_convocacoes || r.total_eventos)) * 100}%\`, background: '#10B981', height: '100%', borderRadius: '6px' }} />
-                    </div>
-                  </div>
-                  
-                  {/* Barra Ausência */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ width: '40px', fontSize: '0.8rem', color: '#EF4444', fontWeight: 'bold' }}>
-                      {r.total_faltas} F
-                    </div>
-                    <div style={{ flex: 1, background: 'rgba(255,255,255,0.05)', height: '12px', borderRadius: '6px', overflow: 'hidden' }}>
-                      <div style={{ width: \`\${(r.total_faltas / Math.max(1, r.total_convocacoes || r.total_eventos)) * 100}%\`, background: '#EF4444', height: '100%', borderRadius: '6px' }} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-`;
-
-content = content.replace(oldGrid, newGrid);
-
-// Also remove the old overall percentage circle/pill
-content = content.replace(
-    `<div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.05)', padding: '6px 12px', borderRadius: 20, color: getColor(r.total_presencas, r.total_eventos), fontWeight: 'bold', fontSize: '1.1rem' }}>
-                    {getPercentage(r.total_presencas, r.total_eventos)}
-                </div>`,
-    ""
+// Add State
+code = code.replace(
+    /const \[tipo, setTipo\] = useState\('TREINO'\);/,
+    "const [tipo, setTipo] = useState('TREINO');\n  const [dataChamada, setDataChamada] = useState(new Date().toISOString().split('T')[0]);"
 );
 
-fs.writeFileSync('crm/src/pages/AttendanceReport.jsx', content, 'utf8');
-console.log('AttendanceReport.jsx updated');
+// Add Data param to API call
+code = code.replace(
+    /return api\.post\('\/api\/admin\/chamadas', \{ categoria_id: catId, presencas: payload, titulo, tipo \}\);/g,
+    "return api.post('/api/admin/chamadas', { categoria_id: catId, presencas: payload, titulo, tipo, data: dataChamada });"
+);
+
+// Inject Date Input
+const inputRegex = /<div style=\{\{ flex: '1 1 200px' \}\}>\s*<label style=\{\{ display: 'block', marginBottom: 5, color: 'var\(--cinza\)', fontSize: 14 \}\}>Tipo<\/label>\s*<select value=\{tipo\} onChange=\{e => setTipo\(e\.target\.value\)\} style=\{\{ margin: 0 \}\}>\s*<option value="TREINO">Treino<\/option>\s*<option value="JOGO">Jogo Oficial<\/option>\s*<option value="AVALIACAO">Avalia[^<]+<\/option>\s*<\/select>\s*<\/div>/;
+
+const newBlock = `<div style={{ flex: '1 1 200px' }}>
+              <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)', fontSize: 14 }}>Tipo</label>
+              <select value={tipo} onChange={e => setTipo(e.target.value)} style={{ margin: 0 }}>
+                  <option value="TREINO">Treino</option>
+                  <option value="JOGO">Jogo Oficial</option>
+                  <option value="AVALIACAO">Avaliação Física</option>
+              </select>
+          </div>
+          <div style={{ flex: '1 1 200px' }}>
+              <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)', fontSize: 14 }}>Data da Chamada (Retroativa)</label>
+              <input type="date" value={dataChamada} onChange={e => setDataChamada(e.target.value)} style={{ margin: 0 }} />
+          </div>`;
+
+if (inputRegex.test(code)) {
+    code = code.replace(inputRegex, newBlock);
+    fs.writeFileSync('crm/src/pages/Attendance.jsx', code, 'utf8');
+    console.log('Attendance.jsx patched successfully.');
+} else {
+    console.log('Regex did not match in Attendance.jsx.');
+}

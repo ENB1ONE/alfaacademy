@@ -9,6 +9,7 @@ export default function Attendance() {
   const [presencas, setPresencas] = useState({});
   const [titulo, setTitulo] = useState('Treino Regular');
   const [tipo, setTipo] = useState('TREINO');
+  const [dataChamada, setDataChamada] = useState(new Date().toISOString().split('T')[0]);
 
   
   const loadCategorias = async () => {
@@ -55,7 +56,7 @@ export default function Attendance() {
             presente: presencas[a.id]
           }));
           if (payload.length > 0) {
-              return api.post('/api/admin/chamadas', { categoria_id: catId, presencas: payload, titulo, tipo });
+              return api.post('/api/admin/chamadas', { categoria_id: catId, presencas: payload, titulo, tipo, data: dataChamada });
           }
           return Promise.resolve();
       });
@@ -113,6 +114,10 @@ export default function Attendance() {
                   <option value="JOGO">Jogo Oficial</option>
                   <option value="AVALIACAO">Avaliação Física</option>
               </select>
+          </div>
+          <div style={{ flex: '1 1 200px' }}>
+              <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)', fontSize: 14 }}>Data da Chamada (Retroativa)</label>
+              <input type="date" value={dataChamada} onChange={e => setDataChamada(e.target.value)} style={{ margin: 0 }} />
           </div>
       </div>
 
