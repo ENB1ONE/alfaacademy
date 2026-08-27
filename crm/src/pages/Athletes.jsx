@@ -13,7 +13,7 @@ export default function Athletes() {
   const [editMode, setEditMode] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [categorias, setCategorias] = useState([]);
-  const [form, setForm] = useState({ nome: '', categoria_id: '', posicao: '', pe_dominante: '', competicoes: '', clube_atual: '', peso: '', altura: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' });
+  const [form, setForm] = useState({ nome: '', categoria_id: '', posicao: '', posicao_secundaria: '', pe_dominante: '', competicoes: '', clube_atual: '', peso: '', altura: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' });
 
   // Crop States
   const [cropImageSrc, setCropImageSrc] = useState(null);
@@ -78,7 +78,7 @@ export default function Athletes() {
       setEditMode(false);
       setEditingId(null);
       loadAtletas();
-      setForm({ nome: '', categoria_id: '', posicao: '', pe_dominante: '', competicoes: '', clube_atual: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' });
+      setForm({ nome: '', categoria_id: '', posicao: '', posicao_secundaria: '', pe_dominante: '', competicoes: '', clube_atual: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' });
     } catch (e) {
       alert('Erro ao salvar atleta');
     }
@@ -215,7 +215,7 @@ export default function Athletes() {
       )}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
         <h1 style={{ color: 'var(--ouro)' }}>Gestão de Atletas</h1>
-        <button onClick={() => { setShowForm(!showForm); setEditMode(false); setForm({ nome: '', categoria_id: '', posicao: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' }); }} className="btn" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <button onClick={() => { setShowForm(!showForm); setEditMode(false); setForm({ nome: '', categoria_id: '', posicao: '', posicao_secundaria: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' }); }} className="btn" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Plus size={20} /> Novo Atleta
         </button>
       </div>
@@ -237,22 +237,35 @@ export default function Athletes() {
             <div style={{ gridColumn: '1 / -1' }}><label>Nome Completo</label><input type="text" value={form.nome} onChange={e=>setForm({...form, nome: e.target.value})} required /></div>
             <div><label>Categoria</label><select value={form.categoria_id || ""} onChange={e=>setForm({...form, categoria_id: e.target.value})}><option value="">Selecione...</option>{categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}</select></div>
             <div><label>Posição</label>
-    <select value={form.posicao || ''} onChange={e=>setForm({...form, posicao: e.target.value})}>
-        <option value="">Selecione...</option>
-        <option value="Goleiro (GK)">Goleiro (GK)</option>
-        <option value="Zagueiro (ZAG)">Zagueiro (ZAG)</option>
-        <option value="Lateral Direito (LD)">Lateral Direito (LD)</option>
-        <option value="Lateral Esquerdo (LE)">Lateral Esquerdo (LE)</option>
-        <option value="Ala">Ala</option>
-        <option value="Volante / Meio-Campista Defensivo (VOL)">Volante / Meio-Campista Defensivo (VOL)</option>
-        <option value="Meia Central (MC)">Meia Central (MC)</option>
-        <option value="Meia Armador / Meia Ofensivo (MEI)">Meia Armador / Meia Ofensivo (MEI)</option>
-        <option value="Ponta Direita (PD)">Ponta Direita (PD)</option>
-        <option value="Ponta Esquerda (PE)">Ponta Esquerda (PE)</option>
-        <option value="Segundo Atacante (SA)">Segundo Atacante (SA)</option>
-        <option value="Centroavante (CA)">Centroavante (CA)</option>
-    </select>
-</div>
+      <select value={form.posicao || ''} onChange={e=>setForm({...form, posicao: e.target.value})}>
+          <option value="">Selecione...</option>
+          <option value="Goleiro (GK)">Goleiro (GK)</option>
+          <option value="Zagueiro (ZAG)">Zagueiro (ZAG)</option>
+          <option value="Lateral Direito (LD)">Lateral Direito (LD)</option>
+          <option value="Lateral Esquerdo (LE)">Lateral Esquerdo (LE)</option>
+          <option value="Volante / Meio-Campista Defensivo (VOL)">Volante / Meio-Campista Defensivo (VOL)</option>
+          <option value="Meia Central (MC)">Meia Central (MC)</option>
+          <option value="Meia Armador / Meia Ofensivo (MEI)">Meia Armador / Meia Ofensivo (MEI)</option>
+          <option value="Ponta Direita (PD)">Ponta Direita (PD)</option>
+          <option value="Ponta Esquerda (PE)">Ponta Esquerda (PE)</option>
+          <option value="Centroavante (CA)">Centroavante (CA)</option>
+      </select>
+  </div>
+  <div><label>Posição Secundária (Opcional)</label>
+      <select value={form.posicao_secundaria || ''} onChange={e=>setForm({...form, posicao_secundaria: e.target.value})}>
+          <option value="">Nenhuma</option>
+          <option value="Goleiro (GK)">Goleiro (GK)</option>
+          <option value="Zagueiro (ZAG)">Zagueiro (ZAG)</option>
+          <option value="Lateral Direito (LD)">Lateral Direito (LD)</option>
+          <option value="Lateral Esquerdo (LE)">Lateral Esquerdo (LE)</option>
+          <option value="Volante / Meio-Campista Defensivo (VOL)">Volante / Meio-Campista Defensivo (VOL)</option>
+          <option value="Meia Central (MC)">Meia Central (MC)</option>
+          <option value="Meia Armador / Meia Ofensivo (MEI)">Meia Armador / Meia Ofensivo (MEI)</option>
+          <option value="Ponta Direita (PD)">Ponta Direita (PD)</option>
+          <option value="Ponta Esquerda (PE)">Ponta Esquerda (PE)</option>
+          <option value="Centroavante (CA)">Centroavante (CA)</option>
+      </select>
+  </div>
               <div><label>Pé Dominante</label><select value={form.pe_dominante || ''} onChange={e=>setForm({...form, pe_dominante: e.target.value})}><option value="">Selecione...</option><option value="Destro">Destro</option><option value="Canhoto">Canhoto</option><option value="Ambidestro">Ambidestro</option></select></div>
               <div><label>Peso (kg)</label><input type="number" step="0.1" value={form.peso || ''} onChange={e=>setForm({...form, peso: e.target.value})} placeholder="Ex: 75.5" /></div>
               <div><label>Altura (m)</label><input type="number" step="0.01" value={form.altura || ''} onChange={e=>setForm({...form, altura: e.target.value})} placeholder="Ex: 1.82" /></div>
@@ -317,7 +330,7 @@ export default function Athletes() {
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <h3 style={{ margin: 0, color: 'var(--ouro)', fontSize: '1.1rem', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.5px' }} onClick={() => navigate(`/perfil/${a.id}`)}>{a.nome}</h3>
-                      <span style={{ fontSize: '0.85rem', color: 'var(--cinza)', fontWeight: '500', marginTop: 4 }}>{a.posicao || 'SEM POSIÇÃO'}</span>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--cinza)', fontWeight: '500', marginTop: 4 }}>{a.posicao ? (a.posicao + (a.posicao_secundaria ? ' / ' + a.posicao_secundaria : '')) : 'SEM POSIÇÃO'}</span>
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '8px' }}>

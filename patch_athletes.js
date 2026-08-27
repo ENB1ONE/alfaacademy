@@ -1,138 +1,33 @@
 ﻿const fs = require('fs');
-let content = fs.readFileSync('crm/src/pages/Athletes.jsx', 'utf8');
+let code = fs.readFileSync('/opt/alfa-api/routes/admin.js', 'utf8');
 
-// Import useLocation
-if (!content.includes('useLocation')) {
-    content = content.replace(
-        "import { useState, useEffect, useContext } from 'react';",
-        "import { useState, useEffect, useContext } from 'react';\nimport { useLocation } from 'react-router-dom';"
-    );
-}
+// Patch POST /atletas
+const postRegex = /const \{ nome, categoria_id, posicao, nome_responsavel, telefone_responsavel, status_medico, foto \} = req\.body;\s*const catId = categoria_id === '' \? null : categoria_id;\s*try \{\s*const query = `\s*INSERT INTO atletas \(nome, categoria_id, posicao, nome_responsavel, telefone_responsavel, status_medico, foto\)\s*VALUES \(\$1, \$2, \$3, \$4, \$5, \$6, \$7\) RETURNING \*\s*`;\s*const r = await pool\.query\(query, \[nome, catId, posicao, nome_responsavel, telefone_responsavel, status_medico, foto\]\);/;
 
-// Read location
-if (!content.includes('const location = useLocation();')) {
-    content = content.replace(
-        "export default function Athletes() {",
-        "export default function Athletes() {\n  const location = useLocation();"
-    );
-}
+const newPost = `const { nome, categoria_id, posicao, posicao_secundaria, pe_dominante, peso, altura, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto } = req.body;
+    const catId = categoria_id === '' ? null : categoria_id;
+    try {
+        const query = \`
+            INSERT INTO atletas (nome, categoria_id, posicao, posicao_secundaria, pe_dominante, peso, altura, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *
+        \`;
+        const r = await pool.query(query, [nome, catId, posicao, posicao_secundaria, pe_dominante, peso || null, altura || null, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto]);`;
 
-// Add state for status filter
-if (!content.includes('const [filtroStatus, setFiltroStatus] = useState')) {
-    content = content.replace(
-        "const [busca, setBusca] = useState('');",
-        "const [busca, setBusca] = useState('');\n  const [filtroStatus, setFiltroStatus] = useState('');"
-    );
-}
+code = code.replace(postRegex, newPost);
 
-// Add useEffect to read status=dm from URL query string
-const effectCode = `
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    if (params.get('status') === 'dm') {
-      setFiltroStatus('Departamento Médico');
-    }
-  }, [location.search]);
-`;
-if (!content.includes("params.get('status') === 'dm'")) {
-    content = content.replace(
-        "const loadAtletas = async () => {",
-        effectCode + "\n  const loadAtletas = async () => {"
-    );
-}
+// Patch PUT /atletas/:id
+const putRegex = /const \{ nome, categoria_id, posicao, nome_responsavel, telefone_responsavel, status_medico, foto \} = req\.body;\s*const catId = categoria_id === '' \? null : categoria_id;\s*try \{\s*const query = `\s*UPDATE atletas\s*SET nome = \$1, categoria_id = \$2, posicao = \$3, nome_responsavel = \$4, telefone_responsavel = \$5, status_medico = \$6, foto = COALESCE\(\$7, foto\) WHERE id = \$8 RETURNING \*\s*`;\s*const r = await pool\.query\(query, \[nome, catId, posicao, nome_responsavel, telefone_responsavel, status_medico, foto, id\]\);/;
 
-// Update filter logic
-const filterLogic = `
-  const list = rawList.filter(a => {
-    let matchCat = true;
-    let matchTreinador = true;
-    let matchBusca = true;
-    let matchStatus = true;
-    
-    if (filtroCategoria) matchCat = String(a.categoria_id) === String(filtroCategoria);
-    if (filtroTreinador) matchTreinador = (a.treinadores && a.treinadores.some(t => String(t.id) === String(filtroTreinador)));
-    if (busca) matchBusca = a.nome.toLowerCase().includes(busca.toLowerCase());
-    if (filtroStatus) matchStatus = a.status_medico === filtroStatus;
-    
-    return matchCat && matchTreinador && matchBusca && matchStatus;
-  });
-`;
-content = content.replace(/const list = rawList\.filter.*?return matchCat && matchTreinador && matchBusca;\n  }\);/s, filterLogic);
+const newPut = `const { nome, categoria_id, posicao, posicao_secundaria, pe_dominante, peso, altura, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto } = req.body;
+    const catId = categoria_id === '' ? null : categoria_id;
+    try {
+        const query = \`
+            UPDATE atletas 
+            SET nome = $1, categoria_id = $2, posicao = $3, posicao_secundaria = $4, pe_dominante = $5, peso = $6, altura = $7, competicoes = $8, clube_atual = $9, nome_responsavel = $10, telefone_responsavel = $11, status_medico = $12, foto = COALESCE($13, foto) WHERE id = $14 RETURNING *
+        \`;
+        const r = await pool.query(query, [nome, catId, posicao, posicao_secundaria, pe_dominante, peso || null, altura || null, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto, id]);`;
 
-// Add the Status filter in the UI next to "Busca"
-const filterUI = `
-          <div>
-            <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Buscar por Nome</label>
-            <div style={{ position: 'relative' }}>
-              <Search size={16} style={{ position: 'absolute', left: 10, top: 12, color: 'var(--cinza)' }} />
-              <input type="text" className="input" placeholder="Digite para buscar..." value={busca} onChange={(e) => setBusca(e.target.value)} style={{ width: '100%', paddingLeft: 35 }} />
-            </div>
-          </div>
-          <div>
-            <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Status Médico</label>
-            <select className="input" value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)} style={{ width: '100%' }}>
-              <option value="">Todos</option>
-              <option value="Apto">Apto</option>
-              <option value="Departamento Médico">Departamento Médico</option>
-              <option value="Transição">Transição</option>
-            </select>
-          </div>
-`;
-content = content.replace(
-    `<div>
-            <label style={{ fontSize: 12, color: 'var(--cinza)' }}>Buscar por Nome</label>
-            <div style={{ position: 'relative' }}>
-              <Search size={16} style={{ position: 'absolute', left: 10, top: 12, color: 'var(--cinza)' }} />
-              <input type="text" className="input" placeholder="Digite para buscar..." value={busca} onChange={(e) => setBusca(e.target.value)} style={{ width: '100%', paddingLeft: 35 }} />
-            </div>
-          </div>`,
-    filterUI
-);
+code = code.replace(putRegex, newPut);
 
-// Add peso and altura to form state
-content = content.replace(
-    "status_medico: 'Apto', foto: ''",
-    "status_medico: 'Apto', foto: '', peso: '', altura: ''"
-);
-
-// Add peso and altura to handleEdit
-content = content.replace(
-    "status_medico: a.status_medico || 'Apto', foto: a.foto || ''",
-    "status_medico: a.status_medico || 'Apto', foto: a.foto || '', peso: a.peso || '', altura: a.altura || ''"
-);
-
-// Add fields in the form UI
-const formUI = `
-              <div style={{ display: 'flex', gap: 15 }}>
-                <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', marginBottom: 5 }}>Status Médico</label>
-                  <select className="input" value={form.status_medico} onChange={(e) => setForm({...form, status_medico: e.target.value})} style={{ width: '100%' }}>
-                    <option value="Apto">Apto</option>
-                    <option value="Departamento Médico">Departamento Médico</option>
-                    <option value="Transição">Transição</option>
-                  </select>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', marginBottom: 5 }}>Peso (kg)</label>
-                  <input type="number" step="0.01" className="input" value={form.peso} onChange={(e) => setForm({...form, peso: e.target.value})} style={{ width: '100%' }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label style={{ display: 'block', marginBottom: 5 }}>Altura (m)</label>
-                  <input type="number" step="0.01" className="input" value={form.altura} onChange={(e) => setForm({...form, altura: e.target.value})} style={{ width: '100%' }} />
-                </div>
-              </div>
-`;
-content = content.replace(
-    `<label style={{ display: 'block', marginBottom: 5 }}>Status Médico</label>
-              <select className="input" value={form.status_medico} onChange={(e) => setForm({...form, status_medico: e.target.value})} style={{ width: '100%' }}>
-                <option value="Apto">Apto</option>
-                <option value="Departamento Médico">Departamento Médico</option>
-                <option value="Transição">Transição</option>
-              </select>`,
-    formUI
-);
-
-
-// Save the file
-fs.writeFileSync('crm/src/pages/Athletes.jsx', content, 'utf8');
-console.log('Athletes.jsx updated');
+fs.writeFileSync('/opt/alfa-api/routes/admin.js', code, 'utf8');
+console.log('Backend athletes endpoints patched successfully.');
