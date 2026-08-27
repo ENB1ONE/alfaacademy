@@ -4,6 +4,7 @@ import api from "../api";
 export default function UploadVideo({ onUploadSuccess }) {
   const [file, setFile] = useState(null);
   const [atletaId, setAtletaId] = useState("");
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [atletas, setAtletas] = useState([]);
 

@@ -1,0 +1,69 @@
+﻿const fs = require('fs');
+let code = fs.readFileSync('crm/src/components/UploadVideo.jsx', 'utf8');
+
+// State injection
+code = code.replace(
+  /const \[atletaId, setAtletaId\] = useState\(""\);/,
+  'const [atletaId, setAtletaId] = useState("");\n  const [categoriaSelecionada, setCategoriaSelecionada] = useState("");'
+);
+
+// The block to replace
+const oldBlock = `<div style={{ marginBottom: "20px" }}>
+        <label style={{ display: "block", marginBottom: "8px", color: "var(--cinza)" }}>
+          Atleta
+        </label>
+        <select 
+          className="input" 
+          value={atletaId} 
+          onChange={(e) => setAtletaId(e.target.value)}
+          style={{ width: "100%", padding: "10px" }}
+        >
+          <option value="">Selecione o atleta...</option>
+          {atletas.map(a => (
+            <option key={a.id} value={a.id}>{a.nome} ({a.categoria})</option>
+          ))}
+        </select>
+      </div>`;
+
+const newBlock = `<div style={{ marginBottom: "20px" }}>
+        <label style={{ display: "block", marginBottom: "8px", color: "var(--cinza)" }}>
+          Categoria (Opcional)
+        </label>
+        <select 
+          className="input" 
+          value={categoriaSelecionada} 
+          onChange={(e) => {
+              setCategoriaSelecionada(e.target.value);
+              setAtletaId(""); // Reseta o atleta ao mudar a categoria
+          }}
+          style={{ width: "100%", padding: "10px" }}
+        >
+          <option value="">Todas as Categorias</option>
+          {Array.from(new Set(atletas.map(a => a.categoria).filter(Boolean))).sort().map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
+      </div>
+
+      <div style={{ marginBottom: "20px" }}>
+        <label style={{ display: "block", marginBottom: "8px", color: "var(--cinza)" }}>
+          Atleta
+        </label>
+        <select 
+          className="input" 
+          value={atletaId} 
+          onChange={(e) => setAtletaId(e.target.value)}
+          style={{ width: "100%", padding: "10px" }}
+          disabled={categoriaSelecionada !== "" && !atletas.some(a => a.categoria === categoriaSelecionada)}
+        >
+          <option value="">Selecione o atleta...</option>
+          {(categoriaSelecionada ? atletas.filter(a => a.categoria === categoriaSelecionada) : atletas).map(a => (
+            <option key={a.id} value={a.id}>{a.nome} {categoriaSelecionada ? '' : \`(\${a.categoria})\`}</option>
+          ))}
+        </select>
+      </div>`;
+
+code = code.replace(oldBlock, newBlock);
+
+fs.writeFileSync('crm/src/components/UploadVideo.jsx', code, 'utf8');
+console.log('UploadVideo component updated safely.');
