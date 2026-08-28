@@ -590,233 +590,93 @@ export default function CentralRelatorios() {
               boxSizing: 'border-box'
           }}>
               <style>
-                  {`
-                  #dashboard-a4-preview, #a4-preview {
-                      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                      color: #333333;
-                  }
-                  
-                  .pdf-export-container {
-                      width: 794px !important;
-                      max-width: 794px !important;
-                      box-sizing: border-box !important;
-                      padding: 20px !important;
-                      overflow: hidden !important;
-                  }
-                  .pdf-export-container table {
-                      table-layout: fixed !important;
-                      width: 100% !important;
-                  }
-                  .pdf-export-container th, .pdf-export-container td {
-                      word-wrap: break-word !important;
-                      white-space: normal !important;
-                      padding: 4px !important;
-                      font-size: 10px !important;
-                  }
-                  #dashboard-a4-preview table, #a4-preview table {
-                      width: 100%;
-                      border-collapse: collapse;
-                      table-layout: fixed;
-                      margin-bottom: 25px;
-                  }
-                  
-                  .pdf-export-container {
-                      width: 794px !important;
-                      max-width: 794px !important;
-                      box-sizing: border-box !important;
-                      padding: 20px !important;
-                      overflow: hidden !important;
-                  }
-                  .pdf-export-container table {
-                      table-layout: fixed !important;
-                      width: 100% !important;
-                  }
-                  .pdf-export-container th, .pdf-export-container td {
-                      word-wrap: break-word !important;
-                      white-space: normal !important;
-                      padding: 4px !important;
-                      font-size: 10px !important;
-                  }
-                  #dashboard-a4-preview table, #a4-preview table {
-                      table-layout: fixed !important;
-                      width: 100% !important;
-                  }
-                  
-                  .pdf-export-container {
-                      width: 794px !important;
-                      max-width: 794px !important;
-                      box-sizing: border-box !important;
-                      padding: 20px !important;
-                      overflow: hidden !important;
-                  }
-                  .pdf-export-container table {
-                      table-layout: fixed !important;
-                      width: 100% !important;
-                  }
-                  .pdf-export-container th, .pdf-export-container td {
-                      word-wrap: break-word !important;
-                      white-space: normal !important;
-                      padding: 4px !important;
-                      font-size: 10px !important;
-                  }
-                  #dashboard-a4-preview table, #a4-preview table {
-                      table-layout: fixed !important;
-                      width: 100% !important;
-                  }
-                  #dashboard-a4-preview th, #a4-preview th {
-                      background-color: #111111 !important;
-                      color: #eab308 !important;
-                      padding: 6px 4px !important;
-                      font-size: 9px !important;
-                      font-weight: bold !important;
-                      text-transform: uppercase !important;
-                      border: 1px solid #000 !important;
-                      white-space: normal !important;
-                      word-wrap: break-word !important;
-                  }
-                  
-                  #dashboard-a4-preview table th:nth-child(6),
-                  #dashboard-a4-preview table td:nth-child(6) {
-                      white-space: nowrap !important;
-                  }
-                  #dashboard-a4-preview td, #a4-preview td {
-                      font-size: 10px !important;
-                      word-wrap: break-word !important;
-                  }
-                  
-                  #dashboard-a4-preview table th:nth-child(6),
-                  #dashboard-a4-preview table td:nth-child(6) {
-                      white-space: nowrap !important;
-                  }
-                  
-                  #dashboard-a4-preview table th:nth-child(6),
-                  #dashboard-a4-preview table td:nth-child(6) {
-                      white-space: nowrap !important;
-                  }
-                  #dashboard-a4-preview td, #a4-preview td {
-                      font-size: 10px !important;
-                      word-wrap: break-word !important;
-                  }
-                  
-                  #dashboard-a4-preview table th:nth-child(6),
-                  #dashboard-a4-preview table td:nth-child(6) {
-                      white-space: nowrap !important;
-                  }
-                  
-                  #dashboard-a4-preview table th:nth-child(6),
-                  #dashboard-a4-preview table td:nth-child(6) {
-                      white-space: nowrap !important;
-                  }
-                  #dashboard-a4-preview td, #a4-preview td {
-                      padding: 4px 8px;
-                      font-size: 12px;
-                      color: #333333 !important;
-                      border-bottom: 1px solid #dee2e6;
-                      border-left: 1px solid #dee2e6;
-                      border-right: 1px solid #dee2e6;
-                  }
-                  
-                  #dashboard-a4-preview tr, #a4-preview tr {
-                      break-inside: avoid;
-                      page-break-inside: avoid;
-                  }
-                  #dashboard-a4-preview .section-card, #a4-preview .section-card {
-                      break-inside: avoid;
-                      page-break-inside: avoid;
-                      page-break-before: auto;
-                  }
-                  
-                  #dashboard-a4-preview tr, #a4-preview tr {
-                      break-inside: avoid;
-                      page-break-inside: avoid;
-                  }
-                  #dashboard-a4-preview .section-card, #a4-preview .section-card {
-                      break-inside: avoid;
-                      page-break-inside: avoid;
-                      page-break-before: auto;
-                  }
-                  #dashboard-a4-preview tr:nth-child(even) td, #a4-preview tr:nth-child(even) td {
-                      background-color: #f8f9fa;
-                  }
-                  #dashboard-a4-preview tr, #a4-preview tr { page-break-inside: avoid; page-break-after: auto; }
-                  #dashboard-a4-preview thead, #a4-preview thead { display: table-header-group; }
-                  #dashboard-a4-preview tfoot, #a4-preview tfoot { display: table-row-group; }
-                  
-                  #dashboard-a4-preview {
-                      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                      color: #333333;
-                  }
-                  #dashboard-a4-preview table {
-                      width: 100%;
-                      border-collapse: collapse;
-                      table-layout: fixed;
-                      margin-bottom: 25px;
-                  }
-                  #dashboard-a4-preview th {
-                      background-color: #111111;
-                      color: #eab308;
-                      padding: 10px 12px;
-                      font-size: 13px;
-                      font-weight: bold;
-                      text-transform: uppercase;
-                      border: 1px solid #000;
-                  }
-                  #dashboard-a4-preview td {
-                      padding: 4px 8px;
-                      font-size: 12px;
-                      color: #333333 !important;
-                      border-bottom: 1px solid #dee2e6;
-                      border-left: 1px solid #dee2e6;
-                      border-right: 1px solid #dee2e6;
-                  }
-                  
-                  #dashboard-a4-preview tr, #a4-preview tr {
-                      break-inside: avoid;
-                      page-break-inside: avoid;
-                  }
-                  #dashboard-a4-preview .section-card, #a4-preview .section-card {
-                      break-inside: avoid;
-                      page-break-inside: avoid;
-                      page-break-before: auto;
-                  }
-                  
-                  #dashboard-a4-preview tr, #a4-preview tr {
-                      break-inside: avoid;
-                      page-break-inside: avoid;
-                  }
-                  #dashboard-a4-preview .section-card, #a4-preview .section-card {
-                      break-inside: avoid;
-                      page-break-inside: avoid;
-                      page-break-before: auto;
-                  }
-                  #dashboard-a4-preview tr:nth-child(even) td {
-                      background-color: #f8f9fa;
-                  }
-                  #dashboard-a4-preview .text-cell {
-                      white-space: nowrap;
-                      overflow: hidden;
-                      text-overflow: ellipsis;
-                      text-align: left;
-                  }
-                  #dashboard-a4-preview .num-cell {
-                      text-align: center;
-                  }
-                  #dashboard-a4-preview .cap-text {
-                      text-transform: capitalize;
-                  }
-                  .empty-cell {
-                      color: #999 !important;
-                      font-style: italic;
-                  }
-                  /* Fix Page Breaks for PDF */
-                  #dashboard-a4-preview tr { page-break-inside: avoid; page-break-after: auto; }
-                  #dashboard-a4-preview thead { display: table-header-group; }
-                  #dashboard-a4-preview tfoot { display: table-row-group; }
-                  .avoid-break { page-break-inside: avoid; }
-                  /* Ensure headers wrap normally */
-                  #dashboard-a4-preview th { white-space: normal; word-wrap: break-word; overflow: visible; }
-                  `}
-              </style>
+{`
+/* ESTILOS DE IMPRESSÃO - PDF E CTRL+P */
+@media print {
+    @page { size: A4 portrait; margin: 10mm; }
+    
+    body * { visibility: hidden; }
+    #a4-preview-wrapper, #a4-preview-wrapper * { visibility: visible; }
+    #a4-preview-wrapper {
+        position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; background: white;
+    }
+    .btn, button, nav, .sidebar, .menu, header, footer, ::-webkit-scrollbar {
+        display: none !important;
+    }
+}
+
+/* REGRAS RÍGIDAS PARA O A4 PREVIEW (html2pdf e Impressão) */
+.pdf-export-container, #a4-preview, #dashboard-a4-preview {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #333333;
+    width: 794px !important;
+    max-width: 794px !important;
+    box-sizing: border-box !important;
+    padding: 20px !important;
+    overflow: hidden !important;
+    background: #ffffff;
+}
+
+/* TABELAS CONTIDAS */
+.pdf-export-container table, #a4-preview table, #dashboard-a4-preview table {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+    margin-bottom: 25px !important;
+}
+
+/* QUEBRA DE TEXTO E LIMITAÇÃO DE FONTE */
+.pdf-export-container th, .pdf-export-container td,
+#a4-preview th, #a4-preview td,
+#dashboard-a4-preview th, #dashboard-a4-preview td {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: normal !important;
+    padding: 6px 4px !important;
+    font-size: 10px !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+/* CABEÇALHOS */
+.pdf-export-container th, #a4-preview th, #dashboard-a4-preview th {
+    background-color: #111111 !important;
+    color: #eab308 !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    font-size: 9px !important;
+}
+
+/* PROTEÇÃO DE QUEBRA DE PÁGINA (PAGE-BREAK) */
+.pdf-export-container tr, #a4-preview tr, #dashboard-a4-preview tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    page-break-after: auto !important;
+}
+
+.section-card, .jogos-report .section-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    page-break-before: auto !important;
+}
+
+.pdf-export-container thead, #a4-preview thead, #dashboard-a4-preview thead {
+    display: table-header-group !important;
+}
+.pdf-export-container tfoot, #a4-preview tfoot, #dashboard-a4-preview tfoot {
+    display: table-row-group !important;
+}
+
+/* CORES ZEBRADAS E UTILITÁRIOS */
+#dashboard-a4-preview tr:nth-child(even) td, #a4-preview tr:nth-child(even) td {
+    background-color: #f8f9fa !important;
+}
+
+.text-cell { text-align: left !important; }
+.num-cell { text-align: center !important; }
+.empty-cell { color: #999 !important; font-style: italic !important; }
+`}
+</style>
 
               {/* Header */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '3px solid #eab308', paddingBottom: '10px', marginBottom: '15px' }}>
