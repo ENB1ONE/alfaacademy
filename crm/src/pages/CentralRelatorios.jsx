@@ -605,16 +605,16 @@ export default function CentralRelatorios() {
     }
 }
 
-/* REGRAS RÍGIDAS PARA O A4 PREVIEW (html2pdf e Impressão) */
+/* REGRAS RÍGIDAS PARA O A4 PREVIEW */
 .pdf-export-container, #a4-preview, #dashboard-a4-preview {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    color: #333333;
+    color: #111111 !important;
     width: 794px !important;
     max-width: 794px !important;
     box-sizing: border-box !important;
     padding: 20px !important;
     overflow: hidden !important;
-    background: #ffffff;
+    background: #ffffff !important;
 }
 
 /* TABELAS CONTIDAS */
@@ -624,6 +624,7 @@ export default function CentralRelatorios() {
     border-collapse: collapse !important;
     table-layout: fixed !important;
     margin-bottom: 25px !important;
+    background: #ffffff !important;
 }
 
 /* QUEBRA DE TEXTO E LIMITAÇÃO DE FONTE */
@@ -634,8 +635,14 @@ export default function CentralRelatorios() {
     overflow-wrap: break-word !important;
     white-space: normal !important;
     padding: 6px 4px !important;
-    font-size: 10px !important;
+    font-size: 11px !important; /* INCREASED FONT SIZE FOR BETTER LEGIBILITY */
     border: 1px solid #dee2e6 !important;
+    color: #111111; /* FORCE DARK TEXT ON ALL CELLS (no !important to allow inline colors) */
+}
+
+/* OVERRIDE FOR DARK TEXT OVER INHERITED GHOST STYLES */
+.pdf-export-container td *, #a4-preview td *, #dashboard-a4-preview td * {
+    color: inherit;
 }
 
 /* CABEÇALHOS */
@@ -644,7 +651,7 @@ export default function CentralRelatorios() {
     color: #eab308 !important;
     font-weight: bold !important;
     text-transform: uppercase !important;
-    font-size: 9px !important;
+    font-size: 10px !important; /* INCREASED FONT SIZE */
 }
 
 /* PROTEÇÃO DE QUEBRA DE PÁGINA (PAGE-BREAK) */
@@ -658,6 +665,7 @@ export default function CentralRelatorios() {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
     page-break-before: auto !important;
+    background: #ffffff !important; /* Fix dark mode cards rendering white text */
 }
 
 .pdf-export-container thead, #a4-preview thead, #dashboard-a4-preview thead {
@@ -672,7 +680,7 @@ export default function CentralRelatorios() {
     background-color: #f8f9fa !important;
 }
 
-.text-cell { text-align: left !important; }
+.text-cell { text-align: left !important; color: #111111; }
 .num-cell { text-align: center !important; }
 .empty-cell { color: #999 !important; font-style: italic !important; }
 `}

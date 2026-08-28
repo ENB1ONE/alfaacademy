@@ -1,8 +1,13 @@
 ﻿const fs = require('fs');
 let code = fs.readFileSync('crm/src/pages/CentralRelatorios.jsx', 'utf8');
 
-const startIndex = code.indexOf('<style>');
-const endIndex = code.indexOf('</style>', startIndex) + 8;
+const styleBlockRegex = /<style>[\s\S]*?<\/style>/;
+const match = styleBlockRegex.exec(code);
+
+if (!match) {
+    console.log("Style block not found");
+    process.exit(1);
+}
 
 const cleanStyle = `<style>
 {\`
@@ -20,16 +25,16 @@ const cleanStyle = `<style>
     }
 }
 
-/* REGRAS RÍGIDAS PARA O A4 PREVIEW (html2pdf e Impressão) */
+/* REGRAS RÍGIDAS PARA O A4 PREVIEW */
 .pdf-export-container, #a4-preview, #dashboard-a4-preview {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    color: #333333;
+    color: #111111 !important;
     width: 794px !important;
     max-width: 794px !important;
     box-sizing: border-box !important;
     padding: 20px !important;
     overflow: hidden !important;
-    background: #ffffff;
+    background: #ffffff !important;
 }
 
 /* TABELAS CONTIDAS */
@@ -39,6 +44,7 @@ const cleanStyle = `<style>
     border-collapse: collapse !important;
     table-layout: fixed !important;
     margin-bottom: 25px !important;
+    background: #ffffff !important;
 }
 
 /* QUEBRA DE TEXTO E LIMITAÇÃO DE FONTE */
@@ -49,8 +55,14 @@ const cleanStyle = `<style>
     overflow-wrap: break-word !important;
     white-space: normal !important;
     padding: 6px 4px !important;
-    font-size: 10px !important;
+    font-size: 11px !important; /* INCREASED FONT SIZE FOR BETTER LEGIBILITY */
     border: 1px solid #dee2e6 !important;
+    color: #111111; /* FORCE DARK TEXT ON ALL CELLS (no !important to allow inline colors) */
+}
+
+/* OVERRIDE FOR DARK TEXT OVER INHERITED GHOST STYLES */
+.pdf-export-container td *, #a4-preview td *, #dashboard-a4-preview td * {
+    color: inherit;
 }
 
 /* CABEÇALHOS */
@@ -59,7 +71,7 @@ const cleanStyle = `<style>
     color: #eab308 !important;
     font-weight: bold !important;
     text-transform: uppercase !important;
-    font-size: 9px !important;
+    font-size: 10px !important; /* INCREASED FONT SIZE */
 }
 
 /* PROTEÇÃO DE QUEBRA DE PÁGINA (PAGE-BREAK) */
@@ -73,6 +85,7 @@ const cleanStyle = `<style>
     break-inside: avoid !important;
     page-break-inside: avoid !important;
     page-break-before: auto !important;
+    background: #ffffff !important; /* Fix dark mode cards rendering white text */
 }
 
 .pdf-export-container thead, #a4-preview thead, #dashboard-a4-preview thead {
@@ -87,16 +100,12 @@ const cleanStyle = `<style>
     background-color: #f8f9fa !important;
 }
 
-.text-cell { text-align: left !important; }
+.text-cell { text-align: left !important; color: #111111; }
 .num-cell { text-align: center !important; }
 .empty-cell { color: #999 !important; font-style: italic !important; }
 \`}
 </style>`;
 
-if (startIndex !== -1 && endIndex !== -1) {
-    code = code.substring(0, startIndex) + cleanStyle + code.substring(endIndex);
-    fs.writeFileSync('crm/src/pages/CentralRelatorios.jsx', code, 'utf8');
-    console.log('Styles cleaned and updated safely!');
-} else {
-    console.log('Could not find style block.');
-}
+code = code.replace(styleBlockRegex, cleanStyle);
+fs.writeFileSync('crm/src/pages/CentralRelatorios.jsx', code, 'utf8');
+console.log('Styles updated with explicit colors and better legibility.');
