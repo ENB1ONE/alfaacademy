@@ -107,7 +107,7 @@ export default function CentralRelatorios() {
       image:        { type: 'jpeg', quality: 1 },
       html2canvas: { scale: 2, useCORS: true, width: 794, windowWidth: 794 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['css', 'legacy'] }
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', 'h3'] }
     };
     
     html2pdf().from(element).set(opt).save().then(() => {
@@ -134,7 +134,7 @@ export default function CentralRelatorios() {
       image:        { type: 'jpeg', quality: 1 },
       html2canvas: { scale: 2, useCORS: true, width: 794, windowWidth: 794 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak:    { mode: ['css', 'legacy'] }
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', 'h3'] }
     };
     
     html2pdf().from(element).set(opt).save().then(() => {
@@ -662,10 +662,12 @@ export default function CentralRelatorios() {
 }
 
 .section-card, .jogos-report .section-card {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
     page-break-before: auto !important;
     background: #ffffff !important; /* Fix dark mode cards rendering white text */
+}
+.jogos-report h3, .jogos-report p {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
 }
 
 .pdf-export-container thead, #a4-preview thead, #dashboard-a4-preview thead {
