@@ -492,7 +492,7 @@ export default function CentralRelatorios() {
                                     if (detalhes.length === 0) return null;
 
                                     return (
-                                        <div className="section-card" key={`det-${idx}`} style={{ marginTop: '25px', breakInside: 'avoid', pageBreakInside: 'avoid' }}>
+                                        <div className="bloco-partida" key={`det-${idx}`} style={{ marginTop: '25px' }}>
                                             <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 10, fontSize: 14, textTransform: 'uppercase', backgroundColor: '#f8f9fa', padding: '8px' }}>
                                                 {dt} - {row.adversario || 'Jogo'}
                                             </h3>
@@ -650,7 +650,10 @@ export default function CentralRelatorios() {
         display: table-cell !important;
         word-wrap: break-word !important;
         overflow-wrap: break-word !important;
-        padding: 4px 2px !important;
+        padding: 4px 8px !important;
+        margin: 0 !important;
+        line-height: 1.2 !important;
+        height: auto !important;
         font-size: 9px !important;
     }
 }
@@ -695,7 +698,7 @@ export default function CentralRelatorios() {
     page-break-after: auto !important;
 }
 
-/* QUEBRA DE TEXTO */
+/* ZERAR ESPAÇOS NAS CÉLULAS */
 .pdf-export-container th, .pdf-export-container td,
 #a4-preview th, #a4-preview td,
 #dashboard-a4-preview th, #dashboard-a4-preview td {
@@ -703,7 +706,10 @@ export default function CentralRelatorios() {
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
     white-space: normal !important;
-    padding: 5px 4px !important;
+    padding: 4px 8px !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+    height: auto !important;
     font-size: 10px !important;
     border: 1px solid #dee2e6 !important;
     color: #111111; 
@@ -719,20 +725,31 @@ export default function CentralRelatorios() {
     print-color-adjust: exact !important;
 }
 
-.section-card, .jogos-report .section-card {
+/* PREVENÇÃO DE QUEBRA E TÍTULOS ÓRFÃOS */
+.bloco-partida {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    page-break-before: auto !important;
+    margin-bottom: 20px !important;
     background: #ffffff !important;
     display: block !important;
 }
 
-.jogos-report h3, .jogos-report p {
+.bloco-partida h3, .bloco-partida p, .jogos-report h3, .jogos-report p {
     break-after: avoid !important;
     page-break-after: avoid !important;
-    background-color: #f8f9fa !important;
+    margin-bottom: 0 !important; /* Force tight coupling with table */
+    padding-bottom: 4px !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+}
+.bloco-partida h3 {
+    background-color: #f8f9fa !important;
+    margin-top: 0 !important;
+    padding: 8px !important;
+}
+.bloco-partida p {
+    margin-top: 4px !important;
+    margin-bottom: 6px !important;
 }
 
 /* CORES ZEBRADAS E UTILITÁRIOS */
