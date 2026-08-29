@@ -729,9 +729,16 @@ export default function CentralRelatorios() {
 .bloco-partida {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    margin-top: 20px !important;
     margin-bottom: 20px !important;
     background: #ffffff !important;
     display: block !important;
+}
+
+/* Força uma nova página antes de cada jogo, exceto o primeiro */
+.bloco-partida:not(:first-of-type) {
+    page-break-before: always !important;
+    break-before: page !important;
 }
 
 .bloco-partida h3, .bloco-partida p, .jogos-report h3, .jogos-report p {
