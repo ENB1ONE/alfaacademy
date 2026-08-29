@@ -595,12 +595,11 @@ export default function CentralRelatorios() {
 @media print {
     @page { size: A4 portrait; margin: 15mm; }
     
-    html, body {
+    * {
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
-        background: #ffffff !important;
     }
-    
+
     body * { visibility: hidden; }
     
     #a4-preview-wrapper, #a4-preview-wrapper * { 
@@ -622,15 +621,35 @@ export default function CentralRelatorios() {
         display: none !important;
     }
 
-    /* ESTRUTURA E DISPLAY (REMOVER FLEX/GRID) */
-    .pdf-export-container, .section-card, .jogos-report, #a4-preview {
-        display: block !important;
+    /* FORÇAR COMPORTAMENTO DE TABELA NATIVO */
+    .pdf-export-container table, #a4-preview table {
+        display: table !important;
         width: 100% !important;
-        max-width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+        margin-bottom: 20px !important;
+        background: #ffffff !important;
     }
 
-    /* MARGENS E ESPAÇOS - REDUZIDOS APENAS NA IMPRESSÃO */
-    .pdf-export-container th, .pdf-export-container td {
+    .pdf-export-container thead, #a4-preview thead { 
+        display: table-header-group !important; 
+    }
+
+    .pdf-export-container tfoot, #a4-preview tfoot { 
+        display: table-row-group !important; 
+    }
+
+    .pdf-export-container tr, #a4-preview tr {
+        display: table-row !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .pdf-export-container td, .pdf-export-container th,
+    #a4-preview td, #a4-preview th {
+        display: table-cell !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
         padding: 4px 2px !important;
         font-size: 9px !important;
     }
@@ -645,13 +664,14 @@ export default function CentralRelatorios() {
     box-sizing: border-box !important;
     padding: 0 !important;
     background: #ffffff !important;
-    display: block !important; /* FORÇAR BLOCK */
+    display: block !important; 
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
 }
 
-/* TABELAS CONTIDAS */
+/* FORÇAR COMPORTAMENTO DE TABELA NATIVO (GERAL) */
 .pdf-export-container table, #a4-preview table, #dashboard-a4-preview table {
+    display: table !important;
     width: 100% !important;
     max-width: 100% !important;
     border-collapse: collapse !important;
@@ -660,8 +680,26 @@ export default function CentralRelatorios() {
     background: #ffffff !important;
 }
 
+.pdf-export-container thead, #a4-preview thead, #dashboard-a4-preview thead { 
+    display: table-header-group !important; 
+}
+
+.pdf-export-container tfoot, #a4-preview tfoot, #dashboard-a4-preview tfoot { 
+    display: table-row-group !important; 
+}
+
+.pdf-export-container tr, #a4-preview tr, #dashboard-a4-preview tr {
+    display: table-row !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: auto !important;
+}
+
 /* QUEBRA DE TEXTO */
-.pdf-export-container th, .pdf-export-container td {
+.pdf-export-container th, .pdf-export-container td,
+#a4-preview th, #a4-preview td,
+#dashboard-a4-preview th, #dashboard-a4-preview td {
+    display: table-cell !important;
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
     white-space: normal !important;
@@ -672,20 +710,13 @@ export default function CentralRelatorios() {
 }
 
 /* CABEÇALHOS - FORÇAR COR DE FUNDO PRETA */
-.pdf-export-container th {
+.pdf-export-container th, #a4-preview th, #dashboard-a4-preview th {
     background-color: #111111 !important;
     color: #eab308 !important;
     font-weight: bold !important;
     text-transform: uppercase !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-}
-
-/* PROTEÇÃO DE QUEBRA DE PÁGINA (CRÍTICO) */
-.pdf-export-container tr, #a4-preview tr {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
-    page-break-after: auto !important;
 }
 
 .section-card, .jogos-report .section-card {
@@ -704,11 +735,8 @@ export default function CentralRelatorios() {
     print-color-adjust: exact !important;
 }
 
-.pdf-export-container thead { display: table-header-group !important; }
-.pdf-export-container tfoot { display: table-row-group !important; }
-
 /* CORES ZEBRADAS E UTILITÁRIOS */
-.pdf-export-container tr:nth-child(even) td {
+.pdf-export-container tr:nth-child(even) td, #a4-preview tr:nth-child(even) td, #dashboard-a4-preview tr:nth-child(even) td {
     background-color: #f8f9fa !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
