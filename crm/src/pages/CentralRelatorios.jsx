@@ -222,7 +222,7 @@ export default function CentralRelatorios() {
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
                 <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
-                  <h3 style={{ marginBottom: 20, color: '#fff' }}>Status MÃ©dico</h3>
+                  <h3 style={{ marginBottom: 20, color: '#fff' }}>Status Médico</h3>
                   <div style={{ height: 250 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -237,7 +237,7 @@ export default function CentralRelatorios() {
                 </div>
                 
                 <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
-                  <h3 style={{ marginBottom: 20, color: '#fff' }}>PÃ© Dominante</h3>
+                  <h3 style={{ marginBottom: 20, color: '#fff' }}>Pé Dominante</h3>
                   <div style={{ height: 250 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -303,7 +303,7 @@ export default function CentralRelatorios() {
                     
                     {modulo === 'elenco' && (
                         <div style={{ flex: '1 1 200px' }}>
-                            <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Status MÃ©dico</label>
+                            <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Status Médico</label>
                             <select className="input" value={filtros.status_medico || ''} onChange={(e) => setFiltros({...filtros, status_medico: e.target.value})} style={{ width: '100%' }}>
                                 <option value="">Todos</option>
                                 <option value="Apto">Apto</option>
@@ -405,7 +405,7 @@ export default function CentralRelatorios() {
                                     )}
                                     Gerado em:<br/>
                                     <strong style={{ color: '#333', fontSize: '11px' }}>
-                                        {new Date().toLocaleDateString('pt-BR')} Ã s {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                        {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                                     </strong>
                                 </div>
                             </div>
@@ -571,8 +571,8 @@ export default function CentralRelatorios() {
                         
                         {/* A4 Footer */}
                         <div style={{ width: '100%', marginTop: '20px', paddingTop: '10px', borderTop: '1px solid #EAEAEA', textAlign: 'center', color: '#6C757D', fontSize: '10px' }}>
-                  <strong style={{ fontWeight: 'bold' }}>Alfa Academy â€“ Formando Atletas e Cidadãos.</strong><br/>
-                  Documento de uso interno e confidencial gerado automaticamente. É vedado o compartilhamento com terceiros sem autorização prÃ©via da coordenação esportiva.
+                  <strong style={{ fontWeight: 'bold' }}>Alfa Academy - Formando Atletas e Cidadãos.</strong><br/>
+                  Documento de uso interno e confidencial gerado automaticamente. É vedado o compartilhamento com terceiros sem autorização prévia da coordenação esportiva.
               </div>
                     </div>
                 </div>
@@ -821,7 +821,7 @@ export default function CentralRelatorios() {
                   <div style={{ flex: '0 0 180px', minWidth: '180px', textAlign: 'right', color: '#6c757d', fontSize: '10px', lineHeight: '1.4', paddingTop: '5px' }}>
                       Gerado em:<br/>
                       <strong style={{ color: '#333', fontSize: '13px' }}>
-                          {new Date().toLocaleDateString('pt-BR')} Ã s {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                          {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                       </strong>
                   </div>
               </div>
@@ -867,9 +867,9 @@ export default function CentralRelatorios() {
                   </table>
               </div>
 
-              {/* Status MÃ©dico (Lesionados) */}
+              {/* Status Médico (Lesionados) */}
               <div>
-                  <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>Departamento MÃ©dico (Lesionados)</h3>
+                  <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>Departamento Médico (Lesionados)</h3>
                   {atletas.filter(a => a.status_medico === 'Lesionado').length > 0 ? (
                       <table>
                           <thead>
@@ -965,8 +965,8 @@ export default function CentralRelatorios() {
 
               {/* Footer */}
               <div style={{ width: '100%', marginTop: '20px', paddingTop: '10px', borderTop: '1px solid #EAEAEA', textAlign: 'center', color: '#6C757D', fontSize: '10px' }}>
-                  <strong style={{ fontWeight: 'bold' }}>Alfa Academy â€“ Formando Atletas e Cidadãos.</strong><br/>
-                  Documento de uso interno e confidencial gerado automaticamente. É vedado o compartilhamento com terceiros sem autorização prÃ©via da coordenação esportiva.
+                  <strong style={{ fontWeight: 'bold' }}>Alfa Academy - Formando Atletas e Cidadãos.</strong><br/>
+                  Documento de uso interno e confidencial gerado automaticamente. É vedado o compartilhamento com terceiros sem autorização prévia da coordenação esportiva.
               </div>
           </div>
       </div>
