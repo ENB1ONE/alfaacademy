@@ -107,7 +107,7 @@ export default function CentralRelatorios() {
       image:        { type: 'jpeg', quality: 1 },
       html2canvas: { scale: 2, useCORS: true, width: 794, windowWidth: 794 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css', 'legacy'], before: ['.nova-pagina'], avoid: ['tr'] }
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['tr'] }
     };
     
     html2pdf().from(element).set(opt).save().then(() => {
@@ -134,7 +134,7 @@ export default function CentralRelatorios() {
       image:        { type: 'jpeg', quality: 1 },
       html2canvas: { scale: 2, useCORS: true, width: 794, windowWidth: 794 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css', 'legacy'], before: ['.nova-pagina'], avoid: ['tr'] }
+      pagebreak: { mode: ['css', 'legacy'], avoid: ['tr'] }
     };
     
     html2pdf().from(element).set(opt).save().then(() => {
@@ -492,7 +492,7 @@ export default function CentralRelatorios() {
                                     if (detalhes.length === 0) return null;
 
                                     return (
-                                        <div className={`bloco-partida ${idx > 0 ? 'nova-pagina' : ''}`} key={`det-${idx}`} style={{ marginTop: '25px' }}>
+                                        <div className="bloco-jogo" key={`det-${idx}`} style={{ marginTop: '25px' }}>
                                             <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 10, fontSize: 14, textTransform: 'uppercase', backgroundColor: '#f8f9fa', padding: '8px' }}>
                                                 {dt} - {row.adversario || 'Jogo'}
                                             </h3>
@@ -591,7 +591,7 @@ export default function CentralRelatorios() {
           }}>
               <style>
 {`
-/* REGRAS RIGOROSAS DE IMPRESSÃƒO (PDF E CTRL+P) */
+/* REGRAS RIGOROSAS DE IMPRESSÃO (PDF E CTRL+P) */
 @media print {
     @page { size: A4 portrait; margin: 15mm; }
     
@@ -621,7 +621,7 @@ export default function CentralRelatorios() {
         display: none !important;
     }
 
-    /* FORÃ‡AR COMPORTAMENTO DE TABELA NATIVO */
+    /* FORÇAR COMPORTAMENTO DE TABELA NATIVO */
     .pdf-export-container table, #a4-preview table {
         display: table !important;
         width: 100% !important;
@@ -637,12 +637,6 @@ export default function CentralRelatorios() {
 
     .pdf-export-container tfoot, #a4-preview tfoot { 
         display: table-row-group !important; 
-    }
-
-    .pdf-export-container tr, #a4-preview tr {
-        display: table-row !important;
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
     }
 
     .pdf-export-container td, .pdf-export-container th,
@@ -672,7 +666,7 @@ export default function CentralRelatorios() {
     print-color-adjust: exact !important;
 }
 
-/* FORÃ‡AR COMPORTAMENTO DE TABELA NATIVO (GERAL) */
+/* FORÇAR COMPORTAMENTO DE TABELA NATIVO (GERAL) */
 .pdf-export-container table, #a4-preview table, #dashboard-a4-preview table {
     display: table !important;
     width: 100% !important;
@@ -691,13 +685,15 @@ export default function CentralRelatorios() {
     display: table-row-group !important; 
 }
 
-.pdf-export-container tr, #a4-preview tr, #dashboard-a4-preview tr {
+/* PASSO 4: PROTEGER AS LINHAS DA TABELA */
+.pdf-export-container tr, #a4-preview tr, #dashboard-a4-preview tr, tr {
     display: table-row !important;
-    
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
     page-break-after: auto !important;
 }
 
-/* ZERAR ESPAÃ‡OS NAS CÃ‰LULAS */
+/* QUEBRA DE TEXTO */
 .pdf-export-container th, .pdf-export-container td,
 #a4-preview th, #a4-preview td,
 #dashboard-a4-preview th, #dashboard-a4-preview td {
@@ -714,7 +710,7 @@ export default function CentralRelatorios() {
     color: #111111; 
 }
 
-/* CABEÃ‡ALHOS - FORÃ‡AR COR DE FUNDO PRETA */
+/* CABEÇALHOS - FORÇAR COR DE FUNDO PRETA */
 .pdf-export-container th, #a4-preview th, #dashboard-a4-preview th {
     background-color: #111111 !important;
     color: #eab308 !important;
@@ -724,38 +720,45 @@ export default function CentralRelatorios() {
     print-color-adjust: exact !important;
 }
 
-/* PREVENÃ‡ÃƒO DE QUEBRA E TÍTULOS Ã“RFÃƒOS */
-.bloco-partida {
-    margin-top: 20px !important;
+/* PASSO 2: O HACK DO INLINE-BLOCK (CRÍTICO) */
+.bloco-jogo {
+    display: inline-block !important;
+    width: 100% !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
     margin-bottom: 20px !important;
     background: #ffffff !important;
-    display: block !important;
 }
 
-.nova-pagina {
+/* PASSO 3: UM JOGO POR PÁGINA */
+.bloco-jogo:not(:first-of-type) {
     page-break-before: always !important;
     break-before: page !important;
 }
 
-.bloco-partida h3, .bloco-partida p, .jogos-report h3, .jogos-report p {
+/* PASSO 5: REMOVER BURACOS EM BRANCO NO TOPO */
+.bloco-jogo h1, .bloco-jogo h2, .bloco-jogo h3, .bloco-jogo p,
+.jogos-report h3, .jogos-report p {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
     break-after: avoid !important;
     page-break-after: avoid !important;
-    margin-bottom: 0 !important; /* Force tight coupling with table */
-    padding-bottom: 4px !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
 }
-.bloco-partida h3 {
+
+.bloco-jogo h3 {
     background-color: #f8f9fa !important;
-    margin-top: 0 !important;
     padding: 8px !important;
-}
-.bloco-partida p {
-    margin-top: 4px !important;
-    margin-bottom: 6px !important;
+    margin-bottom: 0 !important;
 }
 
-/* CORES ZEBRADAS E UTILITÃRIOS */
+.bloco-jogo p {
+    margin-bottom: 6px !important;
+    padding-bottom: 4px !important;
+}
+
+/* CORES ZEBRADAS E UTILITÁRIOS */
 .pdf-export-container tr:nth-child(even) td, #a4-preview tr:nth-child(even) td, #dashboard-a4-preview tr:nth-child(even) td {
     background-color: #f8f9fa !important;
     -webkit-print-color-adjust: exact !important;
