@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+﻿import React, { useState, useEffect, useContext } from 'react';
 import api from '../api';
 import { AuthContext } from '../context/AuthContext';
 import { Download, Search, Filter, Activity, Users, FileText, PieChart as PieIcon, LayoutTemplate, Printer } from 'lucide-react';
@@ -56,7 +56,7 @@ export default function CentralRelatorios() {
             catCounts[cat] = (catCounts[cat] || 0) + 1;
             const pos = a.posicao || 'Sem Pos.';
             posCounts[pos] = (posCounts[pos] || 0) + 1;
-            const pe = a.pe_dominante || 'Não Informado';
+            const pe = a.pe_dominante || 'NÃ£o Informado';
             peCounts[pe] = (peCounts[pe] || 0) + 1;
             const med = a.status_medico || 'Apto';
             medCounts[med] = (medCounts[med] || 0) + 1;
@@ -77,7 +77,7 @@ export default function CentralRelatorios() {
   }, []);
 
   const handleGerarRelatorio = async () => {
-    if (!modulo) return alert('Selecione um módulo');
+    if (!modulo) return alert('Selecione um mÃ³dulo');
     setGenerating(true);
     try {
         const res = await api.post('/api/admin/relatorios/gerador', { modulo, filtros });
@@ -88,7 +88,7 @@ export default function CentralRelatorios() {
         }
     } catch (error) {
         console.error(error);
-        alert('Erro ao gerar relatório');
+        alert('Erro ao gerar relatÃ³rio');
     }
     setGenerating(false);
   };
@@ -107,7 +107,7 @@ export default function CentralRelatorios() {
       image:        { type: 'jpeg', quality: 1 },
       html2canvas: { scale: 2, useCORS: true, width: 794, windowWidth: 794 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', 'h3'] }
+      pagebreak: { mode: ['css', 'legacy'], before: ['.bloco-partida'], avoid: ['tr', 'h3', 'table', 'thead', 'tbody'] }
     };
     
     html2pdf().from(element).set(opt).save().then(() => {
@@ -134,7 +134,7 @@ export default function CentralRelatorios() {
       image:        { type: 'jpeg', quality: 1 },
       html2canvas: { scale: 2, useCORS: true, width: 794, windowWidth: 794 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', 'h3'] }
+      pagebreak: { mode: ['css', 'legacy'], before: ['.bloco-partida'], avoid: ['tr', 'h3', 'table', 'thead', 'tbody'] }
     };
     
     html2pdf().from(element).set(opt).save().then(() => {
@@ -151,9 +151,9 @@ export default function CentralRelatorios() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
         <div>
           <h1 style={{ color: 'var(--ouro)', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Activity size={28} /> Central de Relatórios
+            <Activity size={28} /> Central de RelatÃ³rios
           </h1>
-          <p style={{ color: 'var(--cinza)', marginTop: 5 }}>Visão analítica completa e exportação de documentos</p>
+          <p style={{ color: 'var(--cinza)', marginTop: 5 }}>VisÃ£o analÃ­tica completa e exportaÃ§Ã£o de documentos</p>
         </div>
       </div>
 
@@ -162,7 +162,7 @@ export default function CentralRelatorios() {
           onClick={() => setActiveTab('dashboard')} 
           style={{ background: 'transparent', border: 'none', color: activeTab === 'dashboard' ? 'var(--ouro)' : 'var(--cinza)', fontSize: 16, fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
         >
-          <PieIcon size={18}/> Dashboard Analítico
+          <PieIcon size={18}/> Dashboard AnalÃ­tico
         </button>
         <button 
           onClick={() => setActiveTab('generator')} 
@@ -176,17 +176,17 @@ export default function CentralRelatorios() {
         <>
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
             <button className="btn primary" onClick={exportDashboardPDF} disabled={exportingDashboard} style={{ display: 'flex', gap: 8, alignItems: 'center', background: exportingDashboard ? '#666' : 'var(--ouro)', color: exportingDashboard ? '#ccc' : '#000', fontWeight: 'bold', cursor: exportingDashboard ? 'wait' : 'pointer' }}>
-              <Download size={18} /> {exportingDashboard ? 'Processando PDF...' : 'Baixar Relatório Executivo'}
+              <Download size={18} /> {exportingDashboard ? 'Processando PDF...' : 'Baixar RelatÃ³rio Executivo'}
             </button>
           </div>
           {loading ? (
-            <p style={{ color: 'var(--cinza)' }}>Carregando dados estatísticos...</p>
+            <p style={{ color: 'var(--cinza)' }}>Carregando dados estatÃ­sticos...</p>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div style={{ display: 'block', gap: 20 }}>
               
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 20 }}>
                 <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
-                  <h3 style={{ marginBottom: 20, color: '#fff' }}>Distribuição por Categoria</h3>
+                  <h3 style={{ marginBottom: 20, color: '#fff' }}>DistribuiÃ§Ã£o por Categoria</h3>
                   <div style={{ height: 250 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart layout="vertical" data={distCategoria} margin={{ top: 0, right: 30, left: 40, bottom: 0 }}>
@@ -222,7 +222,7 @@ export default function CentralRelatorios() {
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
                 <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
-                  <h3 style={{ marginBottom: 20, color: '#fff' }}>Status Médico</h3>
+                  <h3 style={{ marginBottom: 20, color: '#fff' }}>Status MÃ©dico</h3>
                   <div style={{ height: 250 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -237,7 +237,7 @@ export default function CentralRelatorios() {
                 </div>
                 
                 <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
-                  <h3 style={{ marginBottom: 20, color: '#fff' }}>Pé Dominante</h3>
+                  <h3 style={{ marginBottom: 20, color: '#fff' }}>PÃ© Dominante</h3>
                   <div style={{ height: 250 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -252,7 +252,7 @@ export default function CentralRelatorios() {
                 </div>
 
                 <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
-                  <h3 style={{ marginBottom: 20, color: '#fff' }}>Distribuição por Posição</h3>
+                  <h3 style={{ marginBottom: 20, color: '#fff' }}>DistribuiÃ§Ã£o por PosiÃ§Ã£o</h3>
                   <div style={{ height: 250 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={distPosicao} margin={{ top: 20, right: 0, left: -20, bottom: 0 }}>
@@ -275,20 +275,20 @@ export default function CentralRelatorios() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 30 }}>
             {/* Construtor Visual */}
             <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
-                <h3 style={{ color: 'var(--ouro)', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}><Search size={20} /> Construtor de Relatório</h3>
+                <h3 style={{ color: 'var(--ouro)', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}><Search size={20} /> Construtor de RelatÃ³rio</h3>
                 
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, alignItems: 'flex-end' }}>
                     <div style={{ flex: '1 1 200px' }}>
-                        <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Módulo do Relatório</label>
+                        <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>MÃ³dulo do RelatÃ³rio</label>
                         <select className="input" value={modulo} onChange={(e) => { setModulo(e.target.value); setFiltros({}); }} style={{ width: '100%' }}>
-                            <option value="">Selecione o módulo...</option>
+                            <option value="">Selecione o mÃ³dulo...</option>
                             <option value="elenco">Elenco Completo</option>
-                            <option value="presencas">Histórico de Presenças</option>
+                            <option value="presencas">HistÃ³rico de PresenÃ§as</option>
                             <option value="jogos">Partidas / Jogos</option>
                         </select>
                     </div>
 
-                    {/* Filtros Dinâmicos */}
+                    {/* Filtros DinÃ¢micos */}
                     {(modulo === 'elenco' || modulo === 'presencas' || modulo === 'jogos') && (
                         <div style={{ flex: '1 1 200px' }}>
                             <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Filtrar Categoria</label>
@@ -303,7 +303,7 @@ export default function CentralRelatorios() {
                     
                     {modulo === 'elenco' && (
                         <div style={{ flex: '1 1 200px' }}>
-                            <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Status Médico</label>
+                            <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Status MÃ©dico</label>
                             <select className="input" value={filtros.status_medico || ''} onChange={(e) => setFiltros({...filtros, status_medico: e.target.value})} style={{ width: '100%' }}>
                                 <option value="">Todos</option>
                                 <option value="Apto">Apto</option>
@@ -314,7 +314,7 @@ export default function CentralRelatorios() {
 
                     {modulo === 'presencas' && (
                         <div style={{ flex: '1 1 200px' }}>
-                            <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Atleta Específico</label>
+                            <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Atleta EspecÃ­fico</label>
                             <select className="input" value={filtros.atleta_id || ''} onChange={(e) => setFiltros({...filtros, atleta_id: e.target.value})} style={{ width: '100%' }}>
                                 <option value="">Todos os Atletas</option>
                                 {atletas
@@ -342,14 +342,14 @@ export default function CentralRelatorios() {
                     
                     <div style={{ flex: '1 1 150px' }}>
                         <button className="btn primary" onClick={handleGerarRelatorio} disabled={!modulo || generating} style={{ width: '100%' }}>
-                            {generating ? 'Processando...' : 'Gerar Visualização'}
+                            {generating ? 'Processando...' : 'Gerar VisualizaÃ§Ã£o'}
                         </button>
                     </div>
                 </div>
             </div>
 
             {/* A4 Preview */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
+            <div style={{ display: 'block', gap: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                     <h3 style={{ color: 'var(--texto)' }}>Preview A4</h3>
                     {reportData && (
@@ -376,7 +376,7 @@ export default function CentralRelatorios() {
                                 </div>
                                 <div style={{ flex: 1, textAlign: 'center' }}>
                                     <h2 style={{ margin: 0, color: '#111', fontSize: '22px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '-0.5px' }}>
-                                        {modulo === 'elenco' ? 'Relatório de Elenco' : modulo === 'presencas' ? 'Histórico de Presenças' : modulo === 'jogos' ? 'Relatório de Partidas' : 'Relatório Dinâmico'}
+                                        {modulo === 'elenco' ? 'RelatÃ³rio de Elenco' : modulo === 'presencas' ? 'HistÃ³rico de PresenÃ§as' : modulo === 'jogos' ? 'RelatÃ³rio de Partidas' : 'RelatÃ³rio DinÃ¢mico'}
                                     </h2>
                                 </div>
                                 <div style={{ flex: '0 0 100px' }}></div>
@@ -397,7 +397,7 @@ export default function CentralRelatorios() {
                                 <div style={{ textAlign: 'right', color: '#6c757d', fontSize: '10px', lineHeight: '1.4' }}>
                                     {filtros.data_inicio && filtros.data_fim && (
                                         <div style={{ marginBottom: 4 }}>
-                                            Período:<br/>
+                                            PerÃ­odo:<br/>
                                             <strong style={{ color: '#333', fontSize: '12px' }}>
                                                 {new Date(filtros.data_inicio + 'T12:00:00').toLocaleDateString('pt-BR')} a {new Date(filtros.data_fim + 'T12:00:00').toLocaleDateString('pt-BR')}
                                             </strong>
@@ -405,7 +405,7 @@ export default function CentralRelatorios() {
                                     )}
                                     Gerado em:<br/>
                                     <strong style={{ color: '#333', fontSize: '11px' }}>
-                                        {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                        {new Date().toLocaleDateString('pt-BR')} Ã s {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                                     </strong>
                                 </div>
                             </div>
@@ -426,7 +426,7 @@ export default function CentralRelatorios() {
                                                 <div style={{ fontSize: '24px', color: '#111', fontWeight: '900' }}>{total}</div>
                                             </div>
                                             <div style={{ flex: 1, padding: '15px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', textAlign: 'center' }}>
-                                                <div style={{ fontSize: '11px', color: '#166534', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '8px' }}>Presenças</div>
+                                                <div style={{ fontSize: '11px', color: '#166534', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '8px' }}>PresenÃ§as</div>
                                                 <div style={{ fontSize: '24px', color: '#15803d', fontWeight: '900' }}>{p}</div>
                                             </div>
                                             <div style={{ flex: 1, padding: '15px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', textAlign: 'center' }}>
@@ -434,7 +434,7 @@ export default function CentralRelatorios() {
                                                 <div style={{ fontSize: '24px', color: '#b91c1c', fontWeight: '900' }}>{f}</div>
                                             </div>
                                             <div style={{ flex: 1, padding: '15px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', textAlign: 'center' }}>
-                                                <div style={{ fontSize: '11px', color: '#334155', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '8px' }}>% Frequência</div>
+                                                <div style={{ fontSize: '11px', color: '#334155', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '8px' }}>% FrequÃªncia</div>
                                                 <div style={{ fontSize: '24px', color: freq >= 70 ? '#15803d' : freq >= 50 ? '#b45309' : '#b91c1c', fontWeight: '900' }}>{freq}%</div>
                                             </div>
                                         </>
@@ -446,7 +446,7 @@ export default function CentralRelatorios() {
                         {/* A4 Body (Table) */}
                         {!reportData ? (
                             <div style={{ textAlign: 'center', color: '#999', marginTop: 100, fontStyle: 'italic' }}>
-                                Configure os filtros acima e clique em "Gerar Visualização"
+                                Configure os filtros acima e clique em "Gerar VisualizaÃ§Ã£o"
                             </div>
                         ) : reportData.length === 0 ? (
                             <div style={{ textAlign: 'center', color: '#999', marginTop: 100, fontStyle: 'italic' }}>
@@ -461,7 +461,7 @@ export default function CentralRelatorios() {
                                     <thead>
                                         <tr>
                                             <th style={{ width: '15%', textAlign: 'center' }}>Data</th>
-                                            <th style={{ width: '35%' }}>Adversário</th>
+                                            <th style={{ width: '35%' }}>AdversÃ¡rio</th>
                                             <th style={{ width: '25%' }}>Categoria</th>
                                             <th style={{ width: '25%' }}>Campeonato</th>
                                         </tr>
@@ -492,7 +492,7 @@ export default function CentralRelatorios() {
                                     if (detalhes.length === 0) return null;
 
                                     return (
-                                        <div className="bloco-partida" key={`det-${idx}`} style={{ marginTop: '25px' }}>
+                                        <div className={`bloco-partida ${idx > 0 ? 'nova-pagina' : ''}`} key={`det-${idx}`} style={{ marginTop: '25px' }}>
                                             <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 10, fontSize: 14, textTransform: 'uppercase', backgroundColor: '#f8f9fa', padding: '8px' }}>
                                                 {dt} - {row.adversario || 'Jogo'}
                                             </h3>
@@ -512,7 +512,7 @@ export default function CentralRelatorios() {
                                                         <tr key={i}>
                                                             <td className="text-cell">{det.nome || '-'}</td>
                                                             <td className="num-cell" style={{ textAlign: 'center', color: det.convocado ? '#16a34a' : '#666' }}>
-                                                                {det.convocado ? 'Sim' : 'Não'}
+                                                                {det.convocado ? 'Sim' : 'NÃ£o'}
                                                             </td>
                                                             <td className="num-cell" style={{ textAlign: 'center', color: det.compareceu ? '#16a34a' : '#dc2626', fontWeight: 'bold' }}>
                                                                 {det.compareceu ? 'Presente' : 'Ausente'}
@@ -571,8 +571,8 @@ export default function CentralRelatorios() {
                         
                         {/* A4 Footer */}
                         <div style={{ width: '100%', marginTop: '20px', paddingTop: '10px', borderTop: '1px solid #EAEAEA', textAlign: 'center', color: '#6C757D', fontSize: '10px' }}>
-                  <strong style={{ fontWeight: 'bold' }}>Alfa Academy – Formando Atletas e Cidadãos.</strong><br/>
-                  Documento de uso interno e confidencial gerado automaticamente. É vedado o compartilhamento com terceiros sem autorização prévia da coordenação esportiva.
+                  <strong style={{ fontWeight: 'bold' }}>Alfa Academy â€“ Formando Atletas e CidadÃ£os.</strong><br/>
+                  Documento de uso interno e confidencial gerado automaticamente. Ã‰ vedado o compartilhamento com terceiros sem autorizaÃ§Ã£o prÃ©via da coordenaÃ§Ã£o esportiva.
               </div>
                     </div>
                 </div>
@@ -591,7 +591,7 @@ export default function CentralRelatorios() {
           }}>
               <style>
 {`
-/* REGRAS RIGOROSAS DE IMPRESSÃO (PDF E CTRL+P) */
+/* REGRAS RIGOROSAS DE IMPRESSÃƒO (PDF E CTRL+P) */
 @media print {
     @page { size: A4 portrait; margin: 15mm; }
     
@@ -621,7 +621,7 @@ export default function CentralRelatorios() {
         display: none !important;
     }
 
-    /* FORÇAR COMPORTAMENTO DE TABELA NATIVO */
+    /* FORÃ‡AR COMPORTAMENTO DE TABELA NATIVO */
     .pdf-export-container table, #a4-preview table {
         display: table !important;
         width: 100% !important;
@@ -672,7 +672,7 @@ export default function CentralRelatorios() {
     print-color-adjust: exact !important;
 }
 
-/* FORÇAR COMPORTAMENTO DE TABELA NATIVO (GERAL) */
+/* FORÃ‡AR COMPORTAMENTO DE TABELA NATIVO (GERAL) */
 .pdf-export-container table, #a4-preview table, #dashboard-a4-preview table {
     display: table !important;
     width: 100% !important;
@@ -693,12 +693,11 @@ export default function CentralRelatorios() {
 
 .pdf-export-container tr, #a4-preview tr, #dashboard-a4-preview tr {
     display: table-row !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+    
     page-break-after: auto !important;
 }
 
-/* ZERAR ESPAÇOS NAS CÉLULAS */
+/* ZERAR ESPAÃ‡OS NAS CÃ‰LULAS */
 .pdf-export-container th, .pdf-export-container td,
 #a4-preview th, #a4-preview td,
 #dashboard-a4-preview th, #dashboard-a4-preview td {
@@ -715,7 +714,7 @@ export default function CentralRelatorios() {
     color: #111111; 
 }
 
-/* CABEÇALHOS - FORÇAR COR DE FUNDO PRETA */
+/* CABEÃ‡ALHOS - FORÃ‡AR COR DE FUNDO PRETA */
 .pdf-export-container th, #a4-preview th, #dashboard-a4-preview th {
     background-color: #111111 !important;
     color: #eab308 !important;
@@ -725,18 +724,15 @@ export default function CentralRelatorios() {
     print-color-adjust: exact !important;
 }
 
-/* PREVENÇÃO DE QUEBRA E TÍTULOS ÓRFÃOS */
+/* PREVENÃ‡ÃƒO DE QUEBRA E TÃTULOS Ã“RFÃƒOS */
 .bloco-partida {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
     margin-top: 20px !important;
     margin-bottom: 20px !important;
     background: #ffffff !important;
     display: block !important;
 }
 
-/* Força uma nova página antes de cada jogo, exceto o primeiro */
-.bloco-partida:not(:first-of-type) {
+.nova-pagina {
     page-break-before: always !important;
     break-before: page !important;
 }
@@ -759,7 +755,7 @@ export default function CentralRelatorios() {
     margin-bottom: 6px !important;
 }
 
-/* CORES ZEBRADAS E UTILITÁRIOS */
+/* CORES ZEBRADAS E UTILITÃRIOS */
 .pdf-export-container tr:nth-child(even) td, #a4-preview tr:nth-child(even) td, #dashboard-a4-preview tr:nth-child(even) td {
     background-color: #f8f9fa !important;
     -webkit-print-color-adjust: exact !important;
@@ -777,21 +773,21 @@ export default function CentralRelatorios() {
                   <img src="/alfaacademy/admin/alfa_logo.png" alt="Logo" style={{ width: 65, objectFit: 'contain' }} />
                   <div style={{ flex: 1, paddingLeft: '20px', paddingTop: '5px' }}>
                       <h2 style={{ margin: 0, color: '#111', fontSize: '22px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '-0.5px' }}>
-                          Dashboard de Performance e Gestão de Atletas
+                          Dashboard de Performance e GestÃ£o de Atletas
                       </h2>
-                      <p style={{ margin: '5px 0 0 0', color: '#555', fontSize: '13px', fontWeight: 500 }}>Relatório Analítico Executivo</p>
+                      <p style={{ margin: '5px 0 0 0', color: '#555', fontSize: '13px', fontWeight: 500 }}>RelatÃ³rio AnalÃ­tico Executivo</p>
                   </div>
                   <div style={{ flex: '0 0 180px', minWidth: '180px', textAlign: 'right', color: '#6c757d', fontSize: '10px', lineHeight: '1.4', paddingTop: '5px' }}>
                       Gerado em:<br/>
                       <strong style={{ color: '#333', fontSize: '13px' }}>
-                          {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                          {new Date().toLocaleDateString('pt-BR')} Ã s {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                       </strong>
                   </div>
               </div>
 
-              {/* Distribuição por Categoria */}
+              {/* DistribuiÃ§Ã£o por Categoria */}
               <div>
-                  <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>Distribuição por Categoria</h3>
+                  <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>DistribuiÃ§Ã£o por Categoria</h3>
                   <table>
                       <thead>
                           <tr>
@@ -819,7 +815,7 @@ export default function CentralRelatorios() {
                                       <td className={`text-cell cap-text${emptyClass}`} title={displayCat}><strong>{displayCat}</strong></td>
                                       <td className="num-cell">{cat.total}</td>
                                       <td className="num-cell" style={{ color: novos > 0 ? '#16a34a' : '#333', fontWeight: novos > 0 ? 'bold' : 'normal' }}>
-                                          {novos > 0 ? `↑ ${novos}` : '0'}
+                                          {novos > 0 ? `â†‘ ${novos}` : '0'}
                                       </td>
                                       <td className="num-cell empty-cell">-</td>
                                       <td className="num-cell" style={{ fontWeight: 'bold' }}>{cat.total}</td>
@@ -830,18 +826,18 @@ export default function CentralRelatorios() {
                   </table>
               </div>
 
-              {/* Status Médico (Lesionados) */}
+              {/* Status MÃ©dico (Lesionados) */}
               <div>
-                  <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>Departamento Médico (Lesionados)</h3>
+                  <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>Departamento MÃ©dico (Lesionados)</h3>
                   {atletas.filter(a => a.status_medico === 'Lesionado').length > 0 ? (
                       <table>
                           <thead>
                               <tr>
                                   <th style={{ width: '25%' }}>Atleta</th>
                                   <th style={{ width: '15%' }}>Categoria</th>
-                                  <th style={{ width: '15%' }}>Posição</th>
+                                  <th style={{ width: '15%' }}>PosiÃ§Ã£o</th>
                                   <th style={{ textAlign: "center", width: '15%' }}>Data Registro</th>
-                                  <th style={{ width: '15%' }}>Tipo Lesão</th>
+                                  <th style={{ width: '15%' }}>Tipo LesÃ£o</th>
                                   <th style={{ textAlign: "center", width: '10%' }}>Status</th>
                               </tr>
                           </thead>
@@ -870,16 +866,16 @@ export default function CentralRelatorios() {
                   )}
               </div>
 
-              {/* Mapeamento Tático & Top Faltosos (Side by side for better A4 usage) */}
+              {/* Mapeamento TÃ¡tico & Top Faltosos (Side by side for better A4 usage) */}
               <div style={{ display: 'flex', gap: '30px' }}>
                   
-                  {/* Mapeamento Tático */}
+                  {/* Mapeamento TÃ¡tico */}
                   <div className="section-card" style={{ flex: 1 }}>
-                      <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>Mapeamento Tático</h3>
+                      <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>Mapeamento TÃ¡tico</h3>
                       <table>
                           <thead>
                               <tr>
-                                  <th style={{ width: '70%' }}>Posição</th>
+                                  <th style={{ width: '70%' }}>PosiÃ§Ã£o</th>
                                   <th style={{ textAlign: "center", width: '30%' }}>Atletas</th>
                               </tr>
                           </thead>
@@ -899,7 +895,7 @@ export default function CentralRelatorios() {
 
                   {/* Faltosos */}
                   <div className="section-card" style={{ flex: 1 }}>
-                      <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>Índice de Ausências</h3>
+                      <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase' }}>Ãndice de AusÃªncias</h3>
                       {faltosos.length > 0 ? (
                           <table>
                               <thead>
@@ -928,11 +924,14 @@ export default function CentralRelatorios() {
 
               {/* Footer */}
               <div style={{ width: '100%', marginTop: '20px', paddingTop: '10px', borderTop: '1px solid #EAEAEA', textAlign: 'center', color: '#6C757D', fontSize: '10px' }}>
-                  <strong style={{ fontWeight: 'bold' }}>Alfa Academy – Formando Atletas e Cidadãos.</strong><br/>
-                  Documento de uso interno e confidencial gerado automaticamente. É vedado o compartilhamento com terceiros sem autorização prévia da coordenação esportiva.
+                  <strong style={{ fontWeight: 'bold' }}>Alfa Academy â€“ Formando Atletas e CidadÃ£os.</strong><br/>
+                  Documento de uso interno e confidencial gerado automaticamente. Ã‰ vedado o compartilhamento com terceiros sem autorizaÃ§Ã£o prÃ©via da coordenaÃ§Ã£o esportiva.
               </div>
           </div>
       </div>
     </div>
   );
 }
+
+
+
