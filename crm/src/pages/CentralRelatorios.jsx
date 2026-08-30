@@ -153,7 +153,7 @@ export default function CentralRelatorios() {
           <h1 style={{ color: 'var(--ouro)', margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
             <Activity size={28} /> Central de Relatórios
           </h1>
-          <p style={{ color: 'var(--cinza)', marginTop: 5 }}>Visão analÃ­tica completa e exportação de documentos</p>
+          <p style={{ color: 'var(--cinza)', marginTop: 5 }}>Visão analítica completa e exportação de documentos</p>
         </div>
       </div>
 
@@ -162,7 +162,7 @@ export default function CentralRelatorios() {
           onClick={() => setActiveTab('dashboard')} 
           style={{ background: 'transparent', border: 'none', color: activeTab === 'dashboard' ? 'var(--ouro)' : 'var(--cinza)', fontSize: 16, fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
         >
-          <PieIcon size={18}/> Dashboard AnalÃ­tico
+          <PieIcon size={18}/> Dashboard Analítico
         </button>
         <button 
           onClick={() => setActiveTab('generator')} 
@@ -180,7 +180,7 @@ export default function CentralRelatorios() {
             </button>
           </div>
           {loading ? (
-            <p style={{ color: 'var(--cinza)' }}>Carregando dados estatÃ­sticos...</p>
+            <p style={{ color: 'var(--cinza)' }}>Carregando dados estatísticos...</p>
           ) : (
             <div style={{ display: 'block', gap: 20 }}>
               
@@ -288,7 +288,7 @@ export default function CentralRelatorios() {
                         </select>
                     </div>
 
-                    {/* Filtros DinÃ¢micos */}
+                    {/* Filtros Dinâmicos */}
                     {(modulo === 'elenco' || modulo === 'presencas' || modulo === 'jogos') && (
                         <div style={{ flex: '1 1 200px' }}>
                             <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Filtrar Categoria</label>
@@ -314,7 +314,7 @@ export default function CentralRelatorios() {
 
                     {modulo === 'presencas' && (
                         <div style={{ flex: '1 1 200px' }}>
-                            <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Atleta EspecÃ­fico</label>
+                            <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Atleta Específico</label>
                             <select className="input" value={filtros.atleta_id || ''} onChange={(e) => setFiltros({...filtros, atleta_id: e.target.value})} style={{ width: '100%' }}>
                                 <option value="">Todos os Atletas</option>
                                 {atletas
@@ -376,7 +376,7 @@ export default function CentralRelatorios() {
                                 </div>
                                 <div style={{ flex: 1, textAlign: 'center' }}>
                                     <h2 style={{ margin: 0, color: '#111', fontSize: '22px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '-0.5px' }}>
-                                        {modulo === 'elenco' ? 'Relatório de Elenco' : modulo === 'presencas' ? 'Histórico de Presenças' : modulo === 'jogos' ? 'Relatório de Partidas' : 'Relatório DinÃ¢mico'}
+                                        {modulo === 'elenco' ? 'Relatório de Elenco' : modulo === 'presencas' ? 'Histórico de Presenças' : modulo === 'jogos' ? 'Relatório de Partidas' : 'Relatório Dinâmico'}
                                     </h2>
                                 </div>
                                 <div style={{ flex: '0 0 100px' }}></div>
@@ -397,7 +397,7 @@ export default function CentralRelatorios() {
                                 <div style={{ textAlign: 'right', color: '#6c757d', fontSize: '10px', lineHeight: '1.4' }}>
                                     {filtros.data_inicio && filtros.data_fim && (
                                         <div style={{ marginBottom: 4 }}>
-                                            PerÃ­odo:<br/>
+                                            Período:<br/>
                                             <strong style={{ color: '#333', fontSize: '12px' }}>
                                                 {new Date(filtros.data_inicio + 'T12:00:00').toLocaleDateString('pt-BR')} a {new Date(filtros.data_fim + 'T12:00:00').toLocaleDateString('pt-BR')}
                                             </strong>
@@ -572,7 +572,7 @@ export default function CentralRelatorios() {
                         {/* A4 Footer */}
                         <div style={{ width: '100%', marginTop: '20px', paddingTop: '10px', borderTop: '1px solid #EAEAEA', textAlign: 'center', color: '#6C757D', fontSize: '10px' }}>
                   <strong style={{ fontWeight: 'bold' }}>Alfa Academy â€“ Formando Atletas e Cidadãos.</strong><br/>
-                  Documento de uso interno e confidencial gerado automaticamente. Ã‰ vedado o compartilhamento com terceiros sem autorização prÃ©via da coordenação esportiva.
+                  Documento de uso interno e confidencial gerado automaticamente. É vedado o compartilhamento com terceiros sem autorização prÃ©via da coordenação esportiva.
               </div>
                     </div>
                 </div>
@@ -591,7 +591,7 @@ export default function CentralRelatorios() {
           }}>
               <style>
 {`
-/* REGRAS RIGOROSAS DE IMPRESSÃO (PDF E CTRL+P) */
+/* REGRAS RIGOROSAS DE IMPRESSÃO (PDF E CTRL+P) - MÉTODO SEGURO */
 @media print {
     @page { size: A4 portrait; margin: 15mm; }
     
@@ -616,43 +616,104 @@ export default function CentralRelatorios() {
         background: white;
     }
 
-    /* OCULTAR UI */
     .btn, button, nav, .sidebar, .menu, header, footer, ::-webkit-scrollbar {
         display: none !important;
     }
 
-    /* FORÇAR COMPORTAMENTO DE TABELA NATIVO */
+    /* FIX 4: CORRIGIR A TABELA DE RESUMO (E OUTRAS TABELAS GERAIS) */
     .pdf-export-container table, #a4-preview table {
         display: table !important;
         width: 100% !important;
-        table-layout: fixed !important;
+        table-layout: auto !important; /* Corrigido de fixed para auto */
         border-collapse: collapse !important;
         margin-bottom: 20px !important;
         background: #ffffff !important;
     }
 
-    .pdf-export-container thead, #a4-preview thead { 
-        display: table-header-group !important; 
-    }
-
-    .pdf-export-container tfoot, #a4-preview tfoot { 
-        display: table-row-group !important; 
-    }
-
+    /* REDUZIR FONTE E PADDING DA TABELA PARA CABER */
     .pdf-export-container td, .pdf-export-container th,
     #a4-preview td, #a4-preview th {
         display: table-cell !important;
         word-wrap: break-word !important;
         overflow-wrap: break-word !important;
-        padding: 4px 8px !important;
+        padding: 4px !important;
         margin: 0 !important;
         line-height: 1.2 !important;
         height: auto !important;
-        font-size: 9px !important;
+        font-size: 11px !important; /* Reduzido levemente para caber horizontalmente */
+        border: 1px solid #dee2e6 !important;
+        color: #111111;
+    }
+
+    .pdf-export-container thead, #a4-preview thead { 
+        display: table-header-group !important; 
+    }
+    .pdf-export-container tfoot, #a4-preview tfoot { 
+        display: table-row-group !important; 
+    }
+
+    /* FIX 2: RESTAURAR BLOCO (REMOVER INLINE-BLOCK QUE CAUSOU TELA BRANCA) */
+    .bloco-jogo {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 20px !important;
+        background: #ffffff !important;
+    }
+
+    /* UM JOGO POR PÁGINA */
+    .bloco-jogo:not(:first-of-type) {
+        page-break-before: always !important;
+        break-before: page !important;
+    }
+
+    /* FIX 3: EVITAR TÍTULOS ÓRFÃOS (MÉTODO SEGURO DE AMARRAÇÃO) */
+    .bloco-jogo h2, 
+    .bloco-jogo h3, 
+    .bloco-jogo p, 
+    .bloco-jogo .resumo-convocados {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+        margin-bottom: 5px !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .bloco-jogo table {
+        page-break-before: avoid !important;
+        break-before: avoid !important;
+    }
+
+    /* PROTEGER AS LINHAS DA TABELA (SEM CORTAR AO MEIO) */
+    .pdf-export-container tr, #a4-preview tr, tr {
+        display: table-row !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: auto !important;
+    }
+
+    /* CABEÇALHOS PRETOS NA IMPRESSÃO */
+    .pdf-export-container th {
+        background-color: #111111 !important;
+        color: #eab308 !important;
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* CORES ZEBRADAS E UTILITÁRIOS */
+    .pdf-export-container tr:nth-child(even) td {
+        background-color: #f8f9fa !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 }
 
-/* REGRAS GERAIS PARA O A4 PREVIEW (html2pdf e DOM) */
+/* --------------------------------------------------- */
+/* REGRAS GERAIS DE PREVIEW (TELA)                     */
+/* --------------------------------------------------- */
 .pdf-export-container, #a4-preview, #dashboard-a4-preview {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: #111111 !important;
@@ -666,52 +727,38 @@ export default function CentralRelatorios() {
     print-color-adjust: exact !important;
 }
 
-/* FORÇAR COMPORTAMENTO DE TABELA NATIVO (GERAL) */
-.pdf-export-container table, #a4-preview table, #dashboard-a4-preview table {
+.pdf-export-container table, #a4-preview table {
     display: table !important;
     width: 100% !important;
     max-width: 100% !important;
     border-collapse: collapse !important;
-    table-layout: fixed !important;
+    table-layout: auto !important;
     margin-bottom: 20px !important;
     background: #ffffff !important;
 }
 
-.pdf-export-container thead, #a4-preview thead, #dashboard-a4-preview thead { 
-    display: table-header-group !important; 
-}
+.pdf-export-container thead, #a4-preview thead { display: table-header-group !important; }
+.pdf-export-container tfoot, #a4-preview tfoot { display: table-row-group !important; }
 
-.pdf-export-container tfoot, #a4-preview tfoot, #dashboard-a4-preview tfoot { 
-    display: table-row-group !important; 
-}
-
-/* PASSO 4: PROTEGER AS LINHAS DA TABELA */
-.pdf-export-container tr, #a4-preview tr, #dashboard-a4-preview tr, tr {
+.pdf-export-container tr, #a4-preview tr, tr {
     display: table-row !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
     page-break-after: auto !important;
 }
 
-/* QUEBRA DE TEXTO */
-.pdf-export-container th, .pdf-export-container td,
-#a4-preview th, #a4-preview td,
-#dashboard-a4-preview th, #dashboard-a4-preview td {
+.pdf-export-container th, .pdf-export-container td, #a4-preview th, #a4-preview td {
     display: table-cell !important;
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
     white-space: normal !important;
-    padding: 4px 8px !important;
-    margin: 0 !important;
-    line-height: 1.2 !important;
-    height: auto !important;
-    font-size: 10px !important;
+    padding: 4px !important;
+    font-size: 11px !important;
     border: 1px solid #dee2e6 !important;
     color: #111111; 
 }
 
-/* CABEÇALHOS - FORÇAR COR DE FUNDO PRETA */
-.pdf-export-container th, #a4-preview th, #dashboard-a4-preview th {
+.pdf-export-container th {
     background-color: #111111 !important;
     color: #eab308 !important;
     font-weight: bold !important;
@@ -720,46 +767,37 @@ export default function CentralRelatorios() {
     print-color-adjust: exact !important;
 }
 
-/* PASSO 2: O HACK DO INLINE-BLOCK (CRÍTICO) */
 .bloco-jogo {
-    display: inline-block !important;
+    display: block !important;
     width: 100% !important;
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
     margin-bottom: 20px !important;
     background: #ffffff !important;
 }
 
-/* PASSO 3: UM JOGO POR PÁGINA */
-.bloco-jogo:not(:first-of-type) {
-    page-break-before: always !important;
-    break-before: page !important;
-}
-
-/* PASSO 5: REMOVER BURACOS EM BRANCO NO TOPO */
-.bloco-jogo h1, .bloco-jogo h2, .bloco-jogo h3, .bloco-jogo p,
-.jogos-report h3, .jogos-report p {
+.bloco-jogo h3 {
+    background-color: #f8f9fa !important;
+    padding: 8px !important;
+    margin-bottom: 5px !important;
     margin-top: 0 !important;
-    padding-top: 0 !important;
     break-after: avoid !important;
     page-break-after: avoid !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
 }
 
-.bloco-jogo h3 {
-    background-color: #f8f9fa !important;
-    padding: 8px !important;
-    margin-bottom: 0 !important;
-}
-
 .bloco-jogo p {
-    margin-bottom: 6px !important;
-    padding-bottom: 4px !important;
+    margin-bottom: 5px !important;
+    margin-top: 0 !important;
+    break-after: avoid !important;
+    page-break-after: avoid !important;
 }
 
-/* CORES ZEBRADAS E UTILITÁRIOS */
-.pdf-export-container tr:nth-child(even) td, #a4-preview tr:nth-child(even) td, #dashboard-a4-preview tr:nth-child(even) td {
+.bloco-jogo table {
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+}
+
+.pdf-export-container tr:nth-child(even) td {
     background-color: #f8f9fa !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -778,7 +816,7 @@ export default function CentralRelatorios() {
                       <h2 style={{ margin: 0, color: '#111', fontSize: '22px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '-0.5px' }}>
                           Dashboard de Performance e Gestão de Atletas
                       </h2>
-                      <p style={{ margin: '5px 0 0 0', color: '#555', fontSize: '13px', fontWeight: 500 }}>Relatório AnalÃ­tico Executivo</p>
+                      <p style={{ margin: '5px 0 0 0', color: '#555', fontSize: '13px', fontWeight: 500 }}>Relatório Analítico Executivo</p>
                   </div>
                   <div style={{ flex: '0 0 180px', minWidth: '180px', textAlign: 'right', color: '#6c757d', fontSize: '10px', lineHeight: '1.4', paddingTop: '5px' }}>
                       Gerado em:<br/>
@@ -928,7 +966,7 @@ export default function CentralRelatorios() {
               {/* Footer */}
               <div style={{ width: '100%', marginTop: '20px', paddingTop: '10px', borderTop: '1px solid #EAEAEA', textAlign: 'center', color: '#6C757D', fontSize: '10px' }}>
                   <strong style={{ fontWeight: 'bold' }}>Alfa Academy â€“ Formando Atletas e Cidadãos.</strong><br/>
-                  Documento de uso interno e confidencial gerado automaticamente. Ã‰ vedado o compartilhamento com terceiros sem autorização prÃ©via da coordenação esportiva.
+                  Documento de uso interno e confidencial gerado automaticamente. É vedado o compartilhamento com terceiros sem autorização prÃ©via da coordenação esportiva.
               </div>
           </div>
       </div>
