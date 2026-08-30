@@ -550,7 +550,10 @@ export default function CentralRelatorios() {
                                                 if (typeof val === 'string' && val.match(/^\d{4}-\d{2}-\d{2}T/)) {
                                                     displayVal = new Date(val).toLocaleDateString('pt-BR');
                                                 }
-                                                displayVal = (displayVal && displayVal.toString().trim() !== '') ? displayVal : '-';
+                                                if (typeof displayVal === 'object' && displayVal !== null) {
+                                                    displayVal = Array.isArray(displayVal) ? '' : JSON.stringify(displayVal);
+                                                }
+                                                displayVal = (displayVal !== null && displayVal !== undefined && displayVal.toString().trim() !== '') ? displayVal : '-';
                                                 const emptyClass = displayVal === '-' ? 'empty-cell' : '';
                                                 
                                                 // Center numbers and dates, left-align text
