@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import api from '../api';
 import { AuthContext } from '../context/AuthContext';
 import { Download, Search, Filter, Activity, Users, FileText, PieChart as PieIcon, LayoutTemplate, Printer } from 'lucide-react';
@@ -461,9 +461,10 @@ export default function CentralRelatorios() {
                                     <thead>
                                         <tr>
                                             <th style={{ width: '15%', textAlign: 'center' }}>Data</th>
-                                            <th style={{ width: '35%' }}>Adversário</th>
-                                            <th style={{ width: '25%' }}>Categoria</th>
-                                            <th style={{ width: '25%' }}>Campeonato</th>
+                                            <th style={{ width: '30%' }}>Adversário</th>
+                                            <th style={{ width: '20%' }}>Resultado</th>
+                                            <th style={{ width: '15%' }}>Categoria</th>
+                                            <th style={{ width: '20%' }}>Campeonato</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -473,6 +474,7 @@ export default function CentralRelatorios() {
                                                 <tr key={idx}>
                                                     <td className="num-cell" style={{ textAlign: 'center' }}>{dt}</td>
                                                     <td className="text-cell"><strong>{row.adversario || '-'}</strong></td>
+                                                    <td className="text-cell" style={{ color: 'var(--ouro)', fontWeight: 'bold' }}>{row.resultado || '-'}</td>
                                                     <td className="text-cell">{row.categoria || '-'}</td>
                                                     <td className="text-cell">{row.campeonato || '-'}</td>
                                                 </tr>

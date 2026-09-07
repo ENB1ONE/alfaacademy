@@ -16,7 +16,7 @@ export default function Games() {
   const [isEditing, setIsEditing] = useState(false);
   const [editingData, setEditingData] = useState(null);
   
-  const [form, setForm] = useState({ titulo: '', data: '', categorias_ids: [] });
+  const [form, setForm] = useState({ titulo: '', data: '', categorias_ids: [], resultado: '' });
   
   const [showConvocacao, setShowConvocacao] = useState(false);
   const [selectedJogo, setSelectedJogo] = useState(null);
@@ -54,17 +54,17 @@ export default function Games() {
 
   const openCreateModal = () => {
     setIsEditing(false);
-    setForm({ titulo: '', data: '', categorias_ids: [] });
+    setForm({ titulo: '', data: '', categorias_ids: [], resultado: '' });
     setShowModal(true);
   };
   
   const openEditModal = (jogo) => {
     setIsEditing(true);
     setEditingData({ old_titulo: jogo.adversario, old_data: jogo.data_raw });
-    setForm({ 
         titulo: jogo.adversario, 
         data: jogo.data_raw, 
-        categorias_ids: jogo.categorias_ids ? jogo.categorias_ids.map(String) : [] 
+        categorias_ids: jogo.categorias_ids ? jogo.categorias_ids.map(String) : [],
+        resultado: jogo.resultado || ''
     });
     setShowModal(true);
   };
@@ -91,7 +91,8 @@ export default function Games() {
               old_data: editingData.old_data,
               new_titulo: form.titulo,
               new_data: form.data,
-              new_categorias_ids: form.categorias_ids
+              new_categorias_ids: form.categorias_ids,
+              new_resultado: form.resultado
           });
       } else {
           await api.post('/api/admin/eventos', { ...form, tipo: 'JOGO' });
@@ -216,6 +217,7 @@ export default function Games() {
                   <div>
                     <span style={{ color: '#EF4444', fontWeight: 'bold', fontSize: 13, display: 'block', marginBottom: 5 }}>{j.data_br}</span>
                     <h3 style={{ color: 'var(--texto)', margin: 0, fontSize: 18 }}>{j.adversario}</h3>
+                    {j.resultado && <div style={{ marginTop: 5, fontSize: 14, color: 'var(--ouro)', fontWeight: 'bold' }}>Resultado: {j.resultado}</div>}
                   </div>
                 </div>
                 
@@ -267,6 +269,10 @@ export default function Games() {
               <div>
                 <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Data</label>
                 <input type="date" className="input" required value={form.data} onChange={e => setForm({...form, data: e.target.value})} />
+              </div>
+              <div>
+                <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Resultado</label>
+                <input className="input" value={form.resultado || ''} onChange={e => setForm({...form, resultado: e.target.value})} placeholder="Ex: Vitória 2x0" />
               </div>
               <div>
                 <label style={{ display: 'block', marginBottom: 5, color: 'var(--cinza)' }}>Categorias Participantes</label>
