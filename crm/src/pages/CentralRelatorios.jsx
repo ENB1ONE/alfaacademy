@@ -282,7 +282,8 @@ export default function CentralRelatorios() {
                         <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Módulo do Relatório</label>
                         <select className="input" value={modulo} onChange={(e) => { setModulo(e.target.value); setFiltros({}); }} style={{ width: '100%' }}>
                             <option value="">Selecione o módulo...</option>
-                            <option value="elenco">Elenco Completo</option>
+                            <option value="elenco">Elenco Completo (Ativos)</option>
+                                    <option value="elenco_inativos">Atletas Excluídos / Inativos</option>
                             <option value="presencas">Histórico de Presenças</option>
                             <option value="jogos">Partidas / Jogos</option>
                         </select>

@@ -32,7 +32,12 @@ pool.query(`
         EXCEPTION
             WHEN duplicate_column THEN RAISE NOTICE 'column observacao already exists';
         END;
-    END $$;
+        BEGIN
+            ALTER TABLE treinos ADD COLUMN resultado VARCHAR(255);
+        EXCEPTION
+            WHEN duplicate_column THEN RAISE NOTICE 'column resultado already exists';
+        END;
+    END $;
 `).catch(console.error);
 
 
@@ -116,13 +121,13 @@ router.get('/atletas', verificarAcesso, async (req, res) => {
             SELECT a.*, c.nome as categoria 
             FROM atletas a 
             LEFT JOIN categorias c ON a.categoria_id = c.id 
+            WHERE a.ativo = true
         `;
         let values = [];
 
         if (req.usuario.perfil === 'Treinador') {
             query += `
-                JOIN treinador_categoria tc ON tc.categoria_id = a.categoria_id
-                WHERE tc.treinador_id = $1
+                AND a.categoria_id IN (SELECT categoria_id FROM treinador_categoria WHERE treinador_id = $1)
             `;
             values.push(req.usuario.id);
         }
@@ -134,14 +139,14 @@ router.get('/atletas', verificarAcesso, async (req, res) => {
 });
 
 router.post('/atletas', verificarAcesso, async (req, res) => {
-    const { nome, categoria_id, posicao, nome_responsavel, telefone_responsavel, status_medico, foto } = req.body;
+    const { nome, categoria_id, posicao, posicao_secundaria, pe_dominante, peso, altura, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto } = req.body;
     const catId = categoria_id === '' ? null : categoria_id;
     try {
         const query = `
-            INSERT INTO atletas (nome, categoria_id, posicao, nome_responsavel, telefone_responsavel, status_medico, foto) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *
+            INSERT INTO atletas (nome, categoria_id, posicao, posicao_secundaria, pe_dominante, peso, altura, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *
         `;
-        const r = await pool.query(query, [nome, catId, posicao, nome_responsavel, telefone_responsavel, status_medico, foto]);
+        const r = await pool.query(query, [nome, catId, posicao, posicao_secundaria, pe_dominante, peso || null, altura || null, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto]);
         registrarLog(req.usuario.id, `Cadastrou atleta ${nome}`, { atleta_id: r.rows[0].id });
         res.json({ success: true, atleta: r.rows[0] });
     } catch (error) { console.error(error); res.status(500).json({ error: 'Erro interno' }); }
@@ -149,14 +154,14 @@ router.post('/atletas', verificarAcesso, async (req, res) => {
 
 router.put('/atletas/:id', verificarAcesso, async (req, res) => {
     const { id } = req.params;
-    const { nome, categoria_id, posicao, nome_responsavel, telefone_responsavel, status_medico, foto } = req.body;
+    const { nome, categoria_id, posicao, posicao_secundaria, pe_dominante, peso, altura, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto } = req.body;
     const catId = categoria_id === '' ? null : categoria_id;
     try {
         const query = `
             UPDATE atletas 
-            SET nome = $1, categoria_id = $2, posicao = $3, nome_responsavel = $4, telefone_responsavel = $5, status_medico = $6, foto = COALESCE($7, foto) WHERE id = $8 RETURNING *
+            SET nome = $1, categoria_id = $2, posicao = $3, posicao_secundaria = $4, pe_dominante = $5, peso = $6, altura = $7, competicoes = $8, clube_atual = $9, nome_responsavel = $10, telefone_responsavel = $11, status_medico = $12, foto = COALESCE($13, foto) WHERE id = $14 RETURNING *
         `;
-        const r = await pool.query(query, [nome, catId, posicao, nome_responsavel, telefone_responsavel, status_medico, foto, id]);
+        const r = await pool.query(query, [nome, catId, posicao, posicao_secundaria, pe_dominante, peso || null, altura || null, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto, id]);
         registrarLog(req.usuario.id, `Editou atleta ${nome}`, { atleta_id: id });
         res.json({ success: true, atleta: r.rows[0] });
     } catch (error) { console.error(error); res.status(500).json({ error: 'Erro interno' }); }
@@ -164,7 +169,7 @@ router.put('/atletas/:id', verificarAcesso, async (req, res) => {
 
 router.delete('/atletas/:id', verificarAdmin, async (req, res) => {
     try {
-        await pool.query("DELETE FROM atletas WHERE id = $1", [req.params.id]);
+        await pool.query("UPDATE atletas SET ativo = false WHERE id = $1", [req.params.id]);
         registrarLog(req.usuario.id, `Excluiu atleta ID ${req.params.id}`, null);
         res.json({ success: true });
     } catch (error) { console.error(error); res.status(500).json({ error: 'Erro interno' }); }
@@ -261,7 +266,7 @@ router.delete('/treinadores/:id', verificarAdmin, async (req, res) => {
 // ==========================================
 router.post('/chamadas', verificarAcesso, async (req, res) => {
     const { categoria_id, presencas, titulo, tipo, campeonato, horario, observacao } = req.body;
-    const data_chamada = new Date().toISOString().split('T')[0];
+    const data_chamada = req.body.data || new Date().toISOString().split('T')[0];
     const eventTitle = titulo || 'Treino Regular';
     const eventType = tipo || 'TREINO';
 
@@ -462,7 +467,7 @@ router.get('/treinos/:id/presencas', verificarAcesso, async (req, res) => {
 // AGENDAMENTO DE EVENTOS (JOGOS / EVENTOS FUTUROS)
 // ==========================================
 router.post('/eventos', verificarAcesso, async (req, res) => {
-    const { categorias_ids, data, titulo, tipo, campeonato, horario, observacao } = req.body;
+    const { categorias_ids, data, titulo, tipo, campeonato, horario, observacao, resultado } = req.body;
     try {
         const eventTitle = titulo || 'Jogo Oficial';
         const eventType = tipo || 'JOGO';
@@ -475,7 +480,7 @@ router.post('/eventos', verificarAcesso, async (req, res) => {
         for (let cat_id of categorias_ids) {
             const check = await pool.query("SELECT id FROM treinos WHERE categoria_id = $1 AND data = $2 AND titulo = $3", [cat_id, data, eventTitle]);
             if (check.rows.length === 0) {
-                await pool.query("INSERT INTO treinos (categoria_id, data, titulo, tipo, campeonato, horario, observacao) VALUES ($1, $2, $3, $4, $5, $6, $7)", [cat_id, data, eventTitle, eventType, campeonato || "", horario || "", observacao || ""]);
+                await pool.query("INSERT INTO treinos (categoria_id, data, titulo, tipo, campeonato, horario, observacao, resultado) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)", [cat_id, data, eventTitle, eventType, campeonato || "", horario || "", observacao || "", resultado || ""]);
             }
         }
         
@@ -602,7 +607,7 @@ router.get('/jogos', verificarAcesso, async (req, res) => {
             q += ` WHERE t.tipo = 'JOGO' `;
         }
         
-        q += " GROUP BY t.data, t.titulo, t.campeonato, t.horario, t.observacao ORDER BY data_raw DESC ";
+        q += " GROUP BY t.data, t.titulo, t.campeonato, t.horario, t.observacao, t.resultado ORDER BY data_raw DESC ";
         
         const r = await pool.query(q, vals);
         // Map to format that is easy to consume (e.g. generate a pseudo-id for React keys)
@@ -688,7 +693,7 @@ router.delete('/eventos/deletar', verificarAcesso, async (req, res) => {
 });
 
 router.put('/eventos/editar', verificarAcesso, async (req, res) => {
-    const { old_titulo, old_data, new_titulo, new_data, new_categorias_ids, campeonato, horario, observacao } = req.body;
+    const { old_titulo, old_data, new_titulo, new_data, new_categorias_ids, campeonato, horario, observacao, resultado } = req.body;
     try {
         if (!new_categorias_ids || !Array.isArray(new_categorias_ids) || new_categorias_ids.length === 0) {
             return res.status(400).json({ error: 'Selecione ao menos uma categoria.' });
@@ -704,7 +709,7 @@ router.put('/eventos/editar', verificarAcesso, async (req, res) => {
         for (let row of existing.rows) {
             const catStr = row.categoria_id.toString();
             if (new_categorias_ids.includes(catStr)) {
-                await pool.query("UPDATE treinos SET titulo = $1, data = $2, campeonato = $4, horario = $5, observacao = $6 WHERE id = $3", [new_titulo, new_data, row.id, campeonato || '', horario || '', observacao || '']);
+                await pool.query("UPDATE treinos SET titulo = $1, data = $2, campeonato = $4, horario = $5, observacao = $6, resultado = $7 WHERE id = $3", [new_titulo, new_data, row.id, campeonato || '', horario || '', observacao || '', resultado || '']);
             } else {
                 await pool.query("DELETE FROM treinos WHERE id = $1", [row.id]); // deletes convocacoes cascade
             }
@@ -713,7 +718,7 @@ router.put('/eventos/editar', verificarAcesso, async (req, res) => {
         // Insert new ones
         for (let catStr of new_categorias_ids) {
             if (!existingCatIds.includes(catStr)) {
-                await pool.query("INSERT INTO treinos (categoria_id, data, titulo, tipo, campeonato, horario, observacao) VALUES ($1, $2, $3, 'JOGO', $4, $5, $6)", [parseInt(catStr), new_data, new_titulo, campeonato || '', horario || '', observacao || '']);
+                await pool.query("INSERT INTO treinos (categoria_id, data, titulo, tipo, campeonato, horario, observacao, resultado) VALUES ($1, $2, $3, 'JOGO', $4, $5, $6, $7)", [parseInt(catStr), new_data, new_titulo, campeonato || '', horario || '', observacao || '', resultado || '']);
             }
         }
         
@@ -784,11 +789,16 @@ router.post('/relatorios/gerador', verificarAdmin, async (req, res) => {
         let count = 1;
 
         if (modulo === 'elenco') {
-            query = "SELECT a.nome, c.nome as categoria, a.posicao, a.status_medico FROM atletas a LEFT JOIN categorias c ON a.categoria_id = c.id WHERE 1=1";
+            query = "SELECT a.nome, c.nome as categoria, a.posicao, a.status_medico FROM atletas a LEFT JOIN categorias c ON a.categoria_id = c.id WHERE a.ativo = true";
             if (filtros && filtros.categoria) { query += " AND c.nome = $" + count + "::text"; count++; params.push(filtros.categoria); }
             if (filtros && filtros.status_medico) { query += " AND a.status_medico = $" + count + "::text"; count++; params.push(filtros.status_medico); }
             query += " ORDER BY a.nome ASC";
-        } 
+        }
+        else if (modulo === 'elenco_inativos') {
+            query = "SELECT a.nome, c.nome as categoria, a.posicao, a.status_medico, to_char(a.criado_em, 'DD/MM/YYYY') as data_registro FROM atletas a LEFT JOIN categorias c ON a.categoria_id = c.id WHERE a.ativo = false";
+            if (filtros && filtros.categoria) { query += " AND c.nome = $" + count + "::text"; count++; params.push(filtros.categoria); }
+            query += " ORDER BY a.nome ASC";
+        }
         else if (modulo === 'presencas') {
             query = "SELECT t.data AS data_treino, p.status, a.nome, c.nome as categoria FROM presencas p JOIN atletas a ON p.atleta_id = a.id LEFT JOIN categorias c ON a.categoria_id = c.id JOIN treinos t ON p.treino_id = t.id WHERE 1=1";
             if (filtros && filtros.categoria) { query += " AND c.nome = $" + count + "::text"; count++; params.push(filtros.categoria); }
@@ -798,11 +808,11 @@ router.post('/relatorios/gerador', verificarAdmin, async (req, res) => {
             query += " ORDER BY t.data DESC LIMIT 200";
         }
         else if (modulo === 'jogos') {
-            query = "SELECT data_jogo, adversario, categoria, resultado FROM jogos WHERE 1=1";
-            if (filtros && filtros.categoria) { query += " AND categoria = $" + count + "::text"; count++; params.push(filtros.categoria); }
-            if (filtros && filtros.data_inicio) { query += " AND data_jogo >= $" + count + "::date"; count++; params.push(filtros.data_inicio); }
-            if (filtros && filtros.data_fim) { query += " AND data_jogo <= $" + count + "::date"; count++; params.push(filtros.data_fim); }
-            query += " ORDER BY data_jogo DESC LIMIT 200";
+            query = "SELECT t.data AS data_jogo, t.titulo AS adversario, c.nome AS categoria, t.campeonato, t.resultado, (SELECT json_agg(json_build_object('nome', a.nome, 'convocado', CASE WHEN conv.atleta_id IS NOT NULL THEN true ELSE false END, 'compareceu', CASE WHEN p.status = 'P' THEN true ELSE false END)) FROM atletas a LEFT JOIN convocacoes conv ON conv.atleta_id = a.id AND conv.treino_id = t.id LEFT JOIN presencas p ON p.atleta_id = a.id AND p.treino_id = t.id WHERE conv.atleta_id IS NOT NULL OR p.atleta_id IS NOT NULL) as detalhes FROM treinos t LEFT JOIN categorias c ON t.categoria_id = c.id WHERE t.tipo = 'JOGO'";
+            if (filtros && filtros.categoria) { query += " AND c.nome = $" + count + "::text"; count++; params.push(filtros.categoria); }
+            if (filtros && filtros.data_inicio) { query += " AND t.data >= $" + count + "::date"; count++; params.push(filtros.data_inicio); }
+            if (filtros && filtros.data_fim) { query += " AND t.data <= $" + count + "::date"; count++; params.push(filtros.data_fim); }
+            query += " ORDER BY t.data DESC LIMIT 200";
         } else {
             return res.status(400).json({ success: false, message: 'Módulo inválido.' });
         }
