@@ -180,16 +180,16 @@ export default function CentralRelatorios() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 15, marginBottom: 30, borderBottom: '1px solid var(--linha)', paddingBottom: 10 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 30, background: 'rgba(255,255,255,0.03)', padding: 6, borderRadius: 12, width: 'max-content', maxWidth: '100%', overflowX: 'auto' }}>
         <button 
           onClick={() => setActiveTab('dashboard')} 
-          style={{ background: 'transparent', border: 'none', color: activeTab === 'dashboard' ? 'var(--ouro)' : 'var(--cinza)', fontSize: 16, fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
+          style={{ background: activeTab === 'dashboard' ? 'var(--ouro)' : 'transparent', border: 'none', color: activeTab === 'dashboard' ? '#111' : 'var(--cinza)', fontSize: 15, fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 8, transition: 'all 0.2s' }}
         >
           <PieIcon size={18}/> Dashboard Analítico
         </button>
         <button 
           onClick={() => setActiveTab('generator')} 
-          style={{ background: 'transparent', border: 'none', color: activeTab === 'generator' ? 'var(--ouro)' : 'var(--cinza)', fontSize: 16, fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
+          style={{ background: activeTab === 'generator' ? 'var(--ouro)' : 'transparent', border: 'none', color: activeTab === 'generator' ? '#111' : 'var(--cinza)', fontSize: 15, fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 8, transition: 'all 0.2s' }}
         >
           <LayoutTemplate size={18}/> Gerador A4 (BI)
         </button>
@@ -300,7 +300,8 @@ export default function CentralRelatorios() {
             <div className="card" style={{ padding: 20, minWidth: 0, width: '100%', boxSizing: 'border-box' }}>
                 <h3 style={{ color: 'var(--ouro)', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}><Search size={20} /> Construtor de Relatório</h3>
                 
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20, alignItems: 'flex-end' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    <div style={{ width: '100%' }}>
                     <div style={{ flex: '1 1 200px' }}>
                         <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Módulo do Relatório</label>
                         <select className="input" value={modulo} onChange={(e) => { setModulo(e.target.value); setFiltros({}); }} style={{ width: '100%' }}>
@@ -311,8 +312,9 @@ export default function CentralRelatorios() {
                             <option value="jogos">Partidas / Jogos</option>
                         </select>
                     </div>
-
+                    </div>
                     {/* Filtros Dinâmicos */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20, alignItems: 'end' }}>
 {modulo === 'presencas' && (
                         <div style={{ flex: '1 1 200px', position: 'relative' }}>
                             <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Atleta Específico</label>
@@ -408,8 +410,9 @@ export default function CentralRelatorios() {
                         </>
                     )}
                     
-                    <div style={{ flex: '1 1 150px' }}>
-                        <button className="btn primary" onClick={handleGerarRelatorio} disabled={!modulo || generating} style={{ width: '100%' }}>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
+                        <button className="btn primary" onClick={handleGerarRelatorio} disabled={!modulo || generating} style={{ padding: '12px 24px', borderRadius: '8px', minWidth: '200px', flex: window.innerWidth <= 768 ? 1 : 'none' }}>
                             {generating ? 'Processando...' : 'Gerar Visualização'}
                         </button>
                     </div>
@@ -427,15 +430,8 @@ export default function CentralRelatorios() {
                     )}
                 </div>
                 
-                <div id="a4-preview-wrapper" style={{ width: '100%', maxWidth: '900px', margin: '0 auto', overflowX: 'auto', background: '#1a1a1a',
-                    padding: '20px',
-                    borderRadius: '8px'
-                }}>
-                    <div id="a4-preview" className="pdf-export-container" style={{ width: '794px', minWidth: '794px', maxWidth: '794px', 
-                        background: '#ffffff',
-                        padding: '20px 40px',
-                        boxSizing: 'border-box'
-                    }}>
+                <div id="a4-preview-wrapper" style={{ width: '100%', overflowX: 'auto', background: '#1e1e1e', padding: '40px 20px', borderRadius: '12px', display: 'flex', justifyContent: 'center' }}>
+                    <div id="a4-preview" className="pdf-export-container" style={{ width: '794px', minWidth: '794px', maxWidth: '794px', minHeight: '1123px', background: '#ffffff', padding: '40px 50px', boxSizing: 'border-box', boxShadow: '0 10px 30px rgba(0,0,0,0.5)', borderRadius: '4px', display: 'flex', flexDirection: 'column' }}>
                         {/* A4 Header */}
                         <div style={{ borderBottom: '3px solid #eab308', paddingBottom: '15px', marginBottom: '20px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
@@ -513,8 +509,9 @@ export default function CentralRelatorios() {
 
                         {/* A4 Body (Table) */}
                         {!reportData ? (
-                            <div style={{ textAlign: 'center', color: '#999', marginTop: 100, fontStyle: 'italic' }}>
-                                Configure os filtros acima e clique em "Gerar Visualização"
+                            <div style={{ textAlign: 'center', color: '#999', margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, gap: 15, minHeight: '400px' }}>
+                                <FileText size={48} style={{ opacity: 0.2 }} />
+                                <span style={{ fontSize: 16, maxWidth: 300 }}>Configure os filtros acima e clique em <strong>"Gerar Visualização"</strong> para montar o relatório.</span>
                             </div>
                         ) : reportData.length === 0 ? (
                             <div style={{ textAlign: 'center', color: '#999', marginTop: 100, fontStyle: 'italic' }}>
