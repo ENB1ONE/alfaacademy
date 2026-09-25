@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom';
 import React, { useState, useEffect, useContext } from 'react';
 import api from '../api';
 import { AuthContext } from '../context/AuthContext';
@@ -10,6 +11,7 @@ import html2canvas from 'html2canvas';
 const COLORS = ['#22c55e', '#ef4444', '#eab308', '#3b82f6', '#a855f7', '#f97316', '#06b6d4'];
 
 export default function CentralRelatorios() {
+  const location = useLocation();
   const { user } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard' or 'generator'
   
@@ -35,6 +37,27 @@ export default function CentralRelatorios() {
   const [exportingA4, setExportingA4] = useState(false);
 
   useEffect(() => {
+    const triggerState = location.state;
+    if (triggerState && triggerState.triggerPresencasId) {
+        setActiveTab('generator');
+        setModulo('presencas');
+        setFiltros({
+           nome_atleta: triggerState.triggerPresencasNome,
+           atleta_id: triggerState.triggerPresencasId
+        });
+        
+        api.post('/api/admin/relatorios/gerador', { 
+           modulo: 'presencas', 
+           filtros: { nome_atleta: triggerState.triggerPresencasNome, atleta_id: triggerState.triggerPresencasId } 
+        }).then(res => {
+            if (res.data.success) {
+                setReportData(res.data.dados);
+            }
+        }).catch(err => console.error(err));
+        
+        // Clear state
+        window.history.replaceState({}, document.title);
+    }
     const fetchData = async () => {
       try {
         const [resAtletas, resMetricas] = await Promise.all([

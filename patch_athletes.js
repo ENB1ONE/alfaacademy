@@ -1,33 +1,23 @@
 ﻿const fs = require('fs');
-let code = fs.readFileSync('/opt/alfa-api/routes/admin.js', 'utf8');
+let code = fs.readFileSync('crm/src/pages/Athletes.jsx', 'utf8');
 
-// Patch POST /atletas
-const postRegex = /const \{ nome, categoria_id, posicao, nome_responsavel, telefone_responsavel, status_medico, foto \} = req\.body;\s*const catId = categoria_id === '' \? null : categoria_id;\s*try \{\s*const query = `\s*INSERT INTO atletas \(nome, categoria_id, posicao, nome_responsavel, telefone_responsavel, status_medico, foto\)\s*VALUES \(\$1, \$2, \$3, \$4, \$5, \$6, \$7\) RETURNING \*\s*`;\s*const r = await pool\.query\(query, \[nome, catId, posicao, nome_responsavel, telefone_responsavel, status_medico, foto\]\);/;
+const regex = /<button onClick=\{\(\) => toggleDM\(a\.id, a\.status_medico\)\} title="Alternar DM"/;
+const replacement = `
+                    <button onClick={() => navigate('/relatorios', { state: { triggerPresencasId: a.id, triggerPresencasNome: a.nome } })} title="Histórico de Presença" className="btn" style={{ padding: '8px', background: 'rgba(248, 193, 70, 0.05)', color: 'var(--ouro)', border: '1px solid rgba(248, 193, 70, 0.2)', borderRadius: '8px' }}><ClipboardCheck size={16} /></button>
+                    <button onClick={() => toggleDM(a.id, a.status_medico)} title="Alternar DM"`;
 
-const newPost = `const { nome, categoria_id, posicao, posicao_secundaria, pe_dominante, peso, altura, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto } = req.body;
-    const catId = categoria_id === '' ? null : categoria_id;
-    try {
-        const query = \`
-            INSERT INTO atletas (nome, categoria_id, posicao, posicao_secundaria, pe_dominante, peso, altura, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *
-        \`;
-        const r = await pool.query(query, [nome, catId, posicao, posicao_secundaria, pe_dominante, peso || null, altura || null, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto]);`;
-
-code = code.replace(postRegex, newPost);
-
-// Patch PUT /atletas/:id
-const putRegex = /const \{ nome, categoria_id, posicao, nome_responsavel, telefone_responsavel, status_medico, foto \} = req\.body;\s*const catId = categoria_id === '' \? null : categoria_id;\s*try \{\s*const query = `\s*UPDATE atletas\s*SET nome = \$1, categoria_id = \$2, posicao = \$3, nome_responsavel = \$4, telefone_responsavel = \$5, status_medico = \$6, foto = COALESCE\(\$7, foto\) WHERE id = \$8 RETURNING \*\s*`;\s*const r = await pool\.query\(query, \[nome, catId, posicao, nome_responsavel, telefone_responsavel, status_medico, foto, id\]\);/;
-
-const newPut = `const { nome, categoria_id, posicao, posicao_secundaria, pe_dominante, peso, altura, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto } = req.body;
-    const catId = categoria_id === '' ? null : categoria_id;
-    try {
-        const query = \`
-            UPDATE atletas 
-            SET nome = $1, categoria_id = $2, posicao = $3, posicao_secundaria = $4, pe_dominante = $5, peso = $6, altura = $7, competicoes = $8, clube_atual = $9, nome_responsavel = $10, telefone_responsavel = $11, status_medico = $12, foto = COALESCE($13, foto) WHERE id = $14 RETURNING *
-        \`;
-        const r = await pool.query(query, [nome, catId, posicao, posicao_secundaria, pe_dominante, peso || null, altura || null, competicoes, clube_atual, nome_responsavel, telefone_responsavel, status_medico, foto, id]);`;
-
-code = code.replace(putRegex, newPut);
-
-fs.writeFileSync('/opt/alfa-api/routes/admin.js', code, 'utf8');
-console.log('Backend athletes endpoints patched successfully.');
+if (code.match(regex)) {
+    code = code.replace(regex, replacement);
+    // Also we need to ensure ClipboardCheck is imported.
+    if (!code.includes('ClipboardCheck')) {
+        code = code.replace("import { Activity,", "import { Activity, ClipboardCheck,");
+        // If Activity isn't there, just replace 'lucide-react'
+        if (code.indexOf("ClipboardCheck") === -1) {
+             code = code.replace(/import \{([^}]+)\} from 'lucide-react';/, "import { $1, ClipboardCheck } from 'lucide-react';");
+        }
+    }
+    fs.writeFileSync('crm/src/pages/Athletes.jsx', code, 'utf8');
+    console.log("Athletes.jsx patched successfully!");
+} else {
+    console.log("Could not find toggleDM button");
+}

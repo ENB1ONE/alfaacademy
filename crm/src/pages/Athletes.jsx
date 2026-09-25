@@ -334,6 +334,8 @@ export default function Athletes() {
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '8px' }}>
+                    
+                    <button onClick={() => navigate('/relatorios', { state: { triggerPresencasId: a.id, triggerPresencasNome: a.nome } })} title="Histórico de Presença" className="btn" style={{ padding: '8px', background: 'rgba(248, 193, 70, 0.05)', color: 'var(--ouro)', border: '1px solid rgba(248, 193, 70, 0.2)', borderRadius: '8px' }}><ClipboardCheck size={16} /></button>
                     <button onClick={() => toggleDM(a.id, a.status_medico)} title="Alternar DM" className="btn" style={{ padding: '8px', background: 'rgba(255,255,255,0.03)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}><Activity size={16} /></button>
                     <button onClick={() => handleEdit(a)} title="Editar" className="btn" style={{ padding: '8px', background: 'rgba(59, 130, 246, 0.05)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '8px' }}><Edit size={16} /></button>
                     <button onClick={() => handleDelete(a.id)} title="Excluir" className="btn" style={{ padding: '8px', background: 'rgba(239, 68, 68, 0.05)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '8px' }}><Trash2 size={16} /></button>
