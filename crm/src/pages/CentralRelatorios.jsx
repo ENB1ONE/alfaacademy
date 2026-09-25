@@ -290,30 +290,7 @@ export default function CentralRelatorios() {
                     </div>
 
                     {/* Filtros Dinâmicos */}
-                    {(modulo === 'elenco' || modulo === 'presencas' || modulo === 'jogos') && (
-                        <div style={{ flex: '1 1 200px' }}>
-                            <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Filtrar Categoria</label>
-                            <select className="input" value={filtros.categoria || ''} onChange={(e) => setFiltros({...filtros, categoria: e.target.value})} style={{ width: '100%' }}>
-                                <option value="">Todas as Categorias</option>
-                                {[...new Set(distCategoria.map(c => c.name))].map((c, i) => (
-                                    <option key={i} value={c}>{c}</option>
-                                ))}
-                            </select>
-                        </div>
-                    )}
-                    
-                    {modulo === 'elenco' && (
-                        <div style={{ flex: '1 1 200px' }}>
-                            <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Status Médico</label>
-                            <select className="input" value={filtros.status_medico || ''} onChange={(e) => setFiltros({...filtros, status_medico: e.target.value})} style={{ width: '100%' }}>
-                                <option value="">Todos</option>
-                                <option value="Apto">Apto</option>
-                                <option value="Lesionado">Lesionado</option>
-                            </select>
-                        </div>
-                    )}
-
-                    {modulo === 'presencas' && (
+{modulo === 'presencas' && (
                         <div style={{ flex: '1 1 200px', position: 'relative' }}>
                             <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Atleta Específico</label>
                             <div style={{ position: 'relative' }}>
@@ -337,10 +314,10 @@ export default function CentralRelatorios() {
                                 display: 'none', 
                                 position: 'absolute', 
                                 top: '100%', left: 0, right: 0, 
-                                backgroundColor: 'var(--fundo-card)', 
+                                backgroundColor: '#111', 
                                 border: '1px solid var(--borda)', 
                                 borderRadius: '0 0 8px 8px',
-                                maxHeight: 250, overflowY: 'auto', zIndex: 100,
+                                maxHeight: 250, overflowY: 'auto', zIndex: 9999,
                                 boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
                             }}>
                                 {atletas && atletas
@@ -369,6 +346,31 @@ export default function CentralRelatorios() {
                             </div>
                         </div>
                     )}
+
+                    {(modulo === 'elenco' || modulo === 'presencas' || modulo === 'jogos') && (
+                        <div style={{ flex: '1 1 200px' }}>
+                            <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Filtrar Categoria</label>
+                            <select className="input" value={filtros.categoria || ''} onChange={(e) => setFiltros({...filtros, categoria: e.target.value})} style={{ width: '100%' }}>
+                                <option value="">Todas as Categorias</option>
+                                {[...new Set(distCategoria.map(c => c.name))].map((c, i) => (
+                                    <option key={i} value={c}>{c}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+                    
+                    {modulo === 'elenco' && (
+                        <div style={{ flex: '1 1 200px' }}>
+                            <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Status Médico</label>
+                            <select className="input" value={filtros.status_medico || ''} onChange={(e) => setFiltros({...filtros, status_medico: e.target.value})} style={{ width: '100%' }}>
+                                <option value="">Todos</option>
+                                <option value="Apto">Apto</option>
+                                <option value="Lesionado">Lesionado</option>
+                            </select>
+                        </div>
+                    )}
+
+                    
 
                     {(modulo === 'presencas' || modulo === 'jogos') && (
                         <>
