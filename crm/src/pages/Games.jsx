@@ -61,6 +61,7 @@ export default function Games() {
   const openEditModal = (jogo) => {
     setIsEditing(true);
     setEditingData({ old_titulo: jogo.adversario, old_data: jogo.data_raw });
+    setNewGame({ 
         titulo: jogo.adversario, 
         data: jogo.data_raw, 
         categorias_ids: jogo.categorias_ids ? jogo.categorias_ids.map(String) : [],

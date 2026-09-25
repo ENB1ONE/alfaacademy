@@ -1,4 +1,22 @@
-import React, { useState, useEffect, useContext } from 'react';
+{modulo === 'presencas' && (
+                        <>
+                            <div style={{ flex: '1 1 200px' }}>
+                                <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Atleta Específico</label>
+                                <input 
+                                    type="text"
+                                    className="input"
+                                    placeholder="Buscar por nome..."
+                                    value={filtros.nome_atleta || ''}
+                                    onChange={(e) => setFiltros({...filtros, nome_atleta: e.target.value})}
+                                    style={{ width: '100%' }}
+                                    list="lista-atletas"
+                                />
+                                <datalist id="lista-atletas">
+                                    {atletas && atletas.map((a, i) => <option key={i} value={a.nome} />)}
+                                </datalist>
+                            </div>
+                        </>
+                    )}import React, { useState, useEffect, useContext } from 'react';
 import api from '../api';
 import { AuthContext } from '../context/AuthContext';
 import { Download, Search, Filter, Activity, Users, FileText, PieChart as PieIcon, LayoutTemplate, Printer } from 'lucide-react';

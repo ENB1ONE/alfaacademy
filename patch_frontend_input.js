@@ -1,20 +1,12 @@
 ﻿const fs = require('fs');
 let code = fs.readFileSync('crm/src/pages/CentralRelatorios.jsx', 'utf8');
 
-const regex = /\{modulo === 'presencas' && \([\s\S]*?<option value="">Todas as Categorias<\/option>[\s\S]*?<\/select>[\s\S]*?<\/div>[\s\S]*?\)\}/;
+const regex = /\{modulo === 'presencas' && \([\s\S]*?<label[\s\S]*?>Atleta Específico<\/label>[\s\S]*?<select[\s\S]*?>[\s\S]*?<option value="">Todos os Atletas<\/option>[\s\S]*?\{atletas[\s\S]*?\.map\(\(a, i\) => \([\s\S]*?<option key=\{i\} value=\{a\.id\}>\{a\.nome\} \(\{a\.categoria_nome || a\.categoria\}\)<\/option>[\s\S]*?\)\)\}[\s\S]*?<\/select>[\s\S]*?<\/div>[\s\S]*?\)\}/;
+
 const newFilters = `{modulo === 'presencas' && (
                         <>
                             <div style={{ flex: '1 1 200px' }}>
-                                <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Filtrar Categoria</label>
-                                <select className="input" value={filtros.categoria || ''} onChange={(e) => setFiltros({...filtros, categoria: e.target.value})} style={{ width: '100%' }}>
-                                    <option value="">Todas as Categorias</option>
-                                    {[...new Set(distCategoria.map(c => c.name))].map((c, i) => (
-                                        <option key={i} value={c}>{c}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div style={{ flex: '1 1 200px' }}>
-                                <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Nome do Atleta</label>
+                                <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Atleta Específico</label>
                                 <input 
                                     type="text"
                                     className="input"
@@ -34,7 +26,7 @@ const newFilters = `{modulo === 'presencas' && (
 if (code.match(regex)) {
     code = code.replace(regex, newFilters);
     fs.writeFileSync('crm/src/pages/CentralRelatorios.jsx', code, 'utf8');
-    console.log('Added nome_atleta filter to CentralRelatorios.jsx');
+    console.log('Replaced presencas filter with text input');
 } else {
     console.log('Could not find presencas filter block');
 }
