@@ -8,7 +8,7 @@ export default function PublicPortal() {
   
   useEffect(() => {
     // We try to fetch jogos. If the endpoint doesn't exist yet, we show a graceful fallback.
-    api.get('/api/public/jogos').then(res => {
+    api.get('/api/admin/jogos').then(res => {
       // Just showing future games
       setJogos(res.data.slice(0, 3));
     }).catch(() => {
