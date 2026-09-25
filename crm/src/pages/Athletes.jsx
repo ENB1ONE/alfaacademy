@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import api from '../api';
-import { Activity, Plus, Edit, Trash2, Search, Filter, UserPlus } from 'lucide-react';
+import {  Activity, Plus, Edit, Trash2, Search, Filter, UserPlus , ClipboardCheck } from 'lucide-react';
 import Cropper from 'react-easy-crop';
 
 export default function Athletes() {
