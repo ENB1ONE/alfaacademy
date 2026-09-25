@@ -1,22 +1,4 @@
-{modulo === 'presencas' && (
-                        <>
-                            <div style={{ flex: '1 1 200px' }}>
-                                <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Atleta Específico</label>
-                                <input 
-                                    type="text"
-                                    className="input"
-                                    placeholder="Buscar por nome..."
-                                    value={filtros.nome_atleta || ''}
-                                    onChange={(e) => setFiltros({...filtros, nome_atleta: e.target.value})}
-                                    style={{ width: '100%' }}
-                                    list="lista-atletas"
-                                />
-                                <datalist id="lista-atletas">
-                                    {atletas && atletas.map((a, i) => <option key={i} value={a.nome} />)}
-                                </datalist>
-                            </div>
-                        </>
-                    )}import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import api from '../api';
 import { AuthContext } from '../context/AuthContext';
 import { Download, Search, Filter, Activity, Users, FileText, PieChart as PieIcon, LayoutTemplate, Printer } from 'lucide-react';
@@ -334,15 +316,18 @@ export default function CentralRelatorios() {
                     {modulo === 'presencas' && (
                         <div style={{ flex: '1 1 200px' }}>
                             <label style={{ display: 'block', marginBottom: 8, color: 'var(--cinza)' }}>Atleta Específico</label>
-                            <select className="input" value={filtros.atleta_id || ''} onChange={(e) => setFiltros({...filtros, atleta_id: e.target.value})} style={{ width: '100%' }}>
-                                <option value="">Todos os Atletas</option>
-                                {atletas
-                                  .filter(a => !filtros.categoria || a.categoria_nome === filtros.categoria || a.categoria === filtros.categoria)
-                                  .sort((a,b) => a.nome.localeCompare(b.nome))
-                                  .map(a => (
-                                    <option key={a.id} value={a.id}>{a.nome}</option>
-                                ))}
-                            </select>
+                            <input 
+                                type="text"
+                                className="input"
+                                placeholder="Buscar por nome..."
+                                value={filtros.nome_atleta || ''}
+                                onChange={(e) => setFiltros({...filtros, nome_atleta: e.target.value})}
+                                style={{ width: '100%' }}
+                                list="lista-atletas"
+                            />
+                            <datalist id="lista-atletas">
+                                {atletas && [...new Set(atletas.map(a => a.nome))].sort().map((nome, i) => <option key={i} value={nome} />)}
+                            </datalist>
                         </div>
                     )}
 

@@ -1,4 +1,3 @@
 ﻿const fs = require('fs');
 let code = fs.readFileSync('crm/src/pages/CentralRelatorios.jsx', 'utf8');
-let idx = code.indexOf("modulo === 'presencas'");
-console.log(code.substring(idx, idx + 1500));
+console.log(code.substring(0, 1000));
