@@ -1,2 +1,5 @@
 ﻿const fs = require('fs');
-console.log(fs.readFileSync('crm/src/components/Layout.jsx', 'utf8').substring(0, 1000));
+let code = fs.readFileSync('crm/src/components/Layout.jsx', 'utf8');
+console.log(code.substring(0, 1000));
+console.log("...");
+console.log(code.substring(code.length - 1000));

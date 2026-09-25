@@ -55,21 +55,21 @@ export default function Layout() {
       <aside className={`sidebar ${isMobileMenuOpen ? 'open' : ''}`}>
         <div style={{ textAlign: 'center', marginBottom: 30 }}><img src='/alfaacademy/admin/alfa_logo.png' alt='Alfa Academy' style={{ width: 120 }} /></div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-          <NavLink to="/" icon={LayoutDashboard}>Visão Geral</NavLink>
-          <NavLink to="/chamada" icon={ClipboardCheck}>Lista de Chamada</NavLink>
-          <NavLink to="/historico-chamadas" icon={BookOpen}>Histórico de Presenças</NavLink>
-          <NavLink to="/frequencia" icon={Activity}>Frequência Geral</NavLink>
-          <NavLink to="/jogos" icon={Trophy}>Jogos / Convocações</NavLink>
+          <NavLink to="/app" icon={LayoutDashboard}>Visão Geral</NavLink>
+          <NavLink to="/app/chamada" icon={ClipboardCheck}>Lista de Chamada</NavLink>
+          <NavLink to="/app/historico-chamadas" icon={BookOpen}>Histórico de Presenças</NavLink>
+          <NavLink to="/app/frequencia" icon={Activity}>Frequência Geral</NavLink>
+          <NavLink to="/app/jogos" icon={Trophy}>Jogos / Convocações</NavLink>
           {isAdmin && (
             <>
-              <NavLink to="/performance" icon={Activity}>Central Performance</NavLink>
-              <NavLink to="/relatorios" icon={Activity}>Central de Relatórios</NavLink>
-              <NavLink to="/atletas" icon={Users}>Atletas</NavLink>
+              <NavLink to="/app/performance" icon={Activity}>Central Performance</NavLink>
+              <NavLink to="/app/relatorios" icon={Activity}>Central de Relatórios</NavLink>
+              <NavLink to="/app/atletas" icon={Users}>Atletas</NavLink>
               
           {isAdmin && (
             <>
-              <NavLink to="/equipe" icon={UserCog}>Treinadores</NavLink>
-              <NavLink to="/categorias" icon={Folders}>Categorias</NavLink>
+              <NavLink to="/app/equipe" icon={UserCog}>Treinadores</NavLink>
+              <NavLink to="/app/categorias" icon={Folders}>Categorias</NavLink>
             </>
           )}
 
@@ -84,6 +84,28 @@ export default function Layout() {
       <main className="main-content">
         <Outlet />
       </main>
+      
+      {/* BOTTOM NAVIGATION (MOBILE) */}
+      <nav className="bottom-nav">
+        <div className="bottom-nav-inner">
+          <Link to="/app" className={`bottom-nav-item ${location.pathname === '/' ? 'active' : ''}`}>
+            <LayoutDashboard size={22} />
+            <span>Início</span>
+          </Link>
+          <Link to="/app/chamada" className={`bottom-nav-item ${location.pathname === '/chamada' ? 'active' : ''}`}>
+            <ClipboardCheck size={22} />
+            <span>Chamada</span>
+          </Link>
+          <Link to="/app/jogos" className={`bottom-nav-item ${location.pathname === '/jogos' ? 'active' : ''}`}>
+            <Trophy size={22} />
+            <span>Jogos</span>
+          </Link>
+          <button className="bottom-nav-item" onClick={() => setIsMobileMenuOpen(true)}>
+            <Menu size={22} />
+            <span>Menu</span>
+          </button>
+        </div>
+      </nav>
       </div>
     </div>
   );

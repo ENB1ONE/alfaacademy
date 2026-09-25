@@ -83,9 +83,9 @@ export default function Overview() {
     <div>
       <h1 style={{ color: 'var(--ouro)', marginBottom: 30 }}>Dashboard Executivo <span style={{ fontSize: 12, color: 'var(--cinza)' }}>v1.0.5</span></h1>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 20, marginBottom: 30 }}>
-        <Card title="Total de Atletas" value={metrics.total_atletas} icon={Users} color="#3b82f6" link="/atletas" />
-        <Card title="Atletas no DM" value={metrics.lesionados} icon={Activity} color="#ef4444" link="/atletas" />
-        <Card title="Comissão Técnica" value={metrics.total_treinadores} icon={UserCog} color="#eab308" link="/equipe" />
+        <Card title="Total de Atletas" value={metrics.total_atletas} icon={Users} color="#3b82f6" link="/app/atletas" />
+        <Card title="Atletas no DM" value={metrics.lesionados} icon={Activity} color="#ef4444" link="/app/atletas" />
+        <Card title="Comissão Técnica" value={metrics.total_treinadores} icon={UserCog} color="#eab308" link="/app/equipe" />
       </div>
 
       <div className="card" style={{ marginBottom: 30, padding: 20 }}>

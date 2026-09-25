@@ -13,7 +13,7 @@ export default function Login() {
     e.preventDefault();
     try {
       await login(username, password);
-      navigate('/');
+      navigate('/app');
     } catch (err) {
       setError('Credenciais inválidas.');
     }
