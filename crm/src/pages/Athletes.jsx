@@ -506,11 +506,11 @@ export default function Athletes() {
                                               const isF = st === 'F' || st === 'Falta';
                                               const stColor = isF ? '#ef4444' : '#22c55e';
                                               // Fallback date formatting
-                                              let dstr = row.data_chamada;
+                                              let dstr = row.data_treino;
                                               if (dstr && !dstr.includes('T')) dstr += 'T12:00:00';
                                               return (
                                                   <tr key={idx}>
-                                                      <td style={{ padding: '8px', borderBottom: '1px solid #eee', color: '#111' }}>{row.data_chamada ? new Date(dstr).toLocaleDateString('pt-BR') : '-'}</td>
+                                                      <td style={{ padding: '8px', borderBottom: '1px solid #eee', color: '#111' }}>{row.data_treino ? new Date(dstr).toLocaleDateString('pt-BR') : '-'}</td>
                                                       <td style={{ padding: '8px', borderBottom: '1px solid #eee', textAlign: 'center', fontWeight: 'bold', color: stColor }}>{st}</td>
                                                       <td style={{ padding: '8px', borderBottom: '1px solid #eee', color: '#666' }}>{row.justificativa || '-'}</td>
                                                   </tr>
