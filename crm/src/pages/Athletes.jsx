@@ -429,7 +429,123 @@ export default function Athletes() {
                           <div style={{ textAlign: 'center', padding: '40px', color: 'var(--ouro)' }}>Carregando histórico...</div>
                       ) : historyModal.data ? (
                           <div style={{ width: '100%', overflowX: 'auto', display: 'flex', justifyContent: 'center' }}>
-                              <div id="history-a4-preview" style={{ width: '794px', minWidth: '794px', background: '#ffffff', padding: '20px 40px', boxSizing: 'border-box', color: '#111' }}>
+                              <style>{`
+  .history-responsive-view { width: 100%; background: #ffffff; padding: 15px; box-sizing: border-box; color: #111; }
+  .history-responsive-view .h-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+  .history-responsive-view .h-meta { display: flex; justify-content: space-between; align-items: flex-end; }
+  .history-responsive-view .h-cards { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+  .history-responsive-view .h-card { flex: 1 1 calc(50% - 10px); min-width: 130px; padding: 15px; background: #f8f9fa; border: 1px solid #eaeaea; border-radius: 8px; text-align: center; }
+  @media (max-width: 600px) {
+      .history-responsive-view .h-row { flex-direction: column !important; text-align: center; gap: 10px; }
+      .history-responsive-view .h-row > div { flex: none !important; }
+      .history-responsive-view .h-meta { flex-direction: column !important; align-items: center !important; text-align: center !important; gap: 10px; }
+      .history-responsive-view .h-meta > div { text-align: center !important; }
+  }
+`}</style>
+<>
+<div className="history-responsive-view">
+
+                                  
+                                  {/* A4 Header */}
+                                  <div style={{ borderBottom: '3px solid #eab308', paddingBottom: '15px', marginBottom: '20px' }}>
+                                      <div className="h-row">
+                                          <div style={{ flex: '0 0 100px' }}>
+                                              <img src="/alfaacademy/admin/alfa_logo.png" alt="Logo" style={{ width: 65, objectFit: 'contain' }} />
+                                          </div>
+                                          <div style={{ flex: 1, textAlign: 'center' }}>
+                                              <h2 style={{ margin: 0, color: '#111', fontSize: '22px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '-0.5px' }}>
+                                                  Histórico de Presenças
+                                              </h2>
+                                          </div>
+                                          <div style={{ flex: '0 0 100px' }}></div>
+                                      </div>
+                                      <div className="h-meta">
+                                          <div style={{ textAlign: 'left', color: '#555' }}>
+                                              <h3 style={{ margin: '0 0 4px 0', color: '#111', fontSize: '18px', fontWeight: 'bold', textTransform: 'uppercase' }}>
+                                                  {historyModal.atleta?.nome}
+                                              </h3>
+                                              <p style={{ margin: 0, fontSize: '13px', fontWeight: 500, color: '#666' }}>
+                                                  Categoria: {historyModal.atleta?.categoria || 'Sem Categoria'}
+                                              </p>
+                                          </div>
+                                          <div style={{ textAlign: 'right', color: '#6c757d', fontSize: '10px', lineHeight: '1.4' }}>
+                                              Gerado em:<br/>
+                                              <strong style={{ color: '#333', fontSize: '11px' }}>
+                                                  {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                              </strong>
+                                          </div>
+                                      </div>
+                                  </div>
+
+                                  {/* Summary Cards */}
+                                  {(() => {
+                                      const total = historyModal.data.length;
+                                      const p = historyModal.data.filter(r => r.status === 'P' || r.status === 'Presente').length;
+                                      const f = historyModal.data.filter(r => r.status === 'F' || r.status === 'Falta').length;
+                                      const freq = total > 0 ? ((p / total) * 100).toFixed(1) : 0;
+                                      return (
+                                          <div className="h-cards">
+                                              <div className="h-card" style={{background:"#f8f9fa", borderColor:"#eaeaea"}}>
+                                                  <div style={{ fontSize: '11px', color: '#6c757d', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '8px' }}>Total de Treinos</div>
+                                                  <div style={{ fontSize: '24px', color: '#111', fontWeight: '900' }}>{total}</div>
+                                              </div>
+                                              <div className="h-card" style={{background:"#f0fdf4", borderColor:"#bbf7d0"}}>
+                                                  <div style={{ fontSize: '11px', color: '#166534', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '8px' }}>Presenças</div>
+                                                  <div style={{ fontSize: '24px', color: '#15803d', fontWeight: '900' }}>{p}</div>
+                                              </div>
+                                              <div className="h-card" style={{background:"#fef2f2", borderColor:"#fecaca"}}>
+                                                  <div style={{ fontSize: '11px', color: '#991b1b', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '8px' }}>Faltas</div>
+                                                  <div style={{ fontSize: '24px', color: '#b91c1c', fontWeight: '900' }}>{f}</div>
+                                              </div>
+                                              <div className="h-card" style={{background:"#f0f9ff", borderColor:"#bae6fd"}}>
+                                                  <div style={{ fontSize: '11px', color: '#0369a1', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '8px' }}>Frequência</div>
+                                                  <div style={{ fontSize: '24px', color: '#0f172a', fontWeight: '900' }}>{freq}%</div>
+                                              </div>
+                                          </div>
+                                      );
+                                  })()}
+
+                                  {/* Table */}
+                                  <h3 style={{ color: '#111', borderBottom: '2px solid #eee', paddingBottom: 6, marginBottom: 15, fontSize: 16, textTransform: 'uppercase', marginTop: '20px' }}>Detalhamento de Frequência</h3>
+                                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: '30px' }}>
+                                      <thead>
+                                          <tr style={{ background: '#f8f9fa' }}>
+                                              <th style={{ padding: '8px', borderBottom: '2px solid #dee2e6', textAlign: 'left', color: '#495057' }}>Data</th>
+                                              <th style={{ padding: '8px', borderBottom: '2px solid #dee2e6', textAlign: 'center', color: '#495057' }}>Status</th>
+                                              <th style={{ padding: '8px', borderBottom: '2px solid #dee2e6', textAlign: 'left', color: '#495057' }}>Justificativa</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                          {historyModal.data.map((row, idx) => {
+                                              const st = row.status;
+                                              const isF = st === 'F' || st === 'Falta';
+                                              const stColor = isF ? '#ef4444' : '#22c55e';
+                                              // Fallback date formatting
+                                              let dstr = row.data_treino;
+                                              if (dstr && !dstr.includes('T')) dstr += 'T12:00:00';
+                                              return (
+                                                  <tr key={idx}>
+                                                      <td style={{ padding: '8px', borderBottom: '1px solid #eee', color: '#111' }}>{row.data_treino ? new Date(dstr).toLocaleDateString('pt-BR') : '-'}</td>
+                                                      <td style={{ padding: '8px', borderBottom: '1px solid #eee', textAlign: 'center', fontWeight: 'bold', color: stColor }}>{st}</td>
+                                                      <td style={{ padding: '8px', borderBottom: '1px solid #eee', color: '#666' }}>{row.justificativa || '-'}</td>
+                                                  </tr>
+                                              );
+                                          })}
+                                          {historyModal.data.length === 0 && (
+                                              <tr><td colSpan="3" style={{ padding: '15px', textAlign: 'center', color: '#999' }}>Nenhum registro encontrado.</td></tr>
+                                          )}
+                                      </tbody>
+                                  </table>
+                                  
+                                  {/* A4 Footer */}
+                                  <div style={{ borderTop: '1px solid #eee', paddingTop: '10px', marginTop: '20px', textAlign: 'center', fontSize: '10px', color: '#999', paddingBottom: '20px' }}>
+                                      Alfa Academy - Formando Atletas e Cidadãos.<br/>
+                                      Documento de uso interno e confidencial gerado automaticamente. É vedado o compartilhamento com terceiros sem autorização prévia da coordenação esportiva.
+                                  </div>
+                              </div>
+<div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
+<div id="history-a4-preview" style={{ width: '794px', minWidth: '794px', background: '#ffffff', padding: '20px 40px', boxSizing: 'border-box', color: '#111' }}>
+
                                   
                                   {/* A4 Header */}
                                   <div style={{ borderBottom: '3px solid #eab308', paddingBottom: '15px', marginBottom: '20px' }}>
@@ -528,6 +644,8 @@ export default function Athletes() {
                                       Documento de uso interno e confidencial gerado automaticamente. É vedado o compartilhamento com terceiros sem autorização prévia da coordenação esportiva.
                                   </div>
                               </div>
+</div>
+</>
                           </div>
                       ) : null}
                   </div>
