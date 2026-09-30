@@ -24,10 +24,7 @@ export default function Athletes() {
   const openHistoryModal = async (atleta) => {
       setHistoryModal({ show: true, loading: true, atleta: atleta, data: null });
       try {
-          const res = await api.post('/api/admin/relatorios/gerador', {
-              modulo: 'presencas',
-              filtros: { atleta_id: atleta.id }
-          });
+          const res = await api.get('/api/admin/atletas/' + atleta.id + '/historico');
           if (res.data.success) {
               setHistoryModal({ show: true, loading: false, atleta: atleta, data: res.data.dados });
           } else {
