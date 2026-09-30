@@ -1,5 +1,4 @@
 ﻿const fs = require('fs');
 let code = fs.readFileSync('crm/src/pages/Athletes.jsx', 'utf8');
-let idx = code.indexOf('handleEdit');
 let lastIdx = code.lastIndexOf('handleEdit');
-console.log(code.substring(lastIdx - 400, lastIdx + 1000));
+console.log(code.substring(lastIdx - 800, lastIdx));

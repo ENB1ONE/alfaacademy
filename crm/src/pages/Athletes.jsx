@@ -258,9 +258,9 @@ export default function Athletes() {
       )}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 }}>
         <h1 style={{ color: 'var(--ouro)' }}>Gestão de Atletas</h1>
-        <button onClick={() => { setShowForm(!showForm); setEditMode(false); setForm({ nome: '', categoria_id: '', posicao: '', posicao_secundaria: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' }); }} className="btn" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {isAdmin && (<button onClick={() => { setShowForm(!showForm); setEditMode(false); setForm({ nome: '', categoria_id: '', posicao: '', posicao_secundaria: '', nome_responsavel: '', telefone_responsavel: '', status_medico: 'Apto', foto: '' }); }} className="btn" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Plus size={20} /> Novo Atleta
-        </button>
+        </button>)}
       </div>
 
       {showForm && (
@@ -394,11 +394,13 @@ export default function Athletes() {
                 {/* Footer Row: Actions */}
                 <div style={{ display: 'flex', gap: '8px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '15px', justifyContent: 'space-between' }}>
                     <button onClick={() => openHistoryModal(a)} title="Histórico de Presença" className="btn" style={{ padding: '8px 12px', background: 'rgba(248, 193, 70, 0.05)', color: 'var(--ouro)', border: '1px solid rgba(248, 193, 70, 0.2)', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '8px', flex: 1, justifyContent: 'center' }}><ClipboardCheck size={16} /> <span style={{fontSize: '0.85rem', fontWeight: 'bold', whiteSpace: 'nowrap'}}>Histórico</span></button>
+                    {isAdmin && (
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button onClick={() => toggleDM(a.id, a.status_medico)} title="Alternar DM" className="btn" style={{ padding: '8px', background: 'rgba(255,255,255,0.03)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', flexShrink: 0 }}><Activity size={16} /></button>
                         <button onClick={() => handleEdit(a)} title="Editar" className="btn" style={{ padding: '8px', background: 'rgba(59, 130, 246, 0.05)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '8px', flexShrink: 0 }}><Edit size={16} /></button>
                         <button onClick={() => handleDelete(a.id)} title="Excluir" className="btn" style={{ padding: '8px', background: 'rgba(239, 68, 68, 0.05)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '8px', flexShrink: 0 }}><Trash2 size={16} /></button>
                     </div>
+                    )}
                 </div>
               </div>
             ))

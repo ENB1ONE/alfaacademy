@@ -70,7 +70,7 @@ export default function App() {
           <Route path="/" element={<PublicPortal />} />
           <Route path="/app" element={<PrivateRoute><Layout /></PrivateRoute>}>
             <Route index element={<Overview />} />
-            <Route path="atletas" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><Athletes /></PrivateRoute>} />
+            <Route path="atletas" element={<PrivateRoute><Athletes /></PrivateRoute>} />
             <Route path="perfil/:id" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><PerfilAtleta /></PrivateRoute>} />
             <Route path="relatorios" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><CentralRelatorios /></PrivateRoute>} />
             <Route path="equipe" element={<PrivateRoute allowedRoles={['Administrador', 'admin', 'Admin']}><Staff /></PrivateRoute>} />

@@ -60,11 +60,11 @@ export default function Layout() {
           <NavLink to="/app/historico-chamadas" icon={BookOpen}>Histórico de Presenças</NavLink>
           <NavLink to="/app/frequencia" icon={Activity}>Frequência Geral</NavLink>
           <NavLink to="/app/jogos" icon={Trophy}>Jogos / Convocações</NavLink>
+          <NavLink to="/app/atletas" icon={Users}>Atletas</NavLink>
           {isAdmin && (
             <>
               <NavLink to="/app/performance" icon={Activity}>Central Performance</NavLink>
               <NavLink to="/app/relatorios" icon={Activity}>Central de Relatórios</NavLink>
-              <NavLink to="/app/atletas" icon={Users}>Atletas</NavLink>
               
           {isAdmin && (
             <>
