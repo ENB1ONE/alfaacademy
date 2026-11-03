@@ -15,7 +15,13 @@ export default function Login() {
       await login(username, password);
       navigate('/');
     } catch (err) {
-      setError('Credenciais inválidas.');
+      if (err.message === 'Network Error' || err.code === 'ERR_NETWORK') {
+        setError('Não foi possível conectar ao servidor (Verifique sua rede ou o SSL da API).');
+      } else if (err.response && err.response.data && err.response.data.message) {
+        setError(err.response.data.message);
+      } else {
+        setError('Credenciais inválidas.');
+      }
     }
   };
 

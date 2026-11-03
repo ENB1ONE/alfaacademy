@@ -11,7 +11,6 @@ export default function Attendance() {
   const [tipo, setTipo] = useState('TREINO');
   const [dataChamada, setDataChamada] = useState(new Date().toISOString().split('T')[0]);
 
-  
   const loadCategorias = async () => {
     try {
       const res = await api.get('/api/admin/categorias');
@@ -37,8 +36,11 @@ export default function Attendance() {
       
       setAtletas(athletesWithCat);
       
+      // Todos desmarcados por padrão (false) para que o professor/treinador marque apenas os presentes
       const obj = {};
-      athletesWithCat.forEach(a => { obj[a.id] = true; });
+      athletesWithCat.forEach(a => {
+        obj[a.id] = false;
+      });
       setPresencas(obj);
     } catch (e) {
       console.error(e);
@@ -53,7 +55,7 @@ export default function Attendance() {
       const promises = categoriasSelecionadas.map(catId => {
           const payload = atletas.filter(a => String(a.categoria_id) === String(catId)).map(a => ({
             atleta_id: a.id,
-            presente: presencas[a.id]
+            presente: !!presencas[a.id]
           }));
           if (payload.length > 0) {
               return api.post('/api/admin/chamadas', { categoria_id: catId, presencas: payload, titulo, tipo, data: dataChamada });
@@ -65,10 +67,25 @@ export default function Attendance() {
       setCategoriasSelecionadas([]);
       setTitulo('Treino Regular');
       setTipo('TREINO');
+      setPresencas({});
     } catch (e) {
       alert('Erro ao salvar listas de chamada. Verifique se o servidor suporta esta função.');
     }
   };
+
+  const marcarTodos = () => {
+    const obj = {};
+    atletas.forEach(a => { obj[a.id] = true; });
+    setPresencas(obj);
+  };
+
+  const desmarcarTodos = () => {
+    const obj = {};
+    atletas.forEach(a => { obj[a.id] = false; });
+    setPresencas(obj);
+  };
+
+  const totalPresentes = atletas.filter(a => presencas[a.id]).length;
 
   return (
     <div>
@@ -125,25 +142,88 @@ export default function Attendance() {
         {atletas.length === 0 ? (
           <p style={{ padding: 20, textAlign: 'center', color: 'var(--cinza)' }}>Nenhum atleta nestas categorias.</p>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '15px', marginTop: '20px' }}>
-              {atletas.map(a => (
-                <div key={a.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--linha)', borderRadius: 'var(--radius-sm)' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                      <strong style={{ fontSize: '1.1rem', color: 'var(--texto)' }}>{a.nome}</strong>
-                      <span style={{ fontSize: '0.8rem', background: 'rgba(248, 193, 70, 0.1)', color: 'var(--ouro)', padding: '2px 8px', borderRadius: '10px', width: 'fit-content' }}>
-                          {a.categoria_nome || 'Categoria'}
-                      </span>
+          <>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, marginTop: 20, marginBottom: 15, paddingBottom: 10, borderBottom: '1px solid var(--linha)' }}>
+              <span style={{ color: 'var(--cinza)', fontSize: 14 }}>
+                Presentes: <strong style={{ color: 'var(--ouro)' }}>{totalPresentes}</strong> de {atletas.length}
+              </span>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <button 
+                  type="button" 
+                  onClick={marcarTodos} 
+                  style={{ 
+                    background: 'transparent', 
+                    border: '1px solid var(--linha)', 
+                    color: 'var(--texto)', 
+                    padding: '6px 12px', 
+                    borderRadius: 'var(--radius-sm)', 
+                    cursor: 'pointer', 
+                    fontSize: 13 
+                  }}>
+                  Marcar Todos
+                </button>
+                <button 
+                  type="button" 
+                  onClick={desmarcarTodos} 
+                  style={{ 
+                    background: 'transparent', 
+                    border: '1px solid var(--linha)', 
+                    color: 'var(--cinza)', 
+                    padding: '6px 12px', 
+                    borderRadius: 'var(--radius-sm)', 
+                    cursor: 'pointer', 
+                    fontSize: 13 
+                  }}>
+                  Desmarcar Todos
+                </button>
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '15px' }}>
+              {atletas.map(a => {
+                const isChecked = !!presencas[a.id];
+                return (
+                  <div 
+                    key={a.id} 
+                    onClick={() => setPresencas(prev => ({ ...prev, [a.id]: !prev[a.id] }))}
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'space-between', 
+                      padding: '15px', 
+                      background: isChecked ? 'rgba(248, 193, 70, 0.08)' : 'rgba(255,255,255,0.02)', 
+                      border: isChecked ? '1px solid var(--ouro)' : '1px solid var(--linha)', 
+                      borderRadius: 'var(--radius-sm)',
+                      cursor: 'pointer',
+                      userSelect: 'none',
+                      transition: 'all 0.15s ease'
+                    }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                        <strong style={{ fontSize: '1.1rem', color: isChecked ? 'var(--ouro)' : 'var(--texto)' }}>{a.nome}</strong>
+                        <span style={{ fontSize: '0.8rem', background: 'rgba(248, 193, 70, 0.1)', color: 'var(--ouro)', padding: '2px 8px', borderRadius: '10px', width: 'fit-content' }}>
+                            {a.categoria_nome || 'Categoria'}
+                        </span>
+                    </div>
+                    <div>
+                      <input 
+                        type="checkbox" 
+                        checked={isChecked} 
+                        onChange={e => {
+                          e.stopPropagation();
+                          setPresencas(prev => ({ ...prev, [a.id]: e.target.checked }));
+                        }} 
+                        style={{ width: 28, height: 28, accentColor: 'var(--ouro)', cursor: 'pointer' }} 
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <input type="checkbox" checked={presencas[a.id]} onChange={e => setPresencas({...presencas, [a.id]: e.target.checked})} style={{ width: 28, height: 28, accentColor: 'var(--ouro)', cursor: 'pointer' }} />
-                  </div>
-                </div>
-              ))}
-          </div>
+                );
+              })}
+            </div>
+          </>
         )}
         {atletas.length > 0 && (
           <button onClick={handleSave} className="btn" style={{ width: '100%', marginTop: 20, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10 }}>
-            <Save size={20} /> Salvar Chamada
+            <Save size={20} /> Salvar Chamada ({totalPresentes} presentes)
           </button>
         )}
       </div>

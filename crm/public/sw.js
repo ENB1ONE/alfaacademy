@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = 'alfa-academy-v2';
+const CACHE_NAME = 'alfa-academy-v3';
 
 self.addEventListener('install', event => {
   self.skipWaiting();
